@@ -24,14 +24,17 @@ import "@styles/react/libs/react-select/_react-select.scss";
 const PersonalInfo = ({ stepper, type }) => {
 
   const [email, setEmail] = useState("");
+  const [user_id, setUserId] = useState("");
   const history = useHistory()
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem('StudentInfo');
     // Parse the JSON data
 const studentInfo = JSON.parse(rolesFromStorage);
 const Tempemail = studentInfo.email;
+const TempUserid=studentInfo.user_id;
     console.log(Tempemail)
     setEmail(Tempemail)
+    setUserId(TempUserid)
     if (!rolesFromStorage) {
       history.push('/login')
     }
@@ -91,6 +94,7 @@ const Tempemail = studentInfo.email;
     formData.append('father_occupation', foccupation);
     formData.append('land_line', phone);
     formData.append('temp_image', image);
+    formData.append('user_id', user_id);
     
     fetch(`${BASE_URL}storeStudentData`, {
       method: 'POST',
