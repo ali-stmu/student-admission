@@ -26,3 +26,4 @@ Route::post('/SignIn',[AuthController::class,'SignIn']);
 Route::post('/storeStudentData',[StudentInfoController::class,'storeStudentData']);
 
 
+
