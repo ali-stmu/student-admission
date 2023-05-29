@@ -1,48 +1,38 @@
-import { lazy } from 'react'
+import { lazy } from "react";
 
 // ** Document title
-const TemplateTitle = 'Shifa Student Portal'
+const TemplateTitle = "%s - Vuexy React Admin Template";
 
 // ** Default Route
-const DefaultRoute = '/register'
+const DefaultRoute = "/home";
 
 // ** Merge Routes
 const Routes = [
   {
-    path: '/home',
-    component: lazy(() => import('../../views/Home'))
+    path: "/home",
+    component: lazy(() => import("../../views/Home")),
   },
   {
-    path: '/second-page',
-    component: lazy(() => import('../../views/SecondPage'))
+    path: "/second-page",
+    component: lazy(() => import("../../views/SecondPage")),
   },
-
   {
-    path: '/personal-detail',
-    component: lazy(() => import('../../views/forms/wizard'))
+    path: "/forms/wizard",
+    component: lazy(() => import("../../views/forms/wizard")),
   },
-
   {
-    path: '/login',
-    component: lazy(() => import('../../views/Login')),
-    layout: 'BlankLayout',
+    path: "/login",
+    component: lazy(() => import("../../views/Login")),
+    layout: "BlankLayout",
     meta: {
-      authRoute: true
-    }
+      authRoute: true,
+    },
   },
   {
-    path: '/register',
-    component: lazy(() => import('../../views/Register')),
-    layout: 'BlankLayout',
-    meta: {
-      authRoute: true
-    }
+    path: "/error",
+    component: lazy(() => import("../../views/Error")),
+    layout: "BlankLayout",
   },
-  {
-    path: '/error',
-    component: lazy(() => import('../../views/Error')),
-    layout: 'BlankLayout'
-  }
-]
+];
 
-export { DefaultRoute, TemplateTitle, Routes }
+export { DefaultRoute, TemplateTitle, Routes };
