@@ -87,7 +87,7 @@ const Router = () => {
        */
 
       return <Redirect to='/login' />
-    } else if (route.meta && route.meta.authRoute && isUserLoggedIn()) {
+    } else if (route.meta && route.meta.authRoute) {
       // ** If route has meta and authRole and user is Logged in then redirect user to home page (DefaultRoute)
       return <Redirect to='/' />
     } else if (isUserLoggedIn() && !ability.can(action || 'read', resource)) {

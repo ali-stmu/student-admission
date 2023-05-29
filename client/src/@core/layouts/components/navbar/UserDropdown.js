@@ -28,9 +28,11 @@ const UserDropdown = () => {
 
   //** ComponentDidMount
   useEffect(() => {
-    if (isUserLoggedIn() !== null) {
-      setUserData(JSON.parse(localStorage.getItem('userData')))
-    }
+    const rolesFromStorage = localStorage.getItem('StudentInfo');
+    const userData = JSON.parse(rolesFromStorage);
+    setUserData(userData)
+    console.log(userData.email)
+    
   }, [])
 
   //** Vars
@@ -40,8 +42,8 @@ const UserDropdown = () => {
     <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
         <div className='user-nav d-sm-flex d-none'>
-          <span className='user-name font-weight-bold'>{(userData && userData['username']) || 'John Doe'}</span>
-          <span className='user-status'>{(userData && userData.role) || 'Admin'}</span>
+          <span className='user-name font-weight-bold'>{(userData && userData['email']) || 'Studentt'}</span>
+          <span className='user-status'>{(userData && userData.role) || 'Student'}</span>
         </div>
         <Avatar img={userAvatar} imgHeight='40' imgWidth='40' status='online' />
       </DropdownToggle>

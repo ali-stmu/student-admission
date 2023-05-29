@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { selectThemeColors, isObjEmpty } from "@utils";
 import Flatpickr from "react-flatpickr";
+import { BASE_URL } from '../../../../config';
+import { Link, useHistory } from 'react-router-dom'
+
+
 import {
   Label,
   FormGroup,
@@ -16,19 +20,38 @@ import {
   CustomInput,
 } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
+
 const PersonalInfo = ({ stepper, type }) => {
+
+  const [email, setEmail] = useState("");
+  const history = useHistory()
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem('StudentInfo');
+    // Parse the JSON data
+const studentInfo = JSON.parse(rolesFromStorage);
+const Tempemail = studentInfo.email;
+    console.log(Tempemail)
+    setEmail(Tempemail)
+    if (!rolesFromStorage) {
+      history.push('/login')
+    }
+  }, []);
+  
+  
   const { register, errors, handleSubmit, trigger } = useForm();
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [contact, setContact] = useState("");
   const [fathercontact, setFatherContact] = useState("");
-  const [email, setEmail] = useState("");
+
   const [cnic, setCnic] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [gender, setGender] = useState("");
   const [dateofbirth, setDateofbirth] = useState("");
+  const [image, setImage]=useState("");
+
   const [religion, setReligion] = useState("");
   const [fname, setFname] = useState("");
   const [mname, setMname] = useState("");
@@ -49,8 +72,44 @@ const PersonalInfo = ({ stepper, type }) => {
   const onSubmit = () => {
     trigger();
     if (isObjEmpty(errors)) {
-      stepper.next();
+     // stepper.next();
     }
+    
+    const formData = new FormData();
+    formData.append('first_name', firstName);
+    formData.append('middle_name', middleName);
+    formData.append('last_name', lastName);
+    formData.append('phone_number', contact);
+    formData.append('father_contact', fathercontact);
+    formData.append('email', email);
+    formData.append('cnic', cnic);
+    formData.append('gender', gender);
+    formData.append('date_of_birth', dateofbirth);
+    formData.append('religion', religion);
+    formData.append('father_name', fname);
+    formData.append('mother_name', mname);
+    formData.append('father_occupation', foccupation);
+    formData.append('land_line', phone);
+    formData.append('temp_image', image);
+    
+    fetch(`${BASE_URL}storeStudentData`, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response from the backend
+        console.log(data);
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the request
+        console.error(error);
+      });
+    
+  
+
+
+
   };
   const genderOption = [
     { value: "", label: "Select" },
@@ -86,7 +145,7 @@ const PersonalInfo = ({ stepper, type }) => {
   };
 
   const handleEmailChange = (event) => {
-    setEmail(event.target.value);
+    //setEmail(event.target.value);
   };
   const handleFnameChange = (event) => {
     setFname(event.target.value);
@@ -151,13 +210,30 @@ const PersonalInfo = ({ stepper, type }) => {
     setReligion(selectedOption.value);
   };
   const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-      console.log(selectedImage);
-    };
+    //const file = event.target.files[0];
+    //const reader = new FileReader();
+    //reader.readAsDataURL(file);
+    //reader.onload = () => {
+      //setSelectedImage(reader.result);
+      //console.log(selectedImage);
+      //setImage(file);
+      const file = event.target.files[0];
+      const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+      
+      if (file.size > maxSizeInBytes) {
+        // Display an error message or take appropriate action
+        alert("Error: The uploaded image exceeds the maximum allowed size of 2MB.");
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          setSelectedImage(reader.result);
+          console.log(selectedImage);
+          setImage(file);
+        };
+      }
+   
+
   };
   return (
     <Fragment>
@@ -234,6 +310,7 @@ const PersonalInfo = ({ stepper, type }) => {
               value={email}
               onChange={handleEmailChange}
               required
+              readOnly
             />
           </FormGroup>
 

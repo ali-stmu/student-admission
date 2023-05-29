@@ -1,6 +1,17 @@
 import { Card, CardHeader, CardBody, CardTitle, CardText, CardLink } from 'reactstrap'
-
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom'
 const Home = () => {
+
+  const history = useHistory()
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem('StudentInfo');
+    console.log(rolesFromStorage)
+    if (!rolesFromStorage) {
+      history.push('/login')
+    }
+  }, []);
+
   return (
     <div>
       <Card>
