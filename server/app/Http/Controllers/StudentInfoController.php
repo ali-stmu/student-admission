@@ -11,11 +11,11 @@ class StudentInfoController extends Controller
 {
     //
 
-    public function searchUser($email)
+    public function searchUser($user_id)
 
     {
         $student = new student;
-        $student = student::where('email', $email)->first();
+        $student = student::where('user_id', $user_id)->first();
 
         // Do something with the $user record, such as returning a response
         return response()->json($student);
@@ -79,8 +79,10 @@ class StudentInfoController extends Controller
         // Return a response if needed
         return response()->json(['message' => 'Data received successfully']);
     }
-    else {
-        return response()->json(['message' => 'Data Already in DB']);
-    }
+
+else {
+    return response()->json(['message' => 'Data Already in DB']);
+}
+   
 }
 }
