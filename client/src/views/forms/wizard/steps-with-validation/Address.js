@@ -2,6 +2,7 @@ import { Fragment, useState } from "react";
 import classnames from "classnames";
 import { isObjEmpty } from "@utils";
 import { useForm } from "react-hook-form";
+import { BASE_URL } from "../../../../config";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import {
   Label,
@@ -92,7 +93,7 @@ const Address = ({ stepper, type }) => {
     if (isObjEmpty(errors)) {
       stepper.next();
     }
-    fetch("https://example.com/api", {
+    fetch(`${BASE_URL}storeStudentDataAddress`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

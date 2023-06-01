@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { selectThemeColors, isObjEmpty } from "@utils";
 import Flatpickr from "react-flatpickr";
-import { BASE_URL } from '../../../../config';
-import { Link, useHistory } from 'react-router-dom'
-
+import { BASE_URL } from "../../../../config";
+import { BASE_URL_OF_SERVER } from "../../../../configForStudentPictureServer";
+import { Link, useHistory } from "react-router-dom";
 
 import {
   Label,
@@ -22,25 +22,9 @@ import {
 import "@styles/react/libs/react-select/_react-select.scss";
 
 const PersonalInfo = ({ stepper, type }) => {
-
+  const formDataAutoFill = new FormData();
   const [email, setEmail] = useState("");
   const [user_id, setUserId] = useState("");
-  const history = useHistory()
-  useEffect(() => {
-    const rolesFromStorage = localStorage.getItem('StudentInfo');
-    // Parse the JSON data
-const studentInfo = JSON.parse(rolesFromStorage);
-const Tempemail = studentInfo.email;
-const TempUserid=studentInfo.user_id;
-    console.log(Tempemail)
-    setEmail(Tempemail)
-    setUserId(TempUserid)
-    if (!rolesFromStorage) {
-      history.push('/login')
-    }
-  }, []);
-  
-  
   const { register, errors, handleSubmit, trigger } = useForm();
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
@@ -53,13 +37,67 @@ const TempUserid=studentInfo.user_id;
   const [selectedImage, setSelectedImage] = useState(null);
   const [gender, setGender] = useState("");
   const [dateofbirth, setDateofbirth] = useState("");
-  const [image, setImage]=useState("");
+  const [image, setImage] = useState("");
 
-  const [religion, setReligion] = useState("");
+  const [religion, setReligion] = useState("islam");
   const [fname, setFname] = useState("");
   const [mname, setMname] = useState("");
   const [foccupation, setFoccupation] = useState("");
   const [phone, setPhone] = useState("");
+  const history = useHistory();
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    // Parse the JSON data
+    const studentInfo = JSON.parse(rolesFromStorage);
+    const Tempemail = studentInfo.email;
+    const TempUserid = studentInfo.user_id;
+
+    formDataAutoFill.append("user_id", TempUserid);
+    formDataAutoFill.append("userEffectChecked", 1);
+    fetch(`${BASE_URL}storeStudentData`, {
+      method: "POST",
+      body: formDataAutoFill,
+    })
+      .then((response) => response.json())
+      .then((AutoFillDataRecived) => {
+        // Handle the response from the backend
+        console.log(AutoFillDataRecived);
+        //console.log(AutoFillDataRecived.original.first_name)
+        if (AutoFillDataRecived.original.first_name){
+          //console.log('hello from if')
+        setFirstName(AutoFillDataRecived.original.first_name);
+        setMiddleName(AutoFillDataRecived.original.middle_name);
+        setLastName(AutoFillDataRecived.original.last_name);
+        setContact(AutoFillDataRecived.original.phone_number);
+        setCnic(AutoFillDataRecived.original.cnic);
+        setGender(AutoFillDataRecived.original.gender);
+        setReligion(AutoFillDataRecived.original.religion);
+        setDateofbirth(AutoFillDataRecived.original.date_of_birth);
+        setFname(AutoFillDataRecived.original.father_name);
+        setMname(AutoFillDataRecived.original.mother_name);
+        setFoccupation(AutoFillDataRecived.original.father_occupation);
+        setFatherContact(AutoFillDataRecived.original.father_contact);
+        setPhone(AutoFillDataRecived.original.land_line);
+        const genratedFullUrlForStudentPicsture =
+          BASE_URL_OF_SERVER + AutoFillDataRecived.original.image;
+        setSelectedImage(genratedFullUrlForStudentPicsture);
+
+        //const cnic = AutoFillDataRecived.cnic; // Replace 'cnic' with the actual property name in the response
+        //console.log(cnic);
+        }
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error(error);
+      });
+    console.log(Tempemail);
+    setEmail(Tempemail);
+    setUserId(TempUserid);
+    if (!rolesFromStorage) {
+      history.push("/login");
+    }
+  }, []);
+
   const isValidFirstName = firstName.trim().length > 0;
   const isValidLastName = lastName.trim().length > 0;
   const isValidContact = contact > 0 || /^(\+92|92|0)?3\d{9}$/.test(contact);
@@ -75,45 +113,40 @@ const TempUserid=studentInfo.user_id;
   const onSubmit = () => {
     trigger();
     if (isObjEmpty(errors)) {
-     // stepper.next();
+      stepper.next();
     }
-    
+    console.log("ClickedOnSubmite");
     const formData = new FormData();
-    formData.append('first_name', firstName);
-    formData.append('middle_name', middleName);
-    formData.append('last_name', lastName);
-    formData.append('phone_number', contact);
-    formData.append('father_contact', fathercontact);
-    formData.append('email', email);
-    formData.append('cnic', cnic);
-    formData.append('gender', gender);
-    formData.append('date_of_birth', dateofbirth);
-    formData.append('religion', religion);
-    formData.append('father_name', fname);
-    formData.append('mother_name', mname);
-    formData.append('father_occupation', foccupation);
-    formData.append('land_line', phone);
-    formData.append('temp_image', image);
-    formData.append('user_id', user_id);
-    
+    formData.append("first_name", firstName);
+    formData.append("middle_name", middleName);
+    formData.append("last_name", lastName);
+    formData.append("phone_number", contact);
+    formData.append("father_contact", fathercontact);
+    formData.append("email", email);
+    formData.append("cnic", cnic);
+    formData.append("gender", gender);
+    formData.append("date_of_birth", dateofbirth);
+    formData.append("religion", religion);
+    formData.append("father_name", fname);
+    formData.append("mother_name", mname);
+    formData.append("father_occupation", foccupation);
+    formData.append("land_line", phone);
+    formData.append("temp_image", image);
+    formData.append("user_id", user_id);
+
     fetch(`${BASE_URL}storeStudentData`, {
-      method: 'POST',
+      method: "POST",
       body: formData,
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         // Handle the response from the backend
         console.log(data);
       })
-      .catch(error => {
+      .catch((error) => {
         // Handle any errors that occurred during the request
         console.error(error);
       });
-    
-  
-
-
-
   };
   const genderOption = [
     { value: "", label: "Select" },
@@ -214,30 +247,23 @@ const TempUserid=studentInfo.user_id;
     setReligion(selectedOption.value);
   };
   const handleImageChange = (event) => {
-    //const file = event.target.files[0];
-    //const reader = new FileReader();
-    //reader.readAsDataURL(file);
-    //reader.onload = () => {
-      //setSelectedImage(reader.result);
-      //console.log(selectedImage);
-      //setImage(file);
-      const file = event.target.files[0];
-      const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-      
-      if (file.size > maxSizeInBytes) {
-        // Display an error message or take appropriate action
-        alert("Error: The uploaded image exceeds the maximum allowed size of 2MB.");
-      } else {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          setSelectedImage(reader.result);
-          console.log(selectedImage);
-          setImage(file);
-        };
-      }
-   
+    const file = event.target.files[0];
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
 
+    if (file.size > maxSizeInBytes) {
+      // Display an error message or take appropriate action
+      alert(
+        "Error: The uploaded image exceeds the maximum allowed size of 2MB."
+      );
+    } else {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setSelectedImage(reader.result);
+        console.log(selectedImage);
+        setImage(file);
+      };
+    }
   };
   return (
     <Fragment>

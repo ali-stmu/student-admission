@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\student;
+use App\Models\user;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,45 +12,33 @@ class StudentInfoController extends Controller
 {
     //
 
-    public function searchUser($user_id)
-
+    public function updateRecord(Request $request, $id)
     {
-        $student = new student;
-        $student = student::where('user_id', $user_id)->first();
+        // Find the record by ID
+        //  log::debug($id);
+        $record = student::where('user_id', $id)->first();
+        //log::debug(  $request->input('first_name'));
 
-        // Do something with the $user record, such as returning a response
-        return response()->json($student);
-    }
+        if (!$record) {
+            return response()->json(['message' => 'Record not found'], 404);
+        }
 
+        $record->first_name = $request->input('first_name');
+        $record->middle_name = $request->input('middle_name');
+        $record->last_name = $request->input('last_name');
+        $record->phone_number = $request->input('phone_number');
+        $record->father_contact = $request->input('father_contact');
+        $record->cnic = $request->input('cnic');
+        $record->gender = $request->input('gender');
+        $record->date_of_birth = $request->input('date_of_birth');
+        $record->religion = $request->input('religion');
+        $record->father_name = $request->input('father_name');
+        $record->mother_name = $request->input('mother_name');
+        $record->father_occupation = $request->input('father_occupation');
+        $record->land_line = $request->input('land_line');
+        $record->user_id = $request->input('user_id');
 
-    public function storeStudentData(Request $request)
-    {
-       if(!$this->searchUser($request->input('user_id'))){
-        //log::debug($data = $request->all());
-        $student = new student;
-        $student->first_name = $request->input('first_name');
-        $student->middle_name = $request->input('middle_name');
-        $student->last_name = $request->input('last_name');
-        $student->phone_number = $request->input('phone_number');
-        $student->father_contact = $request->input('father_contact');
-        $student->cnic = $request->input('cnic');
-        $student->gender = $request->input('gender');
-        $student->date_of_birth = $request->input('date_of_birth');
-        $student->religion = $request->input('religion');
-        $student->father_name = $request->input('father_name');
-        $student->mother_name = $request->input('mother_name');
-        $student->father_occupation = $request->input('father_occupation');
-        $student->land_line = $request->input('land_line');
-        $student->user_id = $request->input('user_id');
-
-        $student->save();
-
-        // Create a new entry in Table2 associated with Table1
-        //$table2 = new Table2;
-        //$table2->column3 = 'Value 3';
-        //$table2->column4 = 'Value 4';
-        //$table2->table1_id = $table1->id; // Assuming there's a foreign key relationship
-        //$table2->save();
+        $record->save();
 
 
         // Handle the uploaded image
@@ -72,17 +61,124 @@ class StudentInfoController extends Controller
             // Log the full path of the saved image
             // Log::debug('Full path of the saved image: '.$fullImagePath);
             log::debug($relativeImagePath);
-            $student->image = $relativeImagePath;
+            $record->image = $relativeImagePath;
         }
-        $student->save();
+        $record->save();
 
         // Return a response if needed
-        return response()->json(['message' => 'Data received successfully']);
+        // return response()->json(['message' => 'Record updated successfully']);
     }
 
-else {
-    return response()->json(['message' => 'Data Already in DB']);
-}
-   
-}
+
+
+    public function searchUser($user_id)
+
+    {
+        $student = new student;
+        $student = student::where('user_id', $user_id)->first();
+
+        // Do something with the $user record, such as returning a response
+        // log::debug($student);
+        // return response()->json($student);
+
+        if ($student) {
+            // Student record found
+            return "Found";
+        } else {
+            // Student record not found
+            return "Not Found";
+        }
+    }
+
+
+
+    public function searchUserData($user_id)
+
+    {
+        $student = new student;
+        $student = student::where('user_id', $user_id)->first();
+
+        // Do something with the $user record, such as returning a response
+        // log::debug($student);
+        return response()->json($student);
+    }
+
+
+
+    public function storeStudentData(Request $request)
+    {
+        if ($request->input('useEffectChecked') != 1) {
+          //  log::debug($this->searchUser($request->input('user_id')));
+            if ($this->searchUser($request->input('user_id')) == 'Not Found') { //to insert new record
+                //log::debug($data = $request->all());
+                $student = new student;
+                $student->first_name = $request->input('first_name');
+                $student->middle_name = $request->input('middle_name');
+                $student->last_name = $request->input('last_name');
+                $student->phone_number = $request->input('phone_number');
+                $student->father_contact = $request->input('father_contact');
+                $student->cnic = $request->input('cnic');
+                $student->gender = $request->input('gender');
+                $student->date_of_birth = $request->input('date_of_birth');
+                $student->religion = $request->input('religion');
+                $student->father_name = $request->input('father_name');
+                $student->mother_name = $request->input('mother_name');
+                $student->father_occupation = $request->input('father_occupation');
+                $student->land_line = $request->input('land_line');
+                $student->user_id = $request->input('user_id');
+
+                $student->save();
+
+
+                // Handle the uploaded image
+                if ($request->hasFile('temp_image')) {
+                    $image = $request->file('temp_image');
+
+                    // Generate a unique filename for the image
+                    $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+                    // Specify the storage path for the image
+                    $storagePath = public_path('studentsImages');
+
+                    // Move the uploaded file to the specified storage path
+                    $image->move($storagePath, $imageName);
+
+                    // Get the full path of the saved image
+                    $fullImagePath = $storagePath . '/' . $imageName;
+                    // Get the relative path by subtracting the base path
+                    $relativeImagePath = str_replace(public_path(), '', $fullImagePath);
+                    // Log the full path of the saved image
+                    // Log::debug('Full path of the saved image: '.$fullImagePath);
+                    // log::debug($relativeImagePath);
+                    $student->image = $relativeImagePath;
+                }
+                $student->save();
+
+                // Return a response if needed
+                return response()->json(['message' => 'Data received successfully']);
+            }
+
+
+            if ($this->searchUser($request->input('user_id')) == 'Found' && $request->input('userEffectChecked') == 1) {
+                //log::debug($this->searchUser($request->input('user_id')));
+                return response()->json($this->searchUserData($request->input('user_id')));  //to retrive and send exiting record
+            }
+        }
+
+        if ($this->searchUser($request->input('user_id')) && $request->input('userEffectChecked') != 1) {    //to update
+
+            ($this->updateRecord($request, $request->input('user_id')));
+            //log::debug($request->input('user_id'));
+
+        }
+    }
+
+
+    public function storeStudentDataAddress(Request $request){
+    
+      log::debug($data = $request->all());
+
+
+
+    }
 }
