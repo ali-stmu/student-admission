@@ -177,8 +177,28 @@ class StudentInfoController extends Controller
     public function storeStudentDataAddress(Request $request){
     
       log::debug($data = $request->all());
+      $record = student::where('user_id', $request->input('user_id'))->first();     //update and save new record
+      $record->address = $request->input('address');
+      $record->country = $request->input('country');
+      $record->zip_code = $request->input('zipcode');
+      $record->city = $request->input('city');
+      $record->state = $request->input('state');
+      $record->t_address = $request->input('taddress');
+      $record->t_zip_code = $request->input('tzipcode');
+      $record->t_city = $request->input('tcity');
+      $record->t_state = $request->input('tstate');
+      $record->t_country=$request->input('tcountry');
+      $record->save();
+      return response()->json(['message' => 'Done o']);
+    }
 
-
+    public function useEffectStoreStudentDataAddress(Request $request){
+        log::debug($data = $request->all());
+       $record = student::where('user_id', $request->input('user_id'))->first(); 
+       //log::debug($request->input('user_id'));
+       log::debug("call use effect");
+        return response()->json(['StudentInfo' => $record]);
+       
 
     }
 }

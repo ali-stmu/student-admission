@@ -145,7 +145,7 @@ const PersonalInfo = ({ stepper, type }) => {
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
-        console.error(error);
+        //console.error(error);
       });
   };
   const genderOption = [

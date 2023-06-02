@@ -56,6 +56,7 @@ function AcademicRecords({ stepper, type }) {
       [name]: value,
     };
     setRecords(updatedRecords);
+    console.log(records);
   };
 
   const calculatePercentage = (total, obtained) => {
