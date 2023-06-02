@@ -76,11 +76,6 @@ class StudentInfoController extends Controller
     {
         $student = new student;
         $student = student::where('user_id', $user_id)->first();
-
-        // Do something with the $user record, such as returning a response
-        // log::debug($student);
-        // return response()->json($student);
-
         if ($student) {
             // Student record found
             return "Found";
@@ -97,9 +92,6 @@ class StudentInfoController extends Controller
     {
         $student = new student;
         $student = student::where('user_id', $user_id)->first();
-
-        // Do something with the $user record, such as returning a response
-        // log::debug($student);
         return response()->json($student);
     }
 
@@ -108,7 +100,7 @@ class StudentInfoController extends Controller
     public function storeStudentData(Request $request)
     {
         if ($request->input('useEffectChecked') != 1) {
-          //  log::debug($this->searchUser($request->input('user_id')));
+            //  log::debug($this->searchUser($request->input('user_id')));
             if ($this->searchUser($request->input('user_id')) == 'Not Found') { //to insert new record
                 //log::debug($data = $request->all());
                 $student = new student;
@@ -126,26 +118,13 @@ class StudentInfoController extends Controller
                 $student->father_occupation = $request->input('father_occupation');
                 $student->land_line = $request->input('land_line');
                 $student->user_id = $request->input('user_id');
-
                 $student->save();
-
-
-                // Handle the uploaded image
                 if ($request->hasFile('temp_image')) {
                     $image = $request->file('temp_image');
-
-                    // Generate a unique filename for the image
                     $imageName = time() . '.' . $image->getClientOriginalExtension();
-
-                    // Specify the storage path for the image
                     $storagePath = public_path('studentsImages');
-
-                    // Move the uploaded file to the specified storage path
                     $image->move($storagePath, $imageName);
-
-                    // Get the full path of the saved image
                     $fullImagePath = $storagePath . '/' . $imageName;
-                    // Get the relative path by subtracting the base path
                     $relativeImagePath = str_replace(public_path(), '', $fullImagePath);
                     // Log the full path of the saved image
                     // Log::debug('Full path of the saved image: '.$fullImagePath);
@@ -174,31 +153,31 @@ class StudentInfoController extends Controller
     }
 
 
-    public function storeStudentDataAddress(Request $request){
-    
-      log::debug($data = $request->all());
-      $record = student::where('user_id', $request->input('user_id'))->first();     //update and save new record
-      $record->address = $request->input('address');
-      $record->country = $request->input('country');
-      $record->zip_code = $request->input('zipcode');
-      $record->city = $request->input('city');
-      $record->state = $request->input('state');
-      $record->t_address = $request->input('taddress');
-      $record->t_zip_code = $request->input('tzipcode');
-      $record->t_city = $request->input('tcity');
-      $record->t_state = $request->input('tstate');
-      $record->t_country=$request->input('tcountry');
-      $record->save();
-      return response()->json(['message' => 'Done o']);
+    public function storeStudentDataAddress(Request $request)
+    {
+
+        log::debug($data = $request->all());
+        $record = student::where('user_id', $request->input('user_id'))->first();     //update and save new record
+        $record->address = $request->input('address');
+        $record->country = $request->input('country');
+        $record->zip_code = $request->input('zipcode');
+        $record->city = $request->input('city');
+        $record->state = $request->input('state');
+        $record->t_address = $request->input('taddress');
+        $record->t_zip_code = $request->input('tzipcode');
+        $record->t_city = $request->input('tcity');
+        $record->t_state = $request->input('tstate');
+        $record->t_country = $request->input('tcountry');
+        $record->save();
+        return response()->json(['message' => 'Done o']);
     }
 
-    public function useEffectStoreStudentDataAddress(Request $request){
+    public function useEffectStoreStudentDataAddress(Request $request)
+    {
         log::debug($data = $request->all());
-       $record = student::where('user_id', $request->input('user_id'))->first(); 
-       //log::debug($request->input('user_id'));
-       log::debug("call use effect");
+        $record = student::where('user_id', $request->input('user_id'))->first();
+        //log::debug($request->input('user_id'));
+        log::debug("call use effect");
         return response()->json(['StudentInfo' => $record]);
-       
-
     }
 }
