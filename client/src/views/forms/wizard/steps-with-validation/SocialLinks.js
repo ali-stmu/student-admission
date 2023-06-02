@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { selectThemeColors } from "@utils";
 import { useForm } from "react-hook-form";
 import { ArrowRight, ArrowLeft } from "react-feather";
@@ -26,11 +26,21 @@ function AcademicRecords({ stepper, type }) {
   const [records, setRecords] = useState([
     {
       resultStatus: "",
-      qualification: "",
+      qualification: "matric",
       boardUniversity: "",
       passingYear: "",
       totalMarksCGPA: "",
       obtainedMarksCGPA: "",
+      percentage: "",
+    },
+    {
+      resultStatus: "",
+      qualification: "inter",
+      boardUniversity: "",
+      passingYear: "",
+      totalMarksCGPA: "",
+      obtainedMarksCGPA: "",
+      percentage: "",
     },
   ]);
 
@@ -44,6 +54,7 @@ function AcademicRecords({ stepper, type }) {
         passingYear: "",
         totalMarksCGPA: "",
         obtainedMarksCGPA: "",
+        percentage: "",
       },
     ]);
   };
@@ -84,7 +95,6 @@ function AcademicRecords({ stepper, type }) {
                   <option value="Fail">Fail</option>
                 </Input>
               </FormGroup>
-
               <FormGroup tag={Col} md="4">
                 <Label for="qualification" className="form-label">
                   Qualification
@@ -158,10 +168,12 @@ function AcademicRecords({ stepper, type }) {
                 <Label className="form-label">Percentage</Label>
                 <Input
                   type="text"
+                  name="percentage"
                   value={calculatePercentage(
                     record.totalMarksCGPA,
                     record.obtainedMarksCGPA
                   )}
+                  onChange={(e) => handleRecordChange(e, index)}
                   readOnly
                 />
               </FormGroup>
