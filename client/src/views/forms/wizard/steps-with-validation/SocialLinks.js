@@ -71,6 +71,14 @@ function AcademicRecords({ stepper, type }) {
         updatedValue = totalMarks;
       }
     }
+    // Check if the changed field is "passingYear"
+    if (name === "passingYear") {
+      const currentYear = new Date().getFullYear();
+      // If passing year is greater than current year, set it to the current year
+      if (parseInt(value) > currentYear) {
+        updatedValue = currentYear.toString();
+      }
+    }
 
     const updatedRecords = [...records];
     updatedRecords[index] = {
@@ -151,6 +159,12 @@ function AcademicRecords({ stepper, type }) {
                   name="passingYear"
                   value={record.passingYear}
                   onChange={(e) => handleRecordChange(e, index)}
+                  onKeyDown={(e) => {
+                    if (!/\d/.test(e.key) && e.key !== "Backspace") {
+                      e.preventDefault();
+                    }
+                  }}
+                  maxLength={4}
                 />
               </FormGroup>
 
