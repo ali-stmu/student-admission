@@ -61,10 +61,21 @@ function AcademicRecords({ stepper, type }) {
 
   const handleRecordChange = (e, index) => {
     const { name, value } = e.target;
+    let updatedValue = value;
+
+    // Check if the changed field is "obtainedMarksCGPA"
+    if (name === "obtainedMarksCGPA") {
+      const totalMarks = records[index].totalMarksCGPA;
+      // If obtained marks are greater than total marks, set it to the total marks
+      if (parseFloat(value) > parseFloat(totalMarks)) {
+        updatedValue = totalMarks;
+      }
+    }
+
     const updatedRecords = [...records];
     updatedRecords[index] = {
       ...updatedRecords[index],
-      [name]: value,
+      [name]: updatedValue,
     };
     setRecords(updatedRecords);
     console.log(records);
@@ -173,7 +184,7 @@ function AcademicRecords({ stepper, type }) {
                     record.totalMarksCGPA,
                     record.obtainedMarksCGPA
                   )}
-                  onChange={(e) => handleRecordChange(e, index)}
+                  onInput={(e) => handleRecordChange(e, index)}
                   readOnly
                 />
               </FormGroup>
