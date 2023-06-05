@@ -32,6 +32,7 @@ function AcademicRecords({ stepper, type }) {
       totalMarksCGPA: "",
       obtainedMarksCGPA: "",
       percentage: "",
+      degree: null,
     },
     {
       resultStatus: "",
@@ -41,6 +42,7 @@ function AcademicRecords({ stepper, type }) {
       totalMarksCGPA: "",
       obtainedMarksCGPA: "",
       percentage: "",
+      degree: null,
     },
   ]);
 
@@ -55,12 +57,13 @@ function AcademicRecords({ stepper, type }) {
         totalMarksCGPA: "",
         obtainedMarksCGPA: "",
         percentage: "",
+        degree: null,
       },
     ]);
   };
 
   const handleRecordChange = (e, index) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     let updatedValue = value;
 
     // Check if the changed field is "obtainedMarksCGPA"
@@ -78,6 +81,17 @@ function AcademicRecords({ stepper, type }) {
       if (parseInt(value) > currentYear) {
         updatedValue = currentYear.toString();
       }
+    }
+    if (name === "degree") {
+      const file = files[0]; // Assuming only one file is uploaded
+
+      const updatedRecords = [...records];
+      updatedRecords[index] = {
+        ...updatedRecords[index],
+        degree: file, // Set the degree property to the uploaded file
+      };
+      setRecords(updatedRecords);
+      console.log(records);
     }
 
     const updatedRecords = [...records];
@@ -160,7 +174,11 @@ function AcademicRecords({ stepper, type }) {
                   value={record.passingYear}
                   onChange={(e) => handleRecordChange(e, index)}
                   onKeyDown={(e) => {
-                    if (!/\d/.test(e.key) && e.key !== "Backspace") {
+                    if (
+                      !/\d/.test(e.key) &&
+                      e.key !== "Backspace" &&
+                      e.key !== "Tab"
+                    ) {
                       e.preventDefault();
                     }
                   }}
