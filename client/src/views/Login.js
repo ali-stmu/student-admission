@@ -59,8 +59,8 @@ const Login = (props) => {
   const ability = useContext(AbilityContext);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [email, setEmail] = useState("admin@demo.com");
-  const [password, setPassword] = useState("admin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
 
   const { register, errors, handleSubmit } = useForm();
@@ -168,7 +168,7 @@ const Login = (props) => {
               </g>
             </g>
           </svg>
-          <h2 className="brand-text text-primary ml-1">Vuexy</h2>
+          <h2 className="brand-text text-primary ml-1">STMU</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -220,7 +220,7 @@ const Login = (props) => {
                   value={email}
                   id="login-email"
                   name="login-email"
-                  placeholder="john@example.com"
+                  placeholder="ali@example.com"
                   onChange={(e) => setEmail(e.target.value)}
                   className={classnames({
                     "is-invalid": errors["login-email"],
