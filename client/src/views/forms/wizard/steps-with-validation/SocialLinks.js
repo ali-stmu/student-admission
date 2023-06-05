@@ -61,7 +61,9 @@ function AcademicRecords({ stepper, type }) {
       },
     ]);
   };
-
+  const calculatePercentage = (total, obtained) => {
+    return ((obtained / total) * 100).toFixed(2);
+  };
   const handleRecordChange = (e, index) => {
     const { name, value, files } = e.target;
     let updatedValue = value;
@@ -91,22 +93,21 @@ function AcademicRecords({ stepper, type }) {
         degree: file, // Set the degree property to the uploaded file
       };
       setRecords(updatedRecords);
-      console.log(records);
     }
 
     const updatedRecords = [...records];
     updatedRecords[index] = {
       ...updatedRecords[index],
       [name]: updatedValue,
+      percentage: calculatePercentage(
+        updatedRecords[index].totalMarksCGPA,
+        updatedValue
+      ), // Calculate and assign the percentage
     };
     setRecords(updatedRecords);
-    console.log(records);
   };
 
-  const calculatePercentage = (total, obtained) => {
-    return ((obtained / total) * 100).toFixed(2);
-  };
-
+  console.log(records);
   return (
     <Fragment>
       {records.map((record, index) => (
@@ -216,7 +217,6 @@ function AcademicRecords({ stepper, type }) {
                     record.totalMarksCGPA,
                     record.obtainedMarksCGPA
                   )}
-                  onInput={(e) => handleRecordChange(e, index)}
                   readOnly
                 />
               </FormGroup>
