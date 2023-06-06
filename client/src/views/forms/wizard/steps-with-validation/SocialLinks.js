@@ -1,6 +1,8 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { selectThemeColors } from "@utils";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { BASE_URL } from "../../../../config";
 
 import { ArrowRight, ArrowLeft } from "react-feather";
 
@@ -19,6 +21,21 @@ function AcademicRecords({ stepper, type }) {
   const { register, errors, handleSubmit, trigger } = useForm();
   const [isFormValid, setIsFormValid] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false); // State to control the display of the validation message
+  const [degreeOptions, setDegreeOptions] = useState([]);
+
+  const fetchDegreeOptions = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}degree`);
+      const data = response.data;
+      const options = data.map((degree) => ({
+        value: degree.degree_id,
+        label: degree.degree_name,
+      }));
+      setDegreeOptions(options);
+    } catch (error) {
+      console.error("Error fetching degree options:", error);
+    }
+  };
 
   const onSubmit = () => {
     trigger();
@@ -28,6 +45,7 @@ function AcademicRecords({ stepper, type }) {
       setShowValidationMessage(true); // Show the validation message when the button is clicked
     }
   };
+
   const [records, setRecords] = useState([
     {
       resultStatus: "",
@@ -156,16 +174,16 @@ function AcademicRecords({ stepper, type }) {
                   id="qualification"
                   value={record.qualification}
                   onChange={(e) => handleRecordChange(e, index)}
+                  onClick={fetchDegreeOptions}
                 >
                   <option value=""></option>
-                  <option value="matric">Matric/0-Levels</option>
-                  <option value="inter">Intermediate/A-Levels</option>
-                  <option value="Bachelor's">Bachelor's</option>
-                  <option value="Master's">Master's</option>
-                  <option value="PhD">PhD</option>
+                  {degreeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </Input>
               </FormGroup>
-
               <FormGroup tag={Col} md="4">
                 <Label for="boardUniversity" className="form-label">
                   Board/University
