@@ -63,27 +63,27 @@ const PersonalInfo = ({ stepper, type }) => {
         // Handle the response from the backend
         console.log(AutoFillDataRecived);
         //console.log(AutoFillDataRecived.original.first_name)
-        if (AutoFillDataRecived.original.first_name){
+        if (AutoFillDataRecived.original.first_name) {
           //console.log('hello from if')
-        setFirstName(AutoFillDataRecived.original.first_name);
-        setMiddleName(AutoFillDataRecived.original.middle_name);
-        setLastName(AutoFillDataRecived.original.last_name);
-        setContact(AutoFillDataRecived.original.phone_number);
-        setCnic(AutoFillDataRecived.original.cnic);
-        setGender(AutoFillDataRecived.original.gender);
-        setReligion(AutoFillDataRecived.original.religion);
-        setDateofbirth(AutoFillDataRecived.original.date_of_birth);
-        setFname(AutoFillDataRecived.original.father_name);
-        setMname(AutoFillDataRecived.original.mother_name);
-        setFoccupation(AutoFillDataRecived.original.father_occupation);
-        setFatherContact(AutoFillDataRecived.original.father_contact);
-        setPhone(AutoFillDataRecived.original.land_line);
-        const genratedFullUrlForStudentPicsture =
-          BASE_URL_OF_SERVER + AutoFillDataRecived.original.image;
-        setSelectedImage(genratedFullUrlForStudentPicsture);
+          setFirstName(AutoFillDataRecived.original.first_name);
+          setMiddleName(AutoFillDataRecived.original.middle_name);
+          setLastName(AutoFillDataRecived.original.last_name);
+          setContact(AutoFillDataRecived.original.phone_number);
+          setCnic(AutoFillDataRecived.original.cnic);
+          setGender(AutoFillDataRecived.original.gender);
+          setReligion(AutoFillDataRecived.original.religion);
+          setDateofbirth(AutoFillDataRecived.original.date_of_birth);
+          setFname(AutoFillDataRecived.original.father_name);
+          setMname(AutoFillDataRecived.original.mother_name);
+          setFoccupation(AutoFillDataRecived.original.father_occupation);
+          setFatherContact(AutoFillDataRecived.original.father_contact);
+          setPhone(AutoFillDataRecived.original.land_line);
+          const genratedFullUrlForStudentPicsture =
+            BASE_URL_OF_SERVER + AutoFillDataRecived.original.image;
+          setSelectedImage(genratedFullUrlForStudentPicsture);
 
-        //const cnic = AutoFillDataRecived.cnic; // Replace 'cnic' with the actual property name in the response
-        //console.log(cnic);
+          //const cnic = AutoFillDataRecived.cnic; // Replace 'cnic' with the actual property name in the response
+          //console.log(cnic);
         }
       })
       .catch((error) => {

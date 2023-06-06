@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { selectThemeColors } from "@utils";
 import { useForm } from "react-hook-form";
+
 import { ArrowRight, ArrowLeft } from "react-feather";
 
 import {
@@ -16,11 +17,15 @@ import {
 
 function AcademicRecords({ stepper, type }) {
   const { register, errors, handleSubmit, trigger } = useForm();
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [showValidationMessage, setShowValidationMessage] = useState(false); // State to control the display of the validation message
 
   const onSubmit = () => {
     trigger();
-    if (isObjEmpty(errors)) {
+    if (isFormValid) {
       stepper.next();
+    } else {
+      setShowValidationMessage(true); // Show the validation message when the button is clicked
     }
   };
   const [records, setRecords] = useState([
@@ -104,6 +109,18 @@ function AcademicRecords({ stepper, type }) {
         updatedValue
       ), // Calculate and assign the percentage
     };
+    const isFormValid = records.every((record) => {
+      return (
+        record.resultStatus &&
+        record.qualification &&
+        record.boardUniversity &&
+        record.passingYear &&
+        record.totalMarksCGPA &&
+        record.obtainedMarksCGPA
+      );
+    });
+    setIsFormValid(isFormValid);
+
     setRecords(updatedRecords);
   };
 
@@ -252,19 +269,19 @@ function AcademicRecords({ stepper, type }) {
         <Button.Ripple
           type="submit"
           color="primary"
-          //disabled={!isFormValid}
           id="btn-next"
           className="btn-next"
-          onClick={() => stepper.next()}
+          onClick={onSubmit}
         >
           <span className="align-middle d-sm-inline-block d-none">Next</span>
-          <ArrowRight
-            size={14}
-            className="align-middle ml-sm-25 ml-0"
-          ></ArrowRight>
+          <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
         </Button.Ripple>
       </div>
-
+      {showValidationMessage && !isFormValid && (
+        <h4 style={{ color: "red" }}>
+          Please fill all fields to go on next step.
+        </h4>
+      )}
       <br></br>
       <br></br>
       <Button color="info" onClick={addRecord}>

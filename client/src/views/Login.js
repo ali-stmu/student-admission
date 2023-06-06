@@ -244,7 +244,7 @@ const Login = (props) => {
                   value={password}
                   id="login-password"
                   name="login-password"
-                  className="input-group-merge"
+                  //className="input-group-merge"
                   onChange={(e) => setPassword(e.target.value)}
                   className={classnames({
                     "is-invalid": errors["login-password"],
