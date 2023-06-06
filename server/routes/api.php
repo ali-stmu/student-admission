@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\userController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentInfoController;
+use App\Http\Controllers\DegreeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ Route::post('/SignIn',[AuthController::class,'SignIn']);
 Route::post('/storeStudentData',[StudentInfoController::class,'storeStudentData']);
 Route::post('/useeffectstudentdataaddress',[StudentInfoController::class,'useEffectStoreStudentDataAddress']);
 Route::post('/storeStudentDataAddress',[StudentInfoController::class,'storeStudentDataAddress']);
+Route::get('/degree', [DegreeController::class, 'index']);
 
 
 
