@@ -21,12 +21,12 @@ const Routes = [
     component: lazy(() => import("../../views/forms/wizard")),
   },
   {
-    path: '/register',
-    component: lazy(() => import('../../views/Register')),
-    layout: 'BlankLayout',
+    path: "/register",
+    component: lazy(() => import("../../views/Register")),
+    layout: "BlankLayout",
     meta: {
-      authRoute: true
-    }
+      authRoute: true,
+    },
   },
   {
     path: "/login",

@@ -41,48 +41,39 @@ const Address = ({ stepper, type }) => {
     tzipcode,
     tcity,
     tstate,
-    user_id
-  
- 
+    user_id,
   };
 
   useEffect(() => {
+    console.log("called use effect");
 
-  console.log('called use effect')
-  
-  const rolesFromStorage = localStorage.getItem("StudentInfo");
-  // Parse the JSON data
-  const studentInfo = JSON.parse(rolesFromStorage);
-  const TempUserid = studentInfo.user_id;
-  setUserId(TempUserid)
-  user_id_temp.append("user_id", TempUserid);
-  fetch(`${BASE_URL}useeffectstudentdataaddress`, {
-    method: "POST",
-    body: user_id_temp,
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      setAddress(data.StudentInfo.address);
-      setZipCode(data.StudentInfo.zip_code);
-      setCity(data.StudentInfo.city);
-      setCountry(data.StudentInfo.country);
-      setState(data.StudentInfo.state);
-      settAddress(data.StudentInfo.t_address);
-      settCountry(data.StudentInfo.t_country);
-      settZipCode(data.StudentInfo.t_zip_code);
-      settCity(data.StudentInfo.t_city);
-      settState(data.StudentInfo.t_state);
-      console.log(data);
-     // setAddress(address); // Set the address state variable
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    // Parse the JSON data
+    const studentInfo = JSON.parse(rolesFromStorage);
+    const TempUserid = studentInfo.user_id;
+    setUserId(TempUserid);
+    user_id_temp.append("user_id", TempUserid);
+    fetch(`${BASE_URL}useeffectstudentdataaddress`, {
+      method: "POST",
+      body: user_id_temp,
     })
-    .catch((error) => console.error(error));
-  
-
- 
-    
-
-   
-   }, []);
+      .then((response) => response.json())
+      .then((data) => {
+        setAddress(data.StudentInfo.address);
+        setZipCode(data.StudentInfo.zip_code);
+        setCity(data.StudentInfo.city);
+        setCountry(data.StudentInfo.country);
+        setState(data.StudentInfo.state);
+        settAddress(data.StudentInfo.t_address);
+        settCountry(data.StudentInfo.t_country);
+        settZipCode(data.StudentInfo.t_zip_code);
+        settCity(data.StudentInfo.t_city);
+        settState(data.StudentInfo.t_state);
+        console.log(data);
+        // setAddress(address); // Set the address state variable
+      })
+      .catch((error) => console.error(error));
+  }, []);
 
   const handleAddressChange = (event) => {
     setAddress(event.target.value);

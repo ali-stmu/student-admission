@@ -1,6 +1,9 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { selectThemeColors } from "@utils";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { BASE_URL } from "../../../../config";
+
 import { ArrowRight, ArrowLeft } from "react-feather";
 
 import {
@@ -16,21 +19,53 @@ import {
 
 function AcademicRecords({ stepper, type }) {
   const { register, errors, handleSubmit, trigger } = useForm();
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [showValidationMessage, setShowValidationMessage] = useState(false); // State to control the display of the validation message
+  const [degreeOptions, setDegreeOptions] = useState([]);
+
+  const fetchDegreeOptions = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}degree`);
+      const data = response.data;
+      const options = data.map((degree) => ({
+        value: degree.degree_id,
+        label: degree.degree_name,
+      }));
+      setDegreeOptions(options);
+    } catch (error) {
+      console.error("Error fetching degree options:", error);
+    }
+  };
 
   const onSubmit = () => {
     trigger();
-    if (isObjEmpty(errors)) {
+    if (isFormValid) {
       stepper.next();
+    } else {
+      setShowValidationMessage(true); // Show the validation message when the button is clicked
     }
   };
+
   const [records, setRecords] = useState([
     {
       resultStatus: "",
-      qualification: "",
+      qualification: "matric",
       boardUniversity: "",
       passingYear: "",
       totalMarksCGPA: "",
       obtainedMarksCGPA: "",
+      percentage: "",
+      degree: null,
+    },
+    {
+      resultStatus: "",
+      qualification: "inter",
+      boardUniversity: "",
+      passingYear: "",
+      totalMarksCGPA: "",
+      obtainedMarksCGPA: "",
+      percentage: "",
+      degree: null,
     },
   ]);
 
@@ -44,24 +79,70 @@ function AcademicRecords({ stepper, type }) {
         passingYear: "",
         totalMarksCGPA: "",
         obtainedMarksCGPA: "",
+        percentage: "",
+        degree: null,
       },
     ]);
   };
-
-  const handleRecordChange = (e, index) => {
-    const { name, value } = e.target;
-    const updatedRecords = [...records];
-    updatedRecords[index] = {
-      ...updatedRecords[index],
-      [name]: value,
-    };
-    setRecords(updatedRecords);
-  };
-
   const calculatePercentage = (total, obtained) => {
     return ((obtained / total) * 100).toFixed(2);
   };
+  const handleRecordChange = (e, index) => {
+    const { name, value, files } = e.target;
+    let updatedValue = value;
 
+    // Check if the changed field is "obtainedMarksCGPA"
+    if (name === "obtainedMarksCGPA") {
+      const totalMarks = records[index].totalMarksCGPA;
+      // If obtained marks are greater than total marks, set it to the total marks
+      if (parseFloat(value) > parseFloat(totalMarks)) {
+        updatedValue = totalMarks;
+      }
+    }
+    // Check if the changed field is "passingYear"
+    if (name === "passingYear") {
+      const currentYear = new Date().getFullYear();
+      // If passing year is greater than current year, set it to the current year
+      if (parseInt(value) > currentYear) {
+        updatedValue = currentYear.toString();
+      }
+    }
+    if (name === "degree") {
+      const file = files[0]; // Assuming only one file is uploaded
+
+      const updatedRecords = [...records];
+      updatedRecords[index] = {
+        ...updatedRecords[index],
+        degree: file, // Set the degree property to the uploaded file
+      };
+      setRecords(updatedRecords);
+    }
+
+    const updatedRecords = [...records];
+    updatedRecords[index] = {
+      ...updatedRecords[index],
+      [name]: updatedValue,
+      percentage: calculatePercentage(
+        updatedRecords[index].totalMarksCGPA,
+        updatedValue
+      ), // Calculate and assign the percentage
+    };
+    const isFormValid = records.every((record) => {
+      return (
+        record.resultStatus &&
+        record.qualification &&
+        record.boardUniversity &&
+        record.passingYear &&
+        record.totalMarksCGPA &&
+        record.obtainedMarksCGPA
+      );
+    });
+    setIsFormValid(isFormValid);
+
+    setRecords(updatedRecords);
+  };
+
+  console.log(records);
   return (
     <Fragment>
       {records.map((record, index) => (
@@ -83,7 +164,6 @@ function AcademicRecords({ stepper, type }) {
                   <option value="Fail">Fail</option>
                 </Input>
               </FormGroup>
-
               <FormGroup tag={Col} md="4">
                 <Label for="qualification" className="form-label">
                   Qualification
@@ -94,16 +174,16 @@ function AcademicRecords({ stepper, type }) {
                   id="qualification"
                   value={record.qualification}
                   onChange={(e) => handleRecordChange(e, index)}
+                  onClick={fetchDegreeOptions}
                 >
                   <option value=""></option>
-                  <option value="matric">Matric/0-Levels</option>
-                  <option value="inter">Intermediate/A-Levels</option>
-                  <option value="Bachelor's">Bachelor's</option>
-                  <option value="Master's">Master's</option>
-                  <option value="PhD">PhD</option>
+                  {degreeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </Input>
               </FormGroup>
-
               <FormGroup tag={Col} md="4">
                 <Label for="boardUniversity" className="form-label">
                   Board/University
@@ -129,6 +209,16 @@ function AcademicRecords({ stepper, type }) {
                   name="passingYear"
                   value={record.passingYear}
                   onChange={(e) => handleRecordChange(e, index)}
+                  onKeyDown={(e) => {
+                    if (
+                      !/\d/.test(e.key) &&
+                      e.key !== "Backspace" &&
+                      e.key !== "Tab"
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                  maxLength={4}
                 />
               </FormGroup>
 
@@ -157,6 +247,7 @@ function AcademicRecords({ stepper, type }) {
                 <Label className="form-label">Percentage</Label>
                 <Input
                   type="text"
+                  name="percentage"
                   value={calculatePercentage(
                     record.totalMarksCGPA,
                     record.obtainedMarksCGPA
@@ -196,19 +287,19 @@ function AcademicRecords({ stepper, type }) {
         <Button.Ripple
           type="submit"
           color="primary"
-          //disabled={!isFormValid}
           id="btn-next"
           className="btn-next"
-          onClick={() => stepper.next()}
+          onClick={onSubmit}
         >
           <span className="align-middle d-sm-inline-block d-none">Next</span>
-          <ArrowRight
-            size={14}
-            className="align-middle ml-sm-25 ml-0"
-          ></ArrowRight>
+          <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
         </Button.Ripple>
       </div>
-
+      {showValidationMessage && !isFormValid && (
+        <h4 style={{ color: "red" }}>
+          Please fill all fields to go on next step.
+        </h4>
+      )}
       <br></br>
       <br></br>
       <Button color="info" onClick={addRecord}>
