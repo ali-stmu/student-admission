@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { BASE_URL } from "../../../../config";
 
-import { ArrowRight, ArrowLeft } from "react-feather";
+import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
 
 import {
   Label,
@@ -83,6 +83,11 @@ function AcademicRecords({ stepper, type }) {
         degree: null,
       },
     ]);
+  };
+  const deleteRecord = () => {
+    const updatedRecords = [...records];
+    updatedRecords.pop(); // Remove the last record from the array
+    setRecords(updatedRecords);
   };
   const calculatePercentage = (total, obtained) => {
     return ((obtained / total) * 100).toFixed(2);
@@ -318,9 +323,22 @@ function AcademicRecords({ stepper, type }) {
       )}
       <br></br>
       <br></br>
-      <Button color="info" onClick={addRecord}>
-        Add More Records
-      </Button>
+      <div className="d-flex justify-content-between">
+        <Button.Ripple color="info" onClick={addRecord}>
+          <Plus size={14} />
+          <span className="align-middle ml-25">Add More Records</span>
+        </Button.Ripple>
+        <Button.Ripple
+          color="danger"
+          className="text-nowrap px-1"
+          onClick={deleteRecord} // Call deleteRecord function to delete from the bottom
+          outline
+          disabled={records.length <= 2} // Disable the delete button if only two records remain
+        >
+          <X size={14} className="mr-50" />
+          <span>Delete</span>
+        </Button.Ripple>
+      </div>
     </Fragment>
   );
 }
