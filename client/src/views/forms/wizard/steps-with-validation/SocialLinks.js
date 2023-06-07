@@ -229,6 +229,14 @@ function AcademicRecords({ stepper, type }) {
                   name="totalMarksCGPA"
                   value={record.totalMarksCGPA}
                   onChange={(e) => handleRecordChange(e, index)}
+                  onKeyPress={(e) => {
+                    const keyCode = e.keyCode || e.which;
+                    const keyValue = String.fromCharCode(keyCode);
+                    // Allow only numbers, backspace, and dot
+                    if (!/[\d.]/.test(keyValue) && keyCode !== 8) {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </FormGroup>
 
@@ -239,6 +247,14 @@ function AcademicRecords({ stepper, type }) {
                   name="obtainedMarksCGPA"
                   value={record.obtainedMarksCGPA}
                   onChange={(e) => handleRecordChange(e, index)}
+                  onKeyPress={(e) => {
+                    const keyCode = e.keyCode || e.which;
+                    const keyValue = String.fromCharCode(keyCode);
+                    // Allow only numbers, backspace, and dot
+                    if (!/[\d.]/.test(keyValue) && keyCode !== 8) {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </FormGroup>
             </Row>
