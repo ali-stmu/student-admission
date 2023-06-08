@@ -49,7 +49,7 @@ function AcademicRecords({ stepper, type }) {
   const [records, setRecords] = useState([
     {
       resultStatus: "",
-      qualification: "matric",
+      qualification: "1",
       boardUniversity: "",
       passingYear: "",
       totalMarksCGPA: "",
@@ -59,7 +59,7 @@ function AcademicRecords({ stepper, type }) {
     },
     {
       resultStatus: "",
-      qualification: "inter",
+      qualification: "2",
       boardUniversity: "",
       passingYear: "",
       totalMarksCGPA: "",
