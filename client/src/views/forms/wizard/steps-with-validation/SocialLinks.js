@@ -15,6 +15,7 @@ import {
   Form,
   Input,
   CustomInput,
+  Select,
 } from "reactstrap";
 
 function AcademicRecords({ stepper, type }) {
@@ -141,14 +142,24 @@ function AcademicRecords({ stepper, type }) {
       }
     }
     if (name === "degree") {
-      const file = files[0]; // Assuming only one file is uploaded
+      const file = e.target.files[0]; // Assuming only one file is uploaded
 
-      const updatedRecords = [...records];
-      updatedRecords[index] = {
-        ...updatedRecords[index],
-        degree: file, // Set the degree property to the uploaded file
+      // Convert the file to a blob
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const blob = new Blob([reader.result], { type: file.type });
+
+        const updatedRecords = [...records];
+        updatedRecords[index] = {
+          ...updatedRecords[index],
+          degree: blob, // Set the degree property to the blob
+        };
+        setRecords(updatedRecords);
       };
-      setRecords(updatedRecords);
+
+      if (file) {
+        reader.readAsArrayBuffer(file);
+      }
     }
 
     const updatedRecords = [...records];
@@ -193,8 +204,8 @@ function AcademicRecords({ stepper, type }) {
                   onChange={(e) => handleRecordChange(e, index)}
                 >
                   <option value=""></option>
-                  <option value="Pass">Pass</option>
-                  <option value="Fail">Fail</option>
+                  <option value="awaited">Awiated</option>
+                  <option value="declared">Declared</option>
                 </Input>
               </FormGroup>
               <FormGroup tag={Col} md="4">
@@ -222,16 +233,12 @@ function AcademicRecords({ stepper, type }) {
                   Board/University
                 </Label>
                 <Input
-                  type="select"
+                  type="text"
                   name="boardUniversity"
                   id="boardUniversity"
                   value={record.boardUniversity}
                   onChange={(e) => handleRecordChange(e, index)}
-                >
-                  <option value=""></option>
-                  <option value="ABC University">ABC University</option>
-                  <option value="XYZ Board">XYZ Board</option>
-                </Input>
+                ></Input>
               </FormGroup>
             </Row>
             <Row>
