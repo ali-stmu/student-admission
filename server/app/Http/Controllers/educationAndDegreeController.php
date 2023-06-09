@@ -29,7 +29,7 @@ class EducationAndDegreeController extends Controller
         $studentId = $student_id_json->getData()->student_id;
 
         //$user_id = $request->input('user_id');
-        $records = $request->input('records');
+        log::debug($records = $request->input('records'));
 
         // Process each record
         foreach ($records as $record) {
@@ -40,15 +40,15 @@ class EducationAndDegreeController extends Controller
             //$totalMarksCGPA = $record['totalMarksCGPA'];
             //$obtainedMarksCGPA = $record['obtainedMarksCGPA'];
             //$percentage = $record['percentage'];
-            log::debug($degree = $record['degree']);
+            //log::debug($degree = $record['degree']);
 
-            // Handle the degree file if it's not empty
-            if (!empty($degree)) {
-                log::debug($degreePath = $degree->store('degrees')); // Assuming you have a 'degrees' directory in your storage
-                // Save the degree path to the database or perform any other required operations
+            if (isset($record['degree']) && $record['degree'] instanceof \Illuminate\Http\UploadedFile) {
+                log::debug("hello from inside if");
+                $degreeFile = $record['degree'];
+                $degreeFileName = $degreeFile->getClientOriginalName();
+                log::debug($degreeFile->storeAs('degrees', $degreeFileName, 'public'));
+                // $educationModel->degree = $degreeFileName;
             }
-
-            // Save other data to the database or perform any other required operations
         }
 
         // Return a response
