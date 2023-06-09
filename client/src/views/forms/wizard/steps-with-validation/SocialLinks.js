@@ -194,16 +194,12 @@ function AcademicRecords({ stepper, type }) {
                   Board/University
                 </Label>
                 <Input
-                  type="select"
+                  type="text"
                   name="boardUniversity"
                   id="boardUniversity"
                   value={record.boardUniversity}
                   onChange={(e) => handleRecordChange(e, index)}
-                >
-                  <option value=""></option>
-                  <option value="ABC University">ABC University</option>
-                  <option value="XYZ Board">XYZ Board</option>
-                </Input>
+                ></Input>
               </FormGroup>
             </Row>
             <Row>
