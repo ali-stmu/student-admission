@@ -23,30 +23,6 @@ function AcademicRecords({ stepper, type }) {
   const [isFormValid, setIsFormValid] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false); // State to control the display of the validation message
   const [degreeOptions, setDegreeOptions] = useState([]);
-
-  const fetchDegreeOptions = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}degree`);
-      const data = response.data;
-      const options = data.map((degree) => ({
-        value: degree.degree_id,
-        label: degree.degree_name,
-      }));
-      setDegreeOptions(options);
-    } catch (error) {
-      console.error("Error fetching degree options:", error);
-    }
-  };
-
-  const onSubmit = () => {
-    trigger();
-    if (isFormValid) {
-      stepper.next();
-    } else {
-      setShowValidationMessage(true); // Show the validation message when the button is clicked
-    }
-  };
-
   const [records, setRecords] = useState([
     {
       resultStatus: "",
@@ -69,6 +45,54 @@ function AcademicRecords({ stepper, type }) {
       degree: null,
     },
   ]);
+  const [degreeFiles, setDegreeFiles] = useState([]);
+  const handleDegreeFileChange = (e, index) => {
+    const file = e.target.files[0];
+    const updatedDegreeFiles = [...degreeFiles];
+    updatedDegreeFiles[index] = file;
+    setDegreeFiles(updatedDegreeFiles);
+  };
+  const fetchDegreeOptions = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}degree`);
+      const data = response.data;
+      const options = data.map((degree) => ({
+        value: degree.degree_id,
+        label: degree.degree_name,
+      }));
+      setDegreeOptions(options);
+    } catch (error) {
+      console.error("Error fetching degree options:", error);
+    }
+  };
+
+  const onSubmit = () => {
+    trigger();
+    if (isFormValid) {
+      const formData = new FormData();
+
+      records.forEach((record, index) => {
+        formData.append(`resultStatus[${index}]`, record.resultStatus);
+        formData.append(`qualification[${index}]`, record.qualification);
+        formData.append(`boardUniversity[${index}]`, record.boardUniversity);
+        formData.append(`passingYear[${index}]`, record.passingYear);
+        formData.append(`totalMarksCGPA[${index}]`, record.totalMarksCGPA);
+        formData.append(
+          `obtainedMarksCGPA[${index}]`,
+          record.obtainedMarksCGPA
+        );
+        formData.append(`percentage[${index}]`, record.percentage);
+        formData.append(`degree[${index}]`, degreeFiles[index]);
+      });
+
+      console.log(formData);
+      // Send the formData object to the server using Axios or any other method
+
+      stepper.next();
+    } else {
+      setShowValidationMessage(true);
+    }
+  };
 
   const addRecord = () => {
     setRecords([
@@ -84,6 +108,7 @@ function AcademicRecords({ stepper, type }) {
         degree: null,
       },
     ]);
+    setDegreeFiles([...degreeFiles, null]);
   };
   const deleteRecord = () => {
     const updatedRecords = [...records];
@@ -114,24 +139,7 @@ function AcademicRecords({ stepper, type }) {
       }
     }
     if (name === "degree") {
-      const file = e.target.files[0]; // Assuming only one file is uploaded
-
-      // Convert the file to a blob
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const blob = new Blob([reader.result], { type: file.type });
-
-        const updatedRecords = [...records];
-        updatedRecords[index] = {
-          ...updatedRecords[index],
-          degree: blob, // Set the degree property to the blob
-        };
-        setRecords(updatedRecords);
-      };
-
-      if (file) {
-        reader.readAsArrayBuffer(file);
-      }
+      handleDegreeFileChange(e, index);
     }
 
     const updatedRecords = [...records];
@@ -158,7 +166,7 @@ function AcademicRecords({ stepper, type }) {
     setRecords(updatedRecords);
   };
 
-  console.log(records);
+  //console.log(records);
   return (
     <Fragment>
       {records.map((record, index) => (
@@ -290,7 +298,7 @@ function AcademicRecords({ stepper, type }) {
                 <CustomInput
                   type="file"
                   name="degree"
-                  id="degree"
+                  id={`degree-${index}`}
                   onChange={(e) => handleRecordChange(e, index)}
                 />
               </FormGroup>
