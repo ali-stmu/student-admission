@@ -23,6 +23,7 @@ function AcademicRecords({ stepper, type }) {
   const [isFormValid, setIsFormValid] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false); // State to control the display of the validation message
   const [degreeOptions, setDegreeOptions] = useState([]);
+  const [user_id, setUserId] = useState();
   const [records, setRecords] = useState([
     {
       resultStatus: "",
@@ -61,6 +62,11 @@ function AcademicRecords({ stepper, type }) {
         label: degree.degree_name,
       }));
       setDegreeOptions(options);
+      const rolesFromStorage = localStorage.getItem("StudentInfo");
+      // Parse the JSON data
+      const studentInfo = JSON.parse(rolesFromStorage);
+      const TempUserid = studentInfo.user_id;
+      setUserId(TempUserid);
     } catch (error) {
       console.error("Error fetching degree options:", error);
     }
@@ -84,11 +90,21 @@ function AcademicRecords({ stepper, type }) {
         formData.append(`percentage[${index}]`, record.percentage);
         formData.append(`degree[${index}]`, degreeFiles[index]);
       });
+      formData.append("user_id", user_id);
 
       console.log(formData);
-      // Send the formData object to the server using Axios or any other method
 
-      //stepper.next();
+      axios
+        .post(`${BASE_URL}educationAndDegreeController`, formData)
+        .then((response) => {
+          // Handle the API response here
+          console.log(response.data);
+          //stepper.next();
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error(error);
+        });
     } else {
       setShowValidationMessage(true);
     }
