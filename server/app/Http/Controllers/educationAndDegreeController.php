@@ -38,7 +38,7 @@ class EducationAndDegreeController extends Controller
         $obtainedMarksCGPA = $request->input('obtainedMarksCGPA');
         $percentage = $request->input('percentage');
         $degreeFiles = $request->file('degree');
-        $user_id = $request->input('user_id');
+        // $user_id = $request->input('user_id');
 
         // Perform validation if needed
 
@@ -47,15 +47,16 @@ class EducationAndDegreeController extends Controller
         foreach ($resultStatus as $index => $status) {
             // Assuming you have an "Education" model
             $education = new Education();
-            $education->resultStatus = $status;
-            $education->qualification = $qualification[$index];
-            $education->boardUniversity = $boardUniversity[$index];
-            $education->passingYear = $passingYear[$index];
-            $education->totalMarksCGPA = $totalMarksCGPA[$index];
-            $education->obtainedMarksCGPA = $obtainedMarksCGPA[$index];
-            $education->percentage = $percentage[$index];
+            // $education->resultStatus = $status;
+            log::debug($education->degree_id = $qualification[$index]);
+            $education->institution_name = $boardUniversity[$index];
+            $education->passing_year = $passingYear[$index];
+            $education->total_marks = $totalMarksCGPA[$index];
+            $education->obtained_marks = $obtainedMarksCGPA[$index];
+            $education->percentage_criteria = $percentage[$index];
+            $education->student_id = $studentId;
             // Save the education record
-            // $education->save();
+            $education->save();
 
             // Store the degree file if available
             if ($degreeFiles[$index]) {
