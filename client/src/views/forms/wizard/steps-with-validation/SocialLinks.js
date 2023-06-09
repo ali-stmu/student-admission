@@ -88,7 +88,7 @@ function AcademicRecords({ stepper, type }) {
       console.log(formData);
       // Send the formData object to the server using Axios or any other method
 
-      stepper.next();
+      //stepper.next();
     } else {
       setShowValidationMessage(true);
     }
