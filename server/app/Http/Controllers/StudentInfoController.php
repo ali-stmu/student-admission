@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\student;
 use App\Models\user;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Session;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+
+
 
 class StudentInfoController extends Controller
 {
@@ -74,10 +80,12 @@ class StudentInfoController extends Controller
     public function searchUser($user_id)
 
     {
+
         $student = new student;
         $student = student::where('user_id', $user_id)->first();
         if ($student) {
             // Student record found
+            //  $this->sendData('user_id');
             return "Found";
         } else {
             // Student record not found
@@ -152,12 +160,11 @@ class StudentInfoController extends Controller
         }
     }
 
-
     public function storeStudentDataAddress(Request $request)
     {
-
-        log::debug($data = $request->all());
+        $data = $request->all();
         $record = student::where('user_id', $request->input('user_id'))->first();     //update and save new record
+
         $record->address = $request->input('address');
         $record->country = $request->input('country');
         $record->zip_code = $request->input('zipcode');
@@ -174,7 +181,8 @@ class StudentInfoController extends Controller
 
     public function useEffectStoreStudentDataAddress(Request $request)
     {
-        log::debug($data = $request->all());
+
+        $data = $request->all();
         $record = student::where('user_id', $request->input('user_id'))->first();
         //log::debug($request->input('user_id'));
         log::debug("call use effect");

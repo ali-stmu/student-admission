@@ -22,29 +22,14 @@ function AcademicRecords({ stepper, type }) {
   const [isFormValid, setIsFormValid] = useState(false);
   const [showValidationMessage, setShowValidationMessage] = useState(false); // State to control the display of the validation message
   const [degreeOptions, setDegreeOptions] = useState([]);
-
-  const fetchDegreeOptions = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}degree`);
-      const data = response.data;
-      const options = data.map((degree) => ({
-        value: degree.degree_id,
-        label: degree.degree_name,
-      }));
-      setDegreeOptions(options);
-    } catch (error) {
-      console.error("Error fetching degree options:", error);
-    }
-  };
-
-  const onSubmit = () => {
-    trigger();
-    if (isFormValid) {
-      stepper.next();
-    } else {
-      setShowValidationMessage(true); // Show the validation message when the button is clicked
-    }
-  };
+  const [user_id, setUserId] = useState();
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    // Parse the JSON data
+    const studentInfo = JSON.parse(rolesFromStorage);
+    const TempUserid = studentInfo.user_id;
+    setUserId(TempUserid);
+  }, []);
 
   const [records, setRecords] = useState([
     {
@@ -69,6 +54,48 @@ function AcademicRecords({ stepper, type }) {
     },
   ]);
 
+  const fetchDegreeOptions = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}degree`);
+      const data = response.data;
+      const options = data.map((degree) => ({
+        value: degree.degree_id,
+        label: degree.degree_name,
+      }));
+      setDegreeOptions(options);
+    } catch (error) {
+      console.error("Error fetching degree options:", error);
+    }
+  };
+  const sendDataToAPI = () => {
+    fetch(`${BASE_URL}educationAndDegreeController`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user_id, records }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response from the API
+        console.log(data);
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error(error);
+      });
+  };
+
+  const onSubmit = () => {
+    trigger();
+    if (isFormValid) {
+      sendDataToAPI();
+      stepper.next();
+    } else {
+      setShowValidationMessage(true); // Show the validation message when the button is clicked
+    }
+  };
+
   const addRecord = () => {
     setRecords([
       ...records,
@@ -84,6 +111,7 @@ function AcademicRecords({ stepper, type }) {
       },
     ]);
   };
+
   const deleteRecord = () => {
     const updatedRecords = [...records];
     updatedRecords.pop(); // Remove the last record from the array
