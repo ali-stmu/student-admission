@@ -165,8 +165,8 @@ function AcademicRecords({ stepper, type }) {
                   onChange={(e) => handleRecordChange(e, index)}
                 >
                   <option value=""></option>
-                  <option value="Pass">Pass</option>
-                  <option value="Fail">Fail</option>
+                  <option value="awaited">Awiated</option>
+                  <option value="declared">Declared</option>
                 </Input>
               </FormGroup>
               <FormGroup tag={Col} md="4">
