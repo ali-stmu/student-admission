@@ -15,6 +15,7 @@ import {
   Form,
   Input,
   CustomInput,
+  Select,
 } from "reactstrap";
 
 function AcademicRecords({ stepper, type }) {
@@ -113,14 +114,24 @@ function AcademicRecords({ stepper, type }) {
       }
     }
     if (name === "degree") {
-      const file = files[0]; // Assuming only one file is uploaded
+      const file = e.target.files[0]; // Assuming only one file is uploaded
 
-      const updatedRecords = [...records];
-      updatedRecords[index] = {
-        ...updatedRecords[index],
-        degree: file, // Set the degree property to the uploaded file
+      // Convert the file to a blob
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const blob = new Blob([reader.result], { type: file.type });
+
+        const updatedRecords = [...records];
+        updatedRecords[index] = {
+          ...updatedRecords[index],
+          degree: blob, // Set the degree property to the blob
+        };
+        setRecords(updatedRecords);
       };
-      setRecords(updatedRecords);
+
+      if (file) {
+        reader.readAsArrayBuffer(file);
+      }
     }
 
     const updatedRecords = [...records];
