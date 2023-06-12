@@ -164,7 +164,7 @@ function AcademicRecords({ stepper, type }) {
       [name]: updatedValue,
       percentage: calculatePercentage(
         updatedRecords[index].totalMarksCGPA,
-        updatedValue
+        updatedRecords[index].obtainedMarksCGPA
       ), // Calculate and assign the percentage
     };
     const isFormValid = records.every((record) => {
