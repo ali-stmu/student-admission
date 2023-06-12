@@ -30,13 +30,14 @@ class EducationAndDegreeController extends Controller
         $studentId = $student_id_json->getData()->student_id;
         //  log::debug($studentId);
         // Process the incoming form data
+        log::debug($allData = $request->all());
         $resultStatus = $request->input('resultStatus');
         $qualification = $request->input('qualification');
         $boardUniversity = $request->input('boardUniversity');
         $passingYear = $request->input('passingYear');
         $totalMarksCGPA = $request->input('totalMarksCGPA');
         $obtainedMarksCGPA = $request->input('obtainedMarksCGPA');
-        $percentage = $request->input('percentage');
+        log::debug($percentage = $request->input('percentage'));
         $degreeFiles = $request->file('degree');
         // $user_id = $request->input('user_id');
 
@@ -56,11 +57,16 @@ class EducationAndDegreeController extends Controller
             $education->percentage_criteria = $percentage[$index];
             $education->student_id = $studentId;
             // Save the education record
-            $education->save();
+            // $education->save();
 
             // Store the degree file if available
             if ($degreeFiles[$index]) {
-                log::debug($degreeFiles[$index]->store('degrees'));
+                //log::debug($degreeFiles[$index]->store('degrees'));
+                $logContent = $degreeFiles[$index]->store('public/degrees');
+                //log::debug($logContent);
+                // Log the full path of the saved image
+                // Log::debug('Full path of the saved image: '.$fullImagePath);
+
             }
         }
     }
