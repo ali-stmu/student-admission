@@ -191,7 +191,7 @@ function AcademicRecords({ stepper, type }) {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row>
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">Result Status</Label>
+                <Label className="form-label">Result Status*</Label>
                 <Input
                   type="select"
                   name="resultStatus"
@@ -206,7 +206,7 @@ function AcademicRecords({ stepper, type }) {
               </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label for="qualification" className="form-label">
-                  Qualification
+                  Qualification*
                 </Label>
                 <Input
                   type="select"
@@ -226,7 +226,7 @@ function AcademicRecords({ stepper, type }) {
               </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label for="boardUniversity" className="form-label">
-                  Board/University
+                  Board/University*
                 </Label>
                 <Input
                   type="text"
@@ -239,7 +239,7 @@ function AcademicRecords({ stepper, type }) {
             </Row>
             <Row>
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">Passing Year</Label>
+                <Label className="form-label">Passing Year*</Label>
                 <Input
                   type="text"
                   name="passingYear"
@@ -259,7 +259,7 @@ function AcademicRecords({ stepper, type }) {
               </FormGroup>
 
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">Total Marks/CGPA</Label>
+                <Label className="form-label">Total Marks/CGPA*</Label>
                 <Input
                   type="text"
                   name="totalMarksCGPA"
@@ -277,7 +277,7 @@ function AcademicRecords({ stepper, type }) {
               </FormGroup>
 
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">Obtained Marks/CGPA</Label>
+                <Label className="form-label">Obtained Marks/CGPA*</Label>
                 <Input
                   type="text"
                   name="obtainedMarksCGPA"
@@ -309,7 +309,7 @@ function AcademicRecords({ stepper, type }) {
               </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label for="degree" className="form-label">
-                  Upload Degree
+                  Upload Degree*
                 </Label>
                 <CustomInput
                   type="file"
