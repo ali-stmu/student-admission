@@ -46,6 +46,8 @@ function AcademicRecords({ stepper, type }) {
       degree: null,
     },
   ]);
+  useEffect(() => {}, []);
+
   const [degreeFiles, setDegreeFiles] = useState([]);
   const handleDegreeFileChange = (e, index) => {
     const file = e.target.files[0];
