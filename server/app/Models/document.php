@@ -14,8 +14,8 @@ class document extends Model
 
     protected $fillable = [
         'student_id',
-        'document_name',
-        'document_file_name',
+        'document_id',
+        'document_file_path',
         'upload_date',
         'status',
         'created_by',

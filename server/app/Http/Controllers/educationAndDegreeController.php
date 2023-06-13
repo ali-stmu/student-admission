@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Student;
 
+
 class EducationAndDegreeController extends Controller
 {
 
@@ -48,6 +49,7 @@ class EducationAndDegreeController extends Controller
         foreach ($resultStatus as $index => $status) {
             // Assuming you have an "Education" model
             $education = new Education();
+            $document = new Document();
             // $education->resultStatus = $status;
             log::debug($education->degree_id = $qualification[$index]);
             $education->institution_name = $boardUniversity[$index];
@@ -56,17 +58,21 @@ class EducationAndDegreeController extends Controller
             $education->obtained_marks = $obtainedMarksCGPA[$index];
             $education->percentage_criteria = $percentage[$index];
             $education->student_id = $studentId;
+            $document->student_id = $studentId;
+            $document->degree_id = $qualification[$index];
             // Save the education record
             // $education->save();
 
             // Store the degree file if available
             if ($degreeFiles[$index]) {
                 //log::debug($degreeFiles[$index]->store('degrees'));
-                $logContent = $degreeFiles[$index]->store('public/degrees');
+                $degreePath = $degreeFiles[$index]->store('degrees');
+                log::debug($document->document_file_path = $degreePath);
                 //log::debug($logContent);
                 // Log the full path of the saved image
                 // Log::debug('Full path of the saved image: '.$fullImagePath);
-
+                $education->save();
+                $document->save();
             }
         }
     }
