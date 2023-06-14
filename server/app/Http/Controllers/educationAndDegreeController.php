@@ -38,6 +38,7 @@ class EducationAndDegreeController extends Controller
 
             $mergedRecords = array_merge($educationRecords->toArray(), $documentRecords->toArray());
             log::debug($jsonData = json_encode($mergedRecords));
+
             return response()->json($jsonData, Response::HTTP_OK);
         }
         if ($request->input('useEffect') != 1) {
