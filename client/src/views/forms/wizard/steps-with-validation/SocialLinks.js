@@ -59,8 +59,8 @@ function AcademicRecords({ stepper, type }) {
       .post(`${BASE_URL}educationAndDegreeController`, user_id_temp)
       .then((response) => {
         // Handle the API response here
-        console.log(response.data);
-        //stepper.next();
+        const responseData = JSON.parse(response.data);
+        console.log(responseData);
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
