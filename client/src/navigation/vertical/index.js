@@ -1,4 +1,4 @@
-import { Mail, Home, Package } from "react-feather";
+import { Mail, Home, Package, Edit3 } from "react-feather";
 
 export default [
   // {
