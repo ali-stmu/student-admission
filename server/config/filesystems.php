@@ -71,7 +71,8 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
-        public_path('degrees') => storage_path('app/public/degrees'),
+        //public_path('degrees') => storage_path('app/degrees'),
+
 
     ],
 

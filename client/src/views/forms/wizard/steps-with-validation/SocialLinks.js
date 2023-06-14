@@ -46,6 +46,27 @@ function AcademicRecords({ stepper, type }) {
       degree: null,
     },
   ]);
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    // Parse the JSON data
+    const studentInfo = JSON.parse(rolesFromStorage);
+    const TempUserid = studentInfo.user_id;
+    const user_id_temp = new FormData();
+    user_id_temp.append("user_id", TempUserid);
+    user_id_temp.append("useEffect", 1);
+    //console.log(user_id_temp);
+    axios
+      .post(`${BASE_URL}educationAndDegreeController`, user_id_temp)
+      .then((response) => {
+        // Handle the API response here
+        const responseData = JSON.parse(response.data);
+        console.log(responseData);
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error(error);
+      });
+  }, []);
   const [degreeFiles, setDegreeFiles] = useState([]);
   const handleDegreeFileChange = (e, index) => {
     const file = e.target.files[0];
