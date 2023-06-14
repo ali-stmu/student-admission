@@ -52,6 +52,7 @@ class EducationAndDegreeController extends Controller
             $boardUniversity = $request->input('boardUniversity');
             $passingYear = $request->input('passingYear');
             $totalMarksCGPA = $request->input('totalMarksCGPA');
+            $result_status = $request->input('resultStatus');
             $obtainedMarksCGPA = $request->input('obtainedMarksCGPA');
             log::debug($percentage = $request->input('percentage'));
             $degreeFiles = $request->file('degree');
@@ -65,6 +66,7 @@ class EducationAndDegreeController extends Controller
                 $education->institution_name = $boardUniversity[$index];
                 $education->passing_year = $passingYear[$index];
                 $education->total_marks = $totalMarksCGPA[$index];
+                $education->result_status = $result_status[$index];
                 $education->obtained_marks = $obtainedMarksCGPA[$index];
                 $education->percentage_criteria = $percentage[$index];
                 $education->student_id = $studentId;
