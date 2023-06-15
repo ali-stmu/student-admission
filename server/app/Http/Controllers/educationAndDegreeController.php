@@ -42,11 +42,20 @@ class EducationAndDegreeController extends Controller
             // log::debug($jsonData = json_encode($mergedRecords));
 
             $results = DB::table('education')
-    ->join('document', 'education.degree_id', '=', 'document.degree_id')
-    ->select('education.degree_id','education.result_status', 'education.institution_name', 'education.obtained_marks', 'education.passing_year', 'education.total_marks', 'document.document_file_path')
-    ->get();
-log::debug($results);
-log::debug($jsonData = json_encode($results));
+                ->join('document', 'education.degree_id', '=', 'document.degree_id')
+                ->select(
+                    'education.degree_id',
+                    'education.result_status',
+                    'education.institution_name',
+                    'education.obtained_marks',
+                    'education.passing_year',
+                    'education.total_marks',
+                    'document.document_file_path'
+                )
+                ->where('education.student_id', '=', $studentId)
+                ->get();
+            // log::debug($results);
+            $jsonData = json_encode($results);
             return response()->json($jsonData, Response::HTTP_OK);
         }
         if ($request->input('useEffect') != 1) {

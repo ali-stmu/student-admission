@@ -46,34 +46,6 @@ function AcademicRecords({ stepper, type }) {
       degree: null,
     },
   ]);
-  useEffect(() => {
-    const rolesFromStorage = localStorage.getItem("StudentInfo");
-    // Parse the JSON data
-    const studentInfo = JSON.parse(rolesFromStorage);
-    const TempUserid = studentInfo.user_id;
-    const user_id_temp = new FormData();
-    user_id_temp.append("user_id", TempUserid);
-    user_id_temp.append("useEffect", 1);
-    //console.log(user_id_temp);
-    axios
-      .post(`${BASE_URL}educationAndDegreeController`, user_id_temp)
-      .then((response) => {
-        // Handle the API response here
-        const responseData = JSON.parse(response.data);
-        console.log(responseData);
-      })
-      .catch((error) => {
-        // Handle any errors that occurred during the request
-        console.error(error);
-      });
-  }, []);
-  const [degreeFiles, setDegreeFiles] = useState([]);
-  const handleDegreeFileChange = (e, index) => {
-    const file = e.target.files[0];
-    const updatedDegreeFiles = [...degreeFiles];
-    updatedDegreeFiles[index] = file;
-    setDegreeFiles(updatedDegreeFiles);
-  };
   const fetchDegreeOptions = async () => {
     try {
       const response = await axios.get(`${BASE_URL}degree`);
@@ -91,6 +63,55 @@ function AcademicRecords({ stepper, type }) {
     } catch (error) {
       console.error("Error fetching degree options:", error);
     }
+  };
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    // Parse the JSON data
+    const studentInfo = JSON.parse(rolesFromStorage);
+    const TempUserid = studentInfo.user_id;
+    const user_id_temp = new FormData();
+    user_id_temp.append("user_id", TempUserid);
+    user_id_temp.append("useEffect", 1);
+    //console.log(user_id_temp);
+    axios
+      .post(`${BASE_URL}educationAndDegreeController`, user_id_temp)
+      .then((response) => {
+        // Handle the API response here
+        const responseData = JSON.parse(response.data);
+        console.log(responseData);
+
+        // Update the records state with the received data
+        const updatedRecords = responseData.map((item) => {
+          return {
+            resultStatus: item.result_status,
+            qualification: item.degree_id,
+            boardUniversity: item.institution_name,
+            passingYear: item.passing_year.toString(),
+            totalMarksCGPA: item.total_marks ? item.total_marks.toString() : "",
+            obtainedMarksCGPA: item.obtained_marks
+              ? item.obtained_marks.toString()
+              : "",
+            percentage: "",
+            degree: null,
+
+            //  degree: null,
+          };
+        });
+
+        setRecords(updatedRecords);
+        fetchDegreeOptions();
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error(error);
+      });
+  }, []);
+  const [degreeFiles, setDegreeFiles] = useState([]);
+  const handleDegreeFileChange = (e, index) => {
+    const file = e.target.files[0];
+    const updatedDegreeFiles = [...degreeFiles];
+    updatedDegreeFiles[index] = file;
+    setDegreeFiles(updatedDegreeFiles);
   };
 
   const onSubmit = () => {
@@ -235,7 +256,6 @@ function AcademicRecords({ stepper, type }) {
                   id="qualification"
                   value={record.qualification}
                   onChange={(e) => handleRecordChange(e, index)}
-                  onClick={fetchDegreeOptions}
                 >
                   <option value=""></option>
                   {degreeOptions.map((option) => (
