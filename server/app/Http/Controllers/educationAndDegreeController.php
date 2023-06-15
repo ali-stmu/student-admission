@@ -48,17 +48,19 @@ class EducationAndDegreeController extends Controller
 
     public function storeDegreeAndDocument(Request $request)
     {
-        log::debug($request->all());
+        //log::debug($request->all());
         $student_id_json = $this->findStudentId($user_id = $request->input('user_id'));
         $studentId = $student_id_json->getData()->student_id;
         if ($request->input('useEffect') == 1) {
-            log::debug($results = $this->findEducationAndDocument($studentId));
+            $results = $this->findEducationAndDocument($studentId);
+            // $resultsLength = $results->count();
             // log::debug($results);
             $jsonData = json_encode($results);
             return response()->json($jsonData, Response::HTTP_OK);
         }
 
-        if ($request->input('useEffect') != 1) {
+
+        if ($request->input('useEffect') != 1 && $this->findEducationAndDocument($studentId)->count() == 0) {
             $resultStatus = $request->input('resultStatus');
             $qualification = $request->input('qualification');
             $boardUniversity = $request->input('boardUniversity');
