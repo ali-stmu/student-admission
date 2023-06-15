@@ -101,6 +101,9 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    
+    "@prettier/plugin-php": "^0.19.6",
+    "prettier": "^2.8.8",
     "@types/sortablejs": "^1.10.6",
     "eslint": "^7.8.0",
     "eslint-plugin-import": "^2.22.0",
