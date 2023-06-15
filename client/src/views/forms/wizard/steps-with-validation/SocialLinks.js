@@ -3,6 +3,7 @@ import { selectThemeColors } from "@utils";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { BASE_URL } from "../../../../config";
+import { BASE_URL_OF_SERVER } from "../../../../configForStudentPictureServer";
 
 import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
 
@@ -82,7 +83,8 @@ function AcademicRecords({ stepper, type }) {
         const responseData = JSON.parse(response.data);
         console.log(responseData);
 
-
+        const url = `${BASE_URL_OF_SERVER}/`;
+        console.log(url);
         const updatedRecords = responseData.map((item) => {
           return {
             resultStatus: item.result_status,
@@ -94,10 +96,11 @@ function AcademicRecords({ stepper, type }) {
               ? item.obtained_marks.toString()
               : "",
             percentage: "",
-            degree: null,
+            degree:   url + item.document_file_path
 
             //  degree: null,
           };
+
         });
 
         setRecords(updatedRecords);
