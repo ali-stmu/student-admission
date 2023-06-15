@@ -25,6 +25,7 @@ function AcademicRecords({ stepper, type }) {
   const [showValidationMessage, setShowValidationMessage] = useState(false); // State to control the display of the validation message
   const [degreeOptions, setDegreeOptions] = useState([]);
   const [user_id, setUserId] = useState();
+  const [degreeFiles, setDegreeFiles] = useState([]);
   const [uploadedDegrees, setUploadedDegrees] = useState([]);
 
   const [records, setRecords] = useState([
@@ -96,11 +97,10 @@ function AcademicRecords({ stepper, type }) {
               ? item.obtained_marks.toString()
               : "",
             percentage: "",
-            degree:   url + item.document_file_path
+            degree: url + item.document_file_path,
 
             //  degree: null,
           };
-
         });
 
         setRecords(updatedRecords);
@@ -111,8 +111,6 @@ function AcademicRecords({ stepper, type }) {
         console.error(error);
       });
   }, []);
-  const [degreeFiles, setDegreeFiles] = useState([]);
-  
 
   const onSubmit = () => {
     trigger();
@@ -204,7 +202,11 @@ function AcademicRecords({ stepper, type }) {
 
       // Update uploaded degrees
       const updatedUploadedDegrees = [...uploadedDegrees];
-      updatedUploadedDegrees[index] = URL.createObjectURL(file);
+      if (file) {
+        updatedUploadedDegrees[index] = "Uploaded";
+      } else {
+        updatedUploadedDegrees[index] = null;
+      }
       setUploadedDegrees(updatedUploadedDegrees);
     }
 
@@ -232,7 +234,7 @@ function AcademicRecords({ stepper, type }) {
     setRecords(updatedRecords);
   };
 
-  //console.log(records);
+  console.log(records);
   return (
     <Fragment>
       {records.map((record, index) => (
@@ -367,17 +369,26 @@ function AcademicRecords({ stepper, type }) {
                   id={`degree-${index}`}
                   onChange={(e) => handleRecordChange(e, index)}
                 />
-                {uploadedDegrees[index] && (
-                  <div>
-                    <strong>Uploaded Degree:</strong>
-                    <img
-                      src={uploadedDegrees[index]}
-                      alt="Selected"
-                      width="50"
-                      height="80"
-                    />
-                  </div>
-                )}
+                {uploadedDegrees[index] ||
+                  (record.degree && (
+                    <div
+                      style={{
+                        color: "green",
+                      }}
+                    >
+                      <strong>Uploaded Degree:</strong>
+                      {uploadedDegrees[index] === "Uploaded" ? (
+                        <span>{uploadedDegrees[index]}</span>
+                      ) : (
+                        <img
+                          src={uploadedDegrees[index]}
+                          alt="Already Uploaded"
+                          width="50"
+                          height="80"
+                        />
+                      )}
+                    </div>
+                  ))}
               </FormGroup>
             </Row>
           </Form>
