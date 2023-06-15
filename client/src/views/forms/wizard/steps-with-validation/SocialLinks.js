@@ -102,8 +102,32 @@ function AcademicRecords({ stepper, type }) {
             //  degree: null,
           };
         });
-
-        setRecords(updatedRecords);
+        if (updatedRecords.length > 0) {
+          setRecords(updatedRecords);
+        } else {
+          setRecords([
+            {
+              resultStatus: "",
+              qualification: "1",
+              boardUniversity: "",
+              passingYear: "",
+              totalMarksCGPA: "",
+              obtainedMarksCGPA: "",
+              percentage: "",
+              degree: null,
+            },
+            {
+              resultStatus: "",
+              qualification: "2",
+              boardUniversity: "",
+              passingYear: "",
+              totalMarksCGPA: "",
+              obtainedMarksCGPA: "",
+              percentage: "",
+              degree: null,
+            },
+          ]);
+        }
         fetchDegreeOptions();
       })
       .catch((error) => {
