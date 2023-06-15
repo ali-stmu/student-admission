@@ -260,7 +260,6 @@ const PersonalInfo = ({ stepper, type }) => {
       reader.readAsDataURL(file);
       reader.onload = () => {
         setSelectedImage(reader.result);
-        console.log(selectedImage);
         setImage(file);
       };
     }
