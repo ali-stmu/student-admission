@@ -6,6 +6,8 @@ use App\Models\education;
 use App\Models\document;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Student;
 use Illuminate\Http\Response;
 
@@ -31,14 +33,20 @@ class EducationAndDegreeController extends Controller
         $student_id_json = $this->findStudentId($user_id = $request->input('user_id'));
         $studentId = $student_id_json->getData()->student_id;
         if ($request->input('useEffect') == 1) {
-            $educationRecords = Education::where('student_id', $studentId)->get();
-            $documentRecords = Document::where('student_id', $studentId)->get();
+            // $educationRecords = Education::where('student_id', $studentId)->get();
+            // $documentRecords = Document::where('student_id', $studentId)->get();
             // log::debug($educationRecords);
             //log::debug($documentRecords);
 
-            $mergedRecords = array_merge($educationRecords->toArray(), $documentRecords->toArray());
-            log::debug($jsonData = json_encode($mergedRecords));
+            // $mergedRecords = array_merge($educationRecords->toArray(), $documentRecords->toArray());
+            // log::debug($jsonData = json_encode($mergedRecords));
 
+            $results = DB::table('education')
+    ->join('document', 'education.degree_id', '=', 'document.degree_id')
+    ->select('education.degree_id','education.result_status', 'education.institution_name', 'education.obtained_marks', 'education.passing_year', 'education.total_marks', 'document.document_file_path')
+    ->get();
+log::debug($results);
+log::debug($jsonData = json_encode($results));
             return response()->json($jsonData, Response::HTTP_OK);
         }
         if ($request->input('useEffect') != 1) {
