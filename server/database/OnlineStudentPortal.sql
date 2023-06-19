@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 14, 2023 at 11:59 AM
+-- Generation Time: Jun 19, 2023 at 07:16 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.4.28
 
@@ -95,8 +95,10 @@ CREATE TABLE `document` (
 --
 
 INSERT INTO `document` (`document_id`, `student_id`, `degree_id`, `document_file_path`, `upload_date`, `status`, `created_at`, `updated_at`, `created_by`, `updated_by`) VALUES
-(57, 16, 1, 'degrees/9gAjQwWhaSUOFPFyI517zpNn0axCqpUSvaJrVzvM.pdf', '2023-06-13', '1', '2023-06-13 04:42:27', '2023-06-13 04:42:27', NULL, NULL),
-(58, 16, 2, 'degrees/JKqGKMPfolIt0bZw5Ndvc5sZJK0elQ0IL6qwHpie.jpg', '2023-06-13', '1', '2023-06-13 04:42:27', '2023-06-13 04:42:27', NULL, NULL);
+(83, 26, 1, 'degrees/gzJ2h8zjkw60uTaxeGqotlCjT5roBs6Zpk0i3cpQ.pdf', '2023-06-15', '1', '2023-06-15 05:48:19', '2023-06-15 05:48:19', NULL, NULL),
+(84, 26, 4, 'degrees/f2VFaTRiTNlKQwKEm50fX2x1aCKzkHntvpYPnUcM.jpg', '2023-06-15', '1', '2023-06-15 05:48:19', '2023-06-15 05:48:19', NULL, NULL),
+(85, 27, 1, 'degrees/42e8y6Ph6RlIrlD2yqSrbjqcv8PUYb7pX07SSTIO.jpg', '2023-06-15', '1', '2023-06-15 06:09:58', '2023-06-15 06:09:58', NULL, NULL),
+(86, 27, 2, 'degrees/EJobtgQj6dCHqRwQVbZgJIQucLEARoWDqqJ1Ql6E.jpg', '2023-06-15', '1', '2023-06-15 06:09:58', '2023-06-15 06:09:58', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -117,16 +119,19 @@ CREATE TABLE `education` (
   `passing_year` int(11) NOT NULL,
   `total_marks` double NOT NULL,
   `obtained_marks` double NOT NULL,
-  `percentage_criteria` double NOT NULL
+  `percentage_criteria` double NOT NULL,
+  `result_status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `education`
 --
 
-INSERT INTO `education` (`education_id`, `student_id`, `degree_id`, `institution_name`, `status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `passing_year`, `total_marks`, `obtained_marks`, `percentage_criteria`) VALUES
-(63, 16, 1, 'asd', '1', '2023-06-13 04:42:27', '2023-06-13 04:42:27', NULL, NULL, 2, 3, 3, 100),
-(64, 16, 2, '3', '1', '2023-06-13 04:42:27', '2023-06-13 04:42:27', NULL, NULL, 3, 3, 3, 100);
+INSERT INTO `education` (`education_id`, `student_id`, `degree_id`, `institution_name`, `status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `passing_year`, `total_marks`, `obtained_marks`, `percentage_criteria`, `result_status`) VALUES
+(89, 26, 1, 'asdasdsdddddddd', '1', '2023-06-15 05:48:19', '2023-06-15 05:48:19', NULL, NULL, 2, 2, 2, 100, 'awaited'),
+(90, 26, 4, 'asdasdsdddddddd', '1', '2023-06-15 05:48:19', '2023-06-15 05:48:19', NULL, NULL, 2, 3, 3, 100, 'awaited'),
+(91, 27, 1, 'asdasdsdddddddd', '1', '2023-06-15 06:09:58', '2023-06-15 06:09:58', NULL, NULL, 22, 2, 2, 100, 'awaited'),
+(92, 27, 2, '22', '1', '2023-06-15 06:09:58', '2023-06-15 06:09:58', NULL, NULL, 2, 2, 2, 100, 'declared');
 
 -- --------------------------------------------------------
 
@@ -195,7 +200,7 @@ INSERT INTO `program_degree` (`program_degree_id`, `program_id`, `degree_id`, `s
 CREATE TABLE `student` (
   `student_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `first_name` varchar(255) NOT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) NOT NULL,
   `middle_name` varchar(255) DEFAULT NULL,
   `date_of_birth` date NOT NULL,
@@ -235,9 +240,8 @@ CREATE TABLE `student` (
 
 INSERT INTO `student` (`student_id`, `user_id`, `first_name`, `last_name`, `middle_name`, `date_of_birth`, `gender`, `phone_number`, `image`, `address`, `cnic`, `religion`, `city`, `state`, `zip_code`, `country`, `status`, `created_at`, `updated_at`, `created_by`, `updated_by`, `relegion`, `mother_name`, `father_name`, `father_contact`, `father_occupation`, `passport_number`, `family_member`, `t_address`, `land_line`, `t_city`, `t_state`, `t_zip_code`, `t_country`) VALUES
 (16, 55, 'Muhammadasas', 'Khan', 'null', '2023-05-02', 'male', '03155038997', '/studentsImages/1686553353.jpeg', 'sd', '38201-8723031-7', 'christianity', 'asd', 'sd', 'sd', 'sd', NULL, '2023-05-29 01:37:04', '2023-06-14 02:48:25', NULL, NULL, NULL, 'Abdullahsasa', 'Muhammad', '03155038994', 'Khan', NULL, NULL, 'house 571 street 17 margalla town', '03155038994', 'islamabad', 'as', '44000', 'as'),
-(21, 62, 'zxczxc', 'zxczc', 'zxczc', '2023-05-19', 'male', '03155038994', '/studentsImages/1685519658.jpg', NULL, '61101-8195831-5', 'hinduism', NULL, NULL, NULL, NULL, NULL, '2023-05-31 02:54:18', '2023-05-31 02:54:18', NULL, NULL, NULL, 'Abdullah', 'Muhammad', '03155038994', 'Khan', NULL, NULL, NULL, '03155038994', NULL, NULL, NULL, NULL),
-(22, 63, 'Muhammadd', 'Khan', 'Abdullah', '2023-05-10', 'male', '03155038994', '/studentsImages/1685521364.jpg', NULL, '61101-8195831-5', 'islam', NULL, NULL, NULL, NULL, NULL, '2023-05-31 03:22:44', '2023-05-31 03:25:56', NULL, NULL, NULL, 'Abdullah', 'Muhammad', '0315503899', 'Khan', NULL, NULL, NULL, '03155038994', NULL, NULL, NULL, NULL),
-(23, 68, 'Muhammad Hamza', 'Asif', 'null', '2023-05-09', 'male', '03155038994', '/studentsImages/1685521947.jpg', 'House 571-C Street 17 Margalla Town islamabad Phase 1', '61101-8195831-5', 'christianity', 'Islamabad Pakistan', 'Islamabad', '44000', 'Pakistan', NULL, '2023-05-31 03:32:27', '2023-06-01 04:39:56', NULL, NULL, NULL, 'Abdullah', 'Muhammad', '03155038997', 'Khan', NULL, NULL, 'House 571-C Street 17 Margalla Town islamabad Phase 1', '03155038997', 'Islamabad Pakistan', 'Islamabad', '44000', 'Pakistan');
+(26, 71, 'test', 'test', 'test', '2023-06-13', 'male', '03155038994', '/studentsImages/1686825586.jpeg', 'house 571 street 17 margalla town', '38201-8723031-7', 'islam', 'islamabad', 'islamabad', '44000', 'pakistan', NULL, '2023-06-15 05:39:46', '2023-06-15 05:39:52', NULL, NULL, NULL, 'test', 'test', 'test', 'test', NULL, NULL, 'house 571 street 17 margalla town', 'test', 'islamabad', 'islamabad', '44000', 'pakistan'),
+(27, 72, 'zxc', 'zxc', 'zxc', '2023-06-08', 'male', '03155038994', '/studentsImages/1686827373.jpeg', 'house 571 street 17 margalla town', '38201-8723031-7', 'islam', 'islamabad', 'islamabad', '44000', 'Pakistan', NULL, '2023-06-15 06:09:33', '2023-06-15 06:09:41', NULL, NULL, NULL, 'zxc', 'zx', 'cccc', 'zx', NULL, NULL, 'house 571 street 17 margalla town', 'cccc', 'islamabad', 'islamabad', '44000', 'Pakistan');
 
 -- --------------------------------------------------------
 
@@ -300,13 +304,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`user_id`, `email`, `password`, `role`, `status`, `created_at`, `updated_at`, `created_by`, `updated_by`) VALUES
 (55, 'mak@gmail.com', '$2y$10$qWuBdks3iH8GXtaZcP7/neU3UecSvjuzKndTetXkbqXpMCyYk.ByW', 'Student', 'Active', '2023-04-26 01:56:29', '2023-04-26 01:56:29', 'mak@gmail.com', NULL),
-(56, 'mak30497@gmail.com', '$2y$10$L6V35OcM2MA5aMVYauxNiuth9LOjKtPUNmKLAJJ3bcadVbXHiqF1W', 'Student', 'Active', '2023-04-28 00:21:44', '2023-04-28 00:21:44', 'mak30497@gmail.com', NULL),
-(57, 'asas@gmail.com', '$2y$10$5lnFO1Xj5wVO49.06uln4eoogIC6anf1Othk4sjjQzEHdoLfaw0Du', 'Student', 'Active', '2023-04-28 00:22:50', '2023-04-28 00:22:50', 'asas@gmail.com', NULL),
-(58, 'mak304957@gmail.comss', '$2y$10$djmMHxqmnRw4PB4miwt3ve/I4mzuyMk1gdGq61B6d.b5FDcUSRbDe', 'Student', 'Active', '2023-04-28 00:23:33', '2023-04-28 00:23:33', 'mak304957@gmail.comss', NULL),
-(61, 'zxc@gmail.com', '$2y$10$qWm4L9G6NyclY1EoQEQp7e8RWtHL7sB1r93QEEvaaSK3YauZEQ/g.', 'Student', 'Active', '2023-05-31 02:24:12', '2023-05-31 02:24:12', 'zxc@gmail.com', NULL),
-(62, 'aa@gmail.com', '$2y$10$YGkN7h4KRn5E.zjADhh0NO/PNpr6c6WLB93vvO/ApSTDSCLIFs2MK', 'Student', 'Active', '2023-05-31 02:43:34', '2023-05-31 02:43:34', 'aa@gmail.com', NULL),
-(63, 'z@gmail.com', '$2y$10$HeqjrCG8AubUljXvsaCpCupdkZ3NR8Azm6k5MPtKlR9Q.YD7S1CPa', 'Student', 'Active', '2023-05-31 02:58:28', '2023-05-31 02:58:28', 'z@gmail.com', NULL),
-(68, 'll@gmail.com', '$2y$10$1WvdPuJHo3gzwSarXmnZE.Xpif76//IBf11MQPBnREXMWo5E3l5.C', 'Student', 'Active', '2023-05-31 03:30:17', '2023-05-31 03:30:17', 'll@gmail.com', NULL);
+(71, 'test@gmail.com', '$2y$10$Ox5wYmdPLbbJwfzP/oeynOwTPcjzh/ExzbdWNKMPY7AjJVa8AWAei', 'Student', 'Active', '2023-06-15 05:36:22', '2023-06-15 05:36:22', 'test@gmail.com', NULL),
+(72, '1122@gmail.com', '$2y$10$VWfnHF5aiOOJ8zkkx5YYmuqirgn.nyWW8rrNcQASc6gqnnRGCAUQK', 'Student', 'Active', '2023-06-15 06:07:42', '2023-06-15 06:07:42', '1122@gmail.com', NULL);
 
 -- --------------------------------------------------------
 
@@ -429,13 +428,13 @@ ALTER TABLE `degree`
 -- AUTO_INCREMENT for table `document`
 --
 ALTER TABLE `document`
-  MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT for table `education`
 --
 ALTER TABLE `education`
-  MODIFY `education_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `education_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT for table `program`
@@ -453,7 +452,7 @@ ALTER TABLE `program_degree`
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `test`
@@ -471,7 +470,7 @@ ALTER TABLE `test_score`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT for table `voucher`
