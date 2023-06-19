@@ -110,6 +110,7 @@ function AcademicRecords({ stepper, type }) {
           };
         });
         if (updatedRecords.length > 0) {
+          setIsFormValid(true);
           setRecords(updatedRecords);
         }
         fetchDegreeOptions();
