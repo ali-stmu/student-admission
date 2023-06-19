@@ -87,8 +87,6 @@ function AcademicRecords({ stepper, type }) {
         const responseData = JSON.parse(response.data);
         console.log(responseData);
 
-        const url = `${BASE_URL_OF_SERVER}/`;
-        console.log(url);
         const updatedRecords = responseData.map((item) => {
           const totalMarks = item.total_marks ? parseInt(item.total_marks) : 0;
           const obtainedMarks = item.obtained_marks
@@ -106,7 +104,7 @@ function AcademicRecords({ stepper, type }) {
               ? item.obtained_marks.toString()
               : "",
             percentage: percentage,
-            degree: url + item.document_file_path,
+            degree: item.document_file_path,
           };
         });
         if (updatedRecords.length > 0) {
