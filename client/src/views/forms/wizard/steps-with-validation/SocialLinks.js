@@ -68,6 +68,9 @@ function AcademicRecords({ stepper, type }) {
       console.error("Error fetching degree options:", error);
     }
   };
+  const calculatePercentage = (total, obtained) => {
+    return ((obtained / total) * 100).toFixed(2);
+  };
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     // Parse the JSON data
@@ -87,6 +90,12 @@ function AcademicRecords({ stepper, type }) {
         const url = `${BASE_URL_OF_SERVER}/`;
         console.log(url);
         const updatedRecords = responseData.map((item) => {
+          const totalMarks = item.total_marks ? parseInt(item.total_marks) : 0;
+          const obtainedMarks = item.obtained_marks
+            ? parseInt(item.obtained_marks)
+            : 0;
+          const percentage = calculatePercentage(totalMarks, obtainedMarks);
+
           return {
             resultStatus: item.result_status,
             qualification: item.degree_id,
@@ -96,10 +105,8 @@ function AcademicRecords({ stepper, type }) {
             obtainedMarksCGPA: item.obtained_marks
               ? item.obtained_marks.toString()
               : "",
-            percentage: "",
+            percentage: percentage,
             degree: url + item.document_file_path,
-
-            //  degree: null,
           };
         });
         if (updatedRecords.length > 0) {
@@ -140,7 +147,7 @@ function AcademicRecords({ stepper, type }) {
         .then((response) => {
           // Handle the API response here
           console.log(response.data);
-          //stepper.next();
+          stepper.next();
         })
         .catch((error) => {
           // Handle any errors that occurred during the request
@@ -172,9 +179,7 @@ function AcademicRecords({ stepper, type }) {
     updatedRecords.pop(); // Remove the last record from the array
     setRecords(updatedRecords);
   };
-  const calculatePercentage = (total, obtained) => {
-    return ((obtained / total) * 100).toFixed(2);
-  };
+
   const handleRecordChange = (e, index) => {
     const { name, value, files } = e.target;
     let updatedValue = value;
