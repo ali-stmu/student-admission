@@ -89,13 +89,13 @@ class EducationAndDegreeController extends Controller
                 $document->degree_id;
                 $education->save();
                 //log::debug($degreeFiles[$index]);
-                if ($degreeFiles[$index]) {
+                if (isset($degreeFiles[$index])) {
                     $degreePath = $degreeFiles[$index]->store('degrees');
                     $document->document_file_path = $degreePath;
                     $document->save();
                 } else {
                     log::debug('halo from else');
-                }
+                }    
             }
         }
 
