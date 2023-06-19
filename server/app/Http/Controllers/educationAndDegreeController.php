@@ -42,6 +42,7 @@ class EducationAndDegreeController extends Controller
                 'document.document_file_path'
             )
             ->where('education.student_id', '=', $studentId)
+            ->where('document.student_id', '=', $studentId)
             ->get());
     }
 
@@ -65,8 +66,8 @@ class EducationAndDegreeController extends Controller
             $passingYear = $request->input('passingYear');
             $totalMarksCGPA = $request->input('totalMarksCGPA');
             $result_status = $request->input('resultStatus');
-            log::debug($obtainedMarksCGPA = $request->input('obtainedMarksCGPA'));
-            log::debug($percentage = $request->input('percentage'));
+            $obtainedMarksCGPA = $request->input('obtainedMarksCGPA');
+            $percentage = $request->input('percentage');
             $degreeFiles = $request->file('degree');
 
             $educationRecords = Education::where('student_id', $studentId)->get();
@@ -85,10 +86,11 @@ class EducationAndDegreeController extends Controller
                 $education->student_id = $studentId;
                 $document->student_id = $studentId;
                 $document->degree_id = $qualification[$index];
+                log::debug(var_dump($document->degree_id));
                 $education->save();
                 if ($degreeFiles[$index]) {
                     $degreePath = $degreeFiles[$index]->store('degrees');
-                    log::debug($document->document_file_path = $degreePath);
+                    $document->document_file_path = $degreePath;
                     $document->save();
                 }
             }
