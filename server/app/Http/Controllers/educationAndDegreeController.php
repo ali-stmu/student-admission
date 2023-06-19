@@ -53,17 +53,51 @@ class EducationAndDegreeController extends Controller
         $studentId = $student_id_json->getData()->student_id;
         if ($request->input('useEffect') == 1) {
             $results = $this->findEducationAndDocument($studentId);
-            // $resultsLength = $results->count();
-            // log::debug($results);
             $jsonData = json_encode($results);
             return response()->json($jsonData, Response::HTTP_OK);
         }
 
+        if ($request->input('useEffect') != 1 && $this->findEducationAndDocument($studentId)->count() > 0) {    //update
+            //log::debug('Updated function called');
+            $resultStatus = $request->input('resultStatus');
+            $qualification = $request->input('qualification');
+            $boardUniversity = $request->input('boardUniversity');
+            $passingYear = $request->input('passingYear');
+            $totalMarksCGPA = $request->input('totalMarksCGPA');
+            $result_status = $request->input('resultStatus');
+            log::debug($obtainedMarksCGPA = $request->input('obtainedMarksCGPA'));
+            log::debug($percentage = $request->input('percentage'));
+            $degreeFiles = $request->file('degree');
+
+            $educationRecords = Education::where('student_id', $studentId)->get();
+            $documentRecords = Document::where('student_id', $studentId)->get();
+            foreach ($resultStatus as $index => $status) {
+                $education = $educationRecords[$index] ?? new Education();
+                $document = $documentRecords[$index] ?? new Document();
+                // $education->resultStatus = $status;
+                $education->degree_id = $qualification[$index];
+                $education->institution_name = $boardUniversity[$index];
+                $education->passing_year = $passingYear[$index];
+                $education->total_marks = $totalMarksCGPA[$index];
+                $education->result_status = $result_status[$index];
+                $education->obtained_marks = $obtainedMarksCGPA[$index];
+                $education->percentage_criteria = $percentage[$index];
+                $education->student_id = $studentId;
+                $document->student_id = $studentId;
+                $document->degree_id = $qualification[$index];
+                $education->save();
+                if ($degreeFiles[$index]) {
+                    $degreePath = $degreeFiles[$index]->store('degrees');
+                    log::debug($document->document_file_path = $degreePath);
+                    $document->save();
+                }
+            }
+        }
 
         if ($request->input('useEffect') != 1 && $this->findEducationAndDocument($studentId)->count() == 0) {
             $resultStatus = $request->input('resultStatus');
             $qualification = $request->input('qualification');
-            $boardUniversity = $request->input('boardUniversity');
+            $boardUniversity = $request->input('boardUniversity');    //insert new record
             $passingYear = $request->input('passingYear');
             $totalMarksCGPA = $request->input('totalMarksCGPA');
             $result_status = $request->input('resultStatus');
