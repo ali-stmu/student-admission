@@ -59,7 +59,7 @@ class EducationAndDegreeController extends Controller
         }
 
         if ($request->input('useEffect') != 1 && $this->findEducationAndDocument($studentId)->count() > 0) {    //update
-            //log::debug('Updated function called');
+            log::debug('Updated function called');
             $resultStatus = $request->input('resultStatus');
             $qualification = $request->input('qualification');
             $boardUniversity = $request->input('boardUniversity');
@@ -68,7 +68,7 @@ class EducationAndDegreeController extends Controller
             $result_status = $request->input('resultStatus');
             $obtainedMarksCGPA = $request->input('obtainedMarksCGPA');
             $percentage = $request->input('percentage');
-            $degreeFiles = $request->file('degree');
+            log::debug($degreeFiles = $request->file('degree'));
 
             $educationRecords = Education::where('student_id', $studentId)->get();
             $documentRecords = Document::where('student_id', $studentId)->get();
@@ -86,12 +86,15 @@ class EducationAndDegreeController extends Controller
                 $education->student_id = $studentId;
                 $document->student_id = $studentId;
                 $document->degree_id = $qualification[$index];
-                log::debug(var_dump($document->degree_id));
+                $document->degree_id;
                 $education->save();
+                //log::debug($degreeFiles[$index]);
                 if ($degreeFiles[$index]) {
                     $degreePath = $degreeFiles[$index]->store('degrees');
                     $document->document_file_path = $degreePath;
                     $document->save();
+                } else {
+                    log::debug('halo from else');
                 }
             }
         }
