@@ -39,7 +39,7 @@ class EducationAndDegreeController extends Controller
                 'education.obtained_marks',
                 'education.passing_year',
                 'education.total_marks',
-                'document.document_file_path'
+                'document.document_file_path',
             )
             ->where('education.student_id', '=', $studentId)
             ->where('document.student_id', '=', $studentId)
@@ -60,6 +60,10 @@ class EducationAndDegreeController extends Controller
 
         if ($request->input('useEffect') != 1 && $this->findEducationAndDocument($studentId)->count() > 0) {    //update
             log::debug('Updated function called');
+
+            //going to handle deleted rows using by zeroing the status.
+            //  $compare_results = $this->findEducationAndDocument($studentId);
+
             $resultStatus = $request->input('resultStatus');
             $qualification = $request->input('qualification');
             $boardUniversity = $request->input('boardUniversity');
@@ -68,6 +72,7 @@ class EducationAndDegreeController extends Controller
             $result_status = $request->input('resultStatus');
             $obtainedMarksCGPA = $request->input('obtainedMarksCGPA');
             $percentage = $request->input('percentage');
+            log::debug($percentage);
             log::debug($degreeFiles = $request->file('degree'));
 
             $educationRecords = Education::where('student_id', $studentId)->get();
@@ -88,14 +93,11 @@ class EducationAndDegreeController extends Controller
                 $document->degree_id = $qualification[$index];
                 $document->degree_id;
                 $education->save();
-                //log::debug($degreeFiles[$index]);
                 if (isset($degreeFiles[$index])) {
                     $degreePath = $degreeFiles[$index]->store('degrees');
                     $document->document_file_path = $degreePath;
                     $document->save();
-                } else {
-                    log::debug('halo from else');
-                }    
+                }
             }
         }
 

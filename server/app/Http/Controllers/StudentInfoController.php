@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\student;
+use App\Models\Education;
+use App\Models\Degree;
+use App\Models\program;
 use App\Models\user;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +20,66 @@ use GuzzleHttp\Exception\RequestException;
 class StudentInfoController extends Controller
 {
     //
+
+    public function getPriority(Request $request)
+    {
+        $totalMarks = 0;
+        $obtainedMarks = 0;
+
+        //log::debug("Called");
+
+        $student = new student;
+        $studentId = student::where('user_id', $request->user_id)->value('student_id');
+
+        $studentInfoToCalcuatePercentage = Education::select('total_marks', 'degree_id', 'result_status', 'obtained_marks')
+            ->where('student_id', $studentId)
+            ->get();;
+
+        log::debug($studentInfoToCalcuatePercentage);
+
+        $intermediateDegrees = Degree::where('degree_description', 'Intermediate')->pluck('degree_name', 'degree_id');
+
+        foreach ($studentInfoToCalcuatePercentage as $education) {
+            $degreeId = $education->degree_id;
+            $result_status = $education->result_status;
+
+            if ($intermediateDegrees->has($degreeId) && $result_status == "declared") {
+                $degreeName = $intermediateDegrees->get($degreeId);
+                foreach ($studentInfoToCalcuatePercentage as $education) {
+                    if ($education['degree_id'] === $degreeId) {
+
+                        $totalMarks += $education['total_marks'];
+                        $obtainedMarks += $education['obtained_marks'];
+                        $percentage = ($obtainedMarks / $totalMarks) * 100;
+                        log::debug($percentage);
+
+                        $programs = program::select('program_name', 'program_criteria')
+                            ->where('degree_id', $degreeId)
+                            ->get();
+                        log::debug($programs);
+                        return response()->json(['Programs' => $programs]);
+                    }
+                }
+                //log::debug($degreeName);
+
+                // Now you can use $degreeName along with other education data for further calculations
+            } else {
+                // Handle the case where a matching intermediate degree is not found
+            }
+        }
+
+
+        if ($studentId) {
+            // return response()->json(['StudentInfo' => $studentId]);
+        } else {
+            // Student record not found
+            return "Not Found";
+            return response()->json(['Awaked' => "Not Found"]);
+        }
+    }
+
+
+
 
     public function updateRecord(Request $request, $id)
     {
