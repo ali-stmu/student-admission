@@ -26,7 +26,9 @@ const ProgramPriority = ({ stepper, type }) => {
   const [priority1, setPriority1] = useState(null);
   const [priority2, setPriority2] = useState(null);
   const [priority3, setPriority3] = useState(null);
-
+  const onSubmit = () => {
+    stepper.next();
+  };
   const handleChangePriority1 = (selectedOption) => {
     setPriority1(selectedOption);
   };
@@ -104,7 +106,12 @@ const ProgramPriority = ({ stepper, type }) => {
             Previous
           </span>
         </Button.Ripple>
-        <Button.Ripple type="submit" color="primary" className="btn-next">
+        <Button.Ripple
+          type="submit"
+          color="primary"
+          className="btn-next"
+          onClick={onSubmit}
+        >
           <span className="align-middle d-sm-inline-block d-none">Next</span>
           <ArrowRight
             size={14}
