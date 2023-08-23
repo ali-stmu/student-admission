@@ -30,3 +30,5 @@ Route::post('/useeffectstudentdataaddress', [StudentInfoController::class, 'useE
 Route::post('/storeStudentDataAddress', [StudentInfoController::class, 'storeStudentDataAddress']);
 Route::get('/degree', [DegreeController::class, 'index']);
 Route::post('/educationAndDegreeController', [educationAndDegreeController::class, 'storeDegreeAndDocument']);
+
+Route::post('/getPriority', [StudentInfoController::class, 'getPriority']);
