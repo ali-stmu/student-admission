@@ -4,8 +4,9 @@ import jsPDF from "jspdf";
 import { Button, Row, Col, Table } from "reactstrap";
 import UniLogo from "../../../../assets/images/logo/ShifaLogo.png";
 import BankLogo from "../../../../assets/images/logo/bank_logo.png";
+import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
 
-const Challan = () => {
+const Challan = ({ stepper, type }) => {
   const collegeName = "Your College Name";
   const voucherID = "123456";
   const date = "2023-08-23";
@@ -17,7 +18,7 @@ const Challan = () => {
   const rollNo = "CS12345";
   const pyear = "2023";
   const session = "Fall";
-  const totalAmount = "10000";
+  const totalAmount = "1000";
   const contentRef = useRef(null);
 
   const generatePDF = () => {
@@ -51,6 +52,7 @@ const Challan = () => {
       });
     }
   };
+  const onSubmit = () => {};
 
   const tableContainerStyle = {
     display: "flex",
@@ -77,11 +79,6 @@ const Challan = () => {
       <div ref={contentRef}>
         <div style={tableContainerStyle}>
           <Table bordered style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={thStyle}>Table 1</th>
-              </tr>
-            </thead>
             <tbody>
               <tr>
                 <td>
@@ -449,7 +446,7 @@ const Challan = () => {
                               padding: "5px",
                             }}
                           >
-                            Semester Fee
+                            Admission Fee
                           </td>
                           <td
                             align="center"
@@ -504,16 +501,7 @@ const Challan = () => {
                             <b>{totalAmount}</b>
                           </td>
                         </tr>
-                        <tr>
-                          <td colSpan="4" align="center">
-                            <hr style={{ border: "1px solid black" }} />
-                            <p>
-                              <b>Note:</b> Security fee 12,000 (Refundable) and
-                              admission charges 32,400 (non-refundable) are the
-                              part of program fee.
-                            </p>
-                          </td>
-                        </tr>
+                        <tr></tr>
                         <tr align="left" style={{ fontSize: "15px" }}>
                           <td
                             colSpan="2"
@@ -592,11 +580,6 @@ const Challan = () => {
             </tbody>
           </Table>
           <Table bordered style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={thStyle}>Table 2</th>
-              </tr>
-            </thead>
             <tbody>
               <tr>
                 <td>
@@ -631,7 +614,7 @@ const Challan = () => {
                                 {collegeName}
                               </b>
                               <br />
-                              <b>Deposit Slip (Dept. Copy)</b>
+                              <b>Deposit Slip (Student Copy)</b>
                             </span>
                             <br />
                           </td>
@@ -964,7 +947,7 @@ const Challan = () => {
                               padding: "5px",
                             }}
                           >
-                            Semester Fee
+                            Admission Fee
                           </td>
                           <td
                             align="center"
@@ -1019,16 +1002,7 @@ const Challan = () => {
                             <b>{totalAmount}</b>
                           </td>
                         </tr>
-                        <tr>
-                          <td colSpan="4" align="center">
-                            <hr style={{ border: "1px solid black" }} />
-                            <p>
-                              <b>Note:</b> Security fee 12,000 (Refundable) and
-                              admission charges 32,400 (non-refundable) are the
-                              part of program fee.
-                            </p>
-                          </td>
-                        </tr>
+                        <tr></tr>
                         <tr align="left" style={{ fontSize: "15px" }}>
                           <td
                             colSpan="2"
@@ -1107,11 +1081,6 @@ const Challan = () => {
             </tbody>
           </Table>
           <Table bordered style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={thStyle}>Table 3</th>
-              </tr>
-            </thead>
             <tbody>
               <tr>
                 <td>
@@ -1146,7 +1115,7 @@ const Challan = () => {
                                 {collegeName}
                               </b>
                               <br />
-                              <b>Deposit Slip (Dept. Copy)</b>
+                              <b>Deposit Slip (Bank Copy)</b>
                             </span>
                             <br />
                           </td>
@@ -1479,7 +1448,7 @@ const Challan = () => {
                               padding: "5px",
                             }}
                           >
-                            Semester Fee
+                            Admission Fee
                           </td>
                           <td
                             align="center"
@@ -1534,16 +1503,7 @@ const Challan = () => {
                             <b>{totalAmount}</b>
                           </td>
                         </tr>
-                        <tr>
-                          <td colSpan="4" align="center">
-                            <hr style={{ border: "1px solid black" }} />
-                            <p>
-                              <b>Note:</b> Security fee 12,000 (Refundable) and
-                              admission charges 32,400 (non-refundable) are the
-                              part of program fee.
-                            </p>
-                          </td>
-                        </tr>
+                        <tr></tr>
                         <tr align="left" style={{ fontSize: "15px" }}>
                           <td
                             colSpan="2"
@@ -1624,6 +1584,33 @@ const Challan = () => {
         </div>
       </div>
       <Button onClick={generatePDF}>Download Challan</Button>
+      <div className="d-flex justify-content-between">
+        <Button.Ripple
+          color="primary"
+          className="btn-prev"
+          onClick={() => stepper.previous()}
+        >
+          <ArrowLeft
+            size={14}
+            className="align-middle mr-sm-25 mr-0"
+          ></ArrowLeft>
+          <span className="align-middle d-sm-inline-block d-none">
+            Previous
+          </span>
+        </Button.Ripple>
+        <Button.Ripple
+          type="submit"
+          color="primary"
+          id="btn-next"
+          className="btn-next"
+          onClick={onSubmit}
+        >
+          <span className="align-middle d-sm-inline-block d-none">
+            Final Submit
+          </span>
+          <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
+        </Button.Ripple>
+      </div>
     </div>
   );
 };
