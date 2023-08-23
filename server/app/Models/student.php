@@ -39,7 +39,5 @@ class student extends Model
         'image',
         'cnic',
         'religion'
-
-
     ];
 }

@@ -6,6 +6,7 @@ import SocialLinks from "./steps-with-validation/SocialLinks";
 import PersonalInfo from "./steps-with-validation/PersonalInfo";
 import AccountDetails from "./steps-with-validation/AccountDetails";
 import ProgramPriority from "./steps-with-validation/ProgramPriority";
+import Challan from "./steps-with-validation/Challan";
 
 const WizardHorizontal = () => {
   const [stepper, setStepper] = useState(null);
@@ -41,6 +42,12 @@ const WizardHorizontal = () => {
       title: "Program Priority",
       subtitle: "Select Program Priority",
       content: <ProgramPriority stepper={stepper} type="wizard-horizontal" />,
+    },
+    {
+      id: "challan",
+      title: "Challan",
+      subtitle: "Chllan Generation",
+      content: <Challan stepper={stepper} type="wizard-horizontal" />,
     },
   ];
 

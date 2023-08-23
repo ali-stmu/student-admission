@@ -18,6 +18,7 @@ const Footer = () => {
       <span className="float-md-right d-none d-md-block">
         Hand-crafted & Made with
         <Heart size={14} />
+        &nbsp;&nbsp;by MIS Department
       </span>
     </p>
   );
