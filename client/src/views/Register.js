@@ -28,6 +28,13 @@ const Register = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [nationality, setNationality] = useState("pakistani");
+  const [cnic, setCnic] = useState("");
+  const [passportNumber, setPassportNumber] = useState("");
+
+  const handleNationalityChange = (event) => {
+    setNationality(event.target.value);
+  };
   function handleEmailChange(event) {
     const emailValue = event.target.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -207,6 +214,57 @@ const Register = () => {
                 />
                 {emailError && <div style={{ color: "red" }}>{emailError}</div>}
               </FormGroup>
+              <FormGroup>
+                <Label className="form-label">Nationality</Label>
+                <div>
+                  <CustomInput
+                    type="radio"
+                    id="nationality-pakistani"
+                    name="nationality"
+                    value="pakistani"
+                    label="Pakistani/Dual National"
+                    checked={nationality === "pakistani"}
+                    onChange={handleNationalityChange}
+                  />
+                  <CustomInput
+                    type="radio"
+                    id="nationality-foreign"
+                    name="nationality"
+                    value="foreign"
+                    label="Foreign"
+                    checked={nationality === "foreign"}
+                    onChange={handleNationalityChange}
+                  />
+                </div>
+              </FormGroup>
+              {nationality === "pakistani" && (
+                <FormGroup>
+                  <Label className="form-label" for="cnic">
+                    CNIC
+                  </Label>
+                  <Input
+                    type="text"
+                    id="cnic"
+                    value={cnic}
+                    onChange={(event) => setCnic(event.target.value)}
+                    placeholder="12345-6789012-3"
+                  />
+                </FormGroup>
+              )}
+              {nationality === "foreign" && (
+                <FormGroup>
+                  <Label className="form-label" for="passport-number">
+                    Passport Number
+                  </Label>
+                  <Input
+                    type="text"
+                    id="passport-number"
+                    value={passportNumber}
+                    onChange={(event) => setPassportNumber(event.target.value)}
+                    placeholder="A1234567"
+                  />
+                </FormGroup>
+              )}
               {/*
               <FormGroup>
                 <Label className='form-label' for='register-password'>
