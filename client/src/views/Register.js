@@ -28,12 +28,14 @@ const Register = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [nationality, setNationality] = useState("pakistani");
+  const [nationality, setNationality] = useState("");
   const [cnic, setCnic] = useState("");
   const [passportNumber, setPassportNumber] = useState("");
+  const [isRadioChecked, setIsRadioChecked] = useState(false);
 
   const handleNationalityChange = (event) => {
     setNationality(event.target.value);
+    setIsRadioChecked(true); // Set the state to true when a radio button is checked
   };
   function handleEmailChange(event) {
     const emailValue = event.target.value.trim();
@@ -215,7 +217,9 @@ const Register = () => {
                 {emailError && <div style={{ color: "red" }}>{emailError}</div>}
               </FormGroup>
               <FormGroup>
-                <Label className="form-label">Nationality</Label>
+                <Label className="form-label">
+                  Nationality<sup>*</sup>
+                </Label>
                 <div>
                   <CustomInput
                     type="radio"
@@ -287,7 +291,7 @@ const Register = () => {
                 color="primary"
                 block
                 onClick={handleSubmit}
-                disabled={isButtonDisabled}
+                disabled={isButtonDisabled || !isRadioChecked}
               >
                 {isLoading ? "Loading..." : "Sign up"}
               </Button.Ripple>
