@@ -14,44 +14,37 @@ class userController extends Controller
 
     function register(Request $request)
     {
-        $users =new user;
-      
-        $password = Str::random(12); // Generate a random string of 12 characters
-        $users->role="Student";
-        $users->status="Active";
-        $users->created_by=$request->input('email');
-        $users->email=$request->input('email');
-   
-        $passwordWithMessage = 'This is your Password: ' . $password;
-        $passwordEncrypted= bcrypt($password);
-        $users->password=$passwordEncrypted;
-        $users->save();
-      $emailForSend=$request->input('email');
-
-        // Send email with new password
+        $email = $request->input('email');
+        $cnic = $request->input('cnic'); // If CNIC is included in the request
+        
+        // Check if either email or CNIC already exists in the database
+        $userExists = User::where('email', $email)->orWhere('cnic', $cnic)->exists();
+        if ($userExists) {
+            return response()->json(['error' => 'Email or CNIC already exists.'], 400);
+        }
     
-       // Mail::send('resetpassword', ['password' => $password], function ($message) use ($emailForSend) {
-          //  $message->to($emailForSend)->subject('Your new password');
-      //  });
-
-        $message = 'Hello, this is a test email!';
-        Mail::raw(($passwordWithMessage), function ($message) use ($emailForSend) {
-            $message->to($emailForSend);
+        $user = new User;
+        $password = Str::random(12);
+        $user->role = "Student";
+        $user->status = "Active";
+        $user->created_by = $email;
+        $user->email = $email;
+        $user->password = bcrypt($password);
+    
+        if ($cnic) {
+            $user->cnic = $cnic; // Save CNIC if provided
+        }
+    
+        $user->save();
+    
+        $passwordWithMessage = 'This is your Password: ' . $password;
+        Mail::raw(($passwordWithMessage), function ($message) use ($email) {
+            $message->to($email);
             $message->subject('Your Password');
         });
-
-
-
-        return response()->json(['message' => 'Password created and sent to email.']);
-   
-       // Send email with new password
     
-
-
-      
-   
-      
-   }
+        return response()->json(['message' => 'Password created and sent to email.']);
+    }
 
 
 

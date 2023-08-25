@@ -33,6 +33,8 @@ const Register = () => {
   const [cnicError, setCnicError] = useState(""); // Add a new state for CNIC validation error
   const [passportNumber, setPassportNumber] = useState("");
   const [isRadioChecked, setIsRadioChecked] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleNationalityChange = (event) => {
     setNationality(event.target.value);
@@ -71,36 +73,48 @@ const Register = () => {
     setCnic(cnicValue);
   };
   const handleSubmit = async (event) => {
-    console.log(BASE_URL);
     setIsLoading(true);
     setIsButtonDisabled(true);
 
     event.preventDefault();
     try {
+      const requestBody = {
+        email,
+        password,
+      };
+
+      if (nationality === "pakistani") {
+        requestBody.cnic = cnic; // Include CNIC if Pakistani/Dual National
+      } else if (nationality === "foreign") {
+        requestBody.cnic = passportNumber; // Include Passport Number if Foreign
+      }
+
       const response = await fetch(`${BASE_URL}register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Password sended to your address");
+        setSuccessMessage(
+          "Registration successful. Password sent to your email."
+        );
         setIsLoading(false);
         setIsButtonDisabled(false);
         history.push("/login");
       } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.error);
         throw new Error("Network response was not ok.");
       }
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
   };
+
   const illustration =
       skin === "dark" ? "register-v2-dark.svg" : "register.jpg",
     source = require(`@src/assets/images/pages/${illustration}`).default;
@@ -199,12 +213,12 @@ const Register = () => {
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="font-weight-bold mb-1">
-              Enter your email to receive password 🚀
+              Welcome to Shifa Tameer-e-Millat University
             </CardTitle>
             <CardText className="mb-2">
-              Registering for the admission portal opens the door to a world of
-              endless possibilities.!
+              <strong>Password will be sent on email you will provide</strong>
             </CardText>
+
             <Form className="auth-register-form mt-2">
               {/*
               <FormGroup>
@@ -314,16 +328,20 @@ const Register = () => {
                 {isLoading ? "Loading..." : "Sign up"}
               </Button.Ripple>
             </Form>
+            {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+            {successMessage && (
+              <div style={{ color: "green" }}>{successMessage}</div>
+            )}
             <p className="text-center mt-2">
               <span className="mr-25">Already have an account?</span>
               <Link to="login">
                 <span>Sign in instead</span>
               </Link>
             </p>
-            <div className="divider my-2">
+            {/* <div className="divider my-2">
               <div className="divider-text">or</div>
-            </div>
-            <div className="auth-footer-btn d-flex justify-content-center">
+            </div> */}
+            {/* <div className="auth-footer-btn d-flex justify-content-center">
               <Button.Ripple color="facebook">
                 <Facebook size={14} />
               </Button.Ripple>
@@ -336,7 +354,7 @@ const Register = () => {
               <Button.Ripple className="mr-0" color="github">
                 <GitHub size={14} />
               </Button.Ripple>
-            </div>
+            </div> */}
           </Col>
         </Col>
       </Row>
