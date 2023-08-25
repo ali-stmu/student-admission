@@ -30,6 +30,7 @@ const Register = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [nationality, setNationality] = useState("");
   const [cnic, setCnic] = useState("");
+  const [cnicError, setCnicError] = useState(""); // Add a new state for CNIC validation error
   const [passportNumber, setPassportNumber] = useState("");
   const [isRadioChecked, setIsRadioChecked] = useState(false);
 
@@ -54,7 +55,21 @@ const Register = () => {
     }
     setEmail(emailValue);
   }
+  const handleCnicChange = (event) => {
+    const cnicValue = event.target.value.trim();
+    const cnicRegex = /^[0-9]{5}-[0-9]{7}-[0-9]{1}$/; // Add the CNIC regex pattern
 
+    if (!cnicRegex.test(cnicValue)) {
+      setCnicError(
+        "Invalid CNIC format. Please use the format: 12345-6789012-3"
+      );
+      setIsButtonDisabled(true);
+    } else {
+      setCnicError("");
+      setIsButtonDisabled(false);
+    }
+    setCnic(cnicValue);
+  };
   const handleSubmit = async (event) => {
     console.log(BASE_URL);
     setIsLoading(true);
@@ -250,11 +265,14 @@ const Register = () => {
                     type="text"
                     id="cnic"
                     value={cnic}
-                    onChange={(event) => setCnic(event.target.value)}
+                    onChange={handleCnicChange}
                     placeholder="12345-6789012-3"
+                    maxLength={15} // Set maximum length to 15 characters
                   />
+                  {cnicError && <div style={{ color: "red" }}>{cnicError}</div>}
                 </FormGroup>
               )}
+
               {nationality === "foreign" && (
                 <FormGroup>
                   <Label className="form-label" for="passport-number">
