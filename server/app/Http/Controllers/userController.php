@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Models\user;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 class userController extends Controller
 {
     //
@@ -16,6 +18,8 @@ class userController extends Controller
     {
         $email = $request->input('email');
         $cnic = $request->input('cnic'); // If CNIC is included in the request
+        $nationality = $request->input('nationality');
+        log::debug($nationality);
         
         // Check if either email or CNIC already exists in the database
         $userExists = User::where('email', $email)->orWhere('cnic', $cnic)->exists();
@@ -30,6 +34,7 @@ class userController extends Controller
         $user->created_by = $email;
         $user->email = $email;
         $user->password = bcrypt($password);
+        $user->nationality =  $nationality;
     
         if ($cnic) {
             $user->cnic = $cnic; // Save CNIC if provided

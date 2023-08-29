@@ -81,8 +81,8 @@ const Register = () => {
       const requestBody = {
         email,
         password,
+        nationality,
       };
-
       if (nationality === "pakistani") {
         requestBody.cnic = cnic; // Include CNIC if Pakistani/Dual National
       } else if (nationality === "foreign") {
