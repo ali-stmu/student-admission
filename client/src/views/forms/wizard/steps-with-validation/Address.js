@@ -1,9 +1,10 @@
-import { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import classnames from "classnames";
 import { isObjEmpty } from "@utils";
 import { useForm } from "react-hook-form";
 import { BASE_URL } from "../../../../config";
 import { ArrowLeft, ArrowRight } from "react-feather";
+
 import {
   Label,
   FormGroup,
@@ -14,7 +15,6 @@ import {
   Input,
   CustomInput,
 } from "reactstrap";
-
 const Address = ({ stepper, type }) => {
   const { register, errors, handleSubmit, trigger } = useForm();
   const [address, setAddress] = useState("");
@@ -45,10 +45,7 @@ const Address = ({ stepper, type }) => {
   };
 
   useEffect(() => {
-    console.log("called use effect");
-
     const rolesFromStorage = localStorage.getItem("StudentInfo");
-    // Parse the JSON data
     const studentInfo = JSON.parse(rolesFromStorage);
     const TempUserid = studentInfo.user_id;
     setUserId(TempUserid);
@@ -69,8 +66,6 @@ const Address = ({ stepper, type }) => {
         settZipCode(data.StudentInfo.t_zip_code);
         settCity(data.StudentInfo.t_city);
         settState(data.StudentInfo.t_state);
-        console.log(data);
-        // setAddress(address); // Set the address state variable
       })
       .catch((error) => console.error(error));
   }, []);
