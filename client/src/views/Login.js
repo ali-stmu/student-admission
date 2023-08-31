@@ -11,6 +11,8 @@ import { AbilityContext } from "@src/utility/context/Can";
 import { Link, useHistory } from "react-router-dom";
 import InputPasswordToggle from "@components/input-password-toggle";
 import { getHomeRouteForLoggedInUser, isObjEmpty } from "@utils";
+import UniLogo from "../../src/assets/images/logo/ShifaLogo.png";
+
 import {
   Facebook,
   Twitter,
@@ -168,6 +170,14 @@ const Login = (props) => {
               </g>
             </g>
           </svg>
+
+          {/* <img
+            className="fallback-logo"
+            src={UniLogo}
+            alt="logo"
+            style={{ height: "30px", width: "30px" }}
+          /> */}
+
           <h2 className="brand-text text-primary ml-1">STMU</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
@@ -182,7 +192,7 @@ const Login = (props) => {
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="font-weight-bold mb-1">
-              Welcome to Shifa!
+              Welcome to Shifa Tameer-e-Millat University!
             </CardTitle>
             <CardText className="mb-2">
               Please sign-in to your account and start the adventure
@@ -274,10 +284,10 @@ const Login = (props) => {
                 <span>Create an account</span>
               </Link>
             </p>
-            <div className="divider my-2">
+            {/* <div className="divider my-2">
               <div className="divider-text">or</div>
-            </div>
-            <div className="auth-footer-btn d-flex justify-content-center">
+            </div> */}
+            {/* <div className="auth-footer-btn d-flex justify-content-center">
               <Button.Ripple color="facebook">
                 <Facebook size={14} />
               </Button.Ripple>
@@ -290,7 +300,7 @@ const Login = (props) => {
               <Button.Ripple className="mr-0" color="github">
                 <GitHub size={14} />
               </Button.Ripple>
-            </div>
+            </div> */}
           </Col>
         </Col>
       </Row>
