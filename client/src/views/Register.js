@@ -83,7 +83,7 @@ const Register = () => {
         password,
         nationality,
       };
-      if (nationality === "pakistani") {
+      if (nationality === "pakistani" || nationality === "dual") {
         requestBody.cnic = cnic; // Include CNIC if Pakistani/Dual National
       } else if (nationality === "foreign") {
         requestBody.cnic = passportNumber; // Include Passport Number if Foreign
@@ -99,15 +99,22 @@ const Register = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setSuccessMessage(
-          "Registration successful. Password sent to your email."
-        );
-        setIsLoading(false);
-        setIsButtonDisabled(false);
-        history.push("/login");
+        setSuccessMessage(data.message);
+
+        setTimeout(() => {
+          setIsLoading(false);
+          setIsButtonDisabled(false);
+          setSuccessMessage(""); // Clear the success message after 5 seconds
+          history.push("/login");
+        }, 4000); // 4000 milliseconds = 4 seconds
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.error);
+        setTimeout(() => {
+          setIsLoading(false);
+          setIsButtonDisabled(false);
+          setErrorMessage("");
+        }, 5000);
         throw new Error("Network response was not ok.");
       }
     } catch (error) {
@@ -231,7 +238,7 @@ const Register = () => {
               */}
               <FormGroup>
                 <Label className="form-label" for="register-email">
-                  Email
+                  Email<sup>*</sup>
                 </Label>
                 <Input
                   type="email"
@@ -255,8 +262,17 @@ const Register = () => {
                     id="nationality-pakistani"
                     name="nationality"
                     value="pakistani"
-                    label="Pakistani/Dual National"
+                    label="Pakistani"
                     checked={nationality === "pakistani"}
+                    onChange={handleNationalityChange}
+                  />
+                  <CustomInput
+                    type="radio"
+                    id="nationality-dual"
+                    name="nationality"
+                    value="dual"
+                    label="Dual National"
+                    checked={nationality === "dual"}
                     onChange={handleNationalityChange}
                   />
                   <CustomInput
@@ -270,10 +286,10 @@ const Register = () => {
                   />
                 </div>
               </FormGroup>
-              {nationality === "pakistani" && (
+              {(nationality === "pakistani" || nationality === "dual") && (
                 <FormGroup>
                   <Label className="form-label" for="cnic">
-                    CNIC
+                    CNIC <sup>*</sup>
                   </Label>
                   <Input
                     type="text"
@@ -290,7 +306,7 @@ const Register = () => {
               {nationality === "foreign" && (
                 <FormGroup>
                   <Label className="form-label" for="passport-number">
-                    Passport Number
+                    Passport Number <sup>*</sup>
                   </Label>
                   <Input
                     type="text"
@@ -327,11 +343,14 @@ const Register = () => {
               >
                 {isLoading ? "Loading..." : "Sign up"}
               </Button.Ripple>
+              {errorMessage && (
+                <div style={{ color: "red" }}>{errorMessage}</div>
+              )}
+              {successMessage && (
+                <div style={{ color: "green" }}>{successMessage}</div>
+              )}
             </Form>
-            {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
-            {successMessage && (
-              <div style={{ color: "green" }}>{successMessage}</div>
-            )}
+
             <p className="text-center mt-2">
               <span className="mr-25">Already have an account?</span>
               <Link to="login">
