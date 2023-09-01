@@ -28,7 +28,7 @@ class student extends Model
         'status',
         'created_at',
         'updated_at', 'created_by', 'updated_by', 'relegion',
-        'mother_name', 'father_name', 'father_contact', 'father_occupation',
+        'mother_name', 'father_name','father_email', 'father_contact', 'father_occupation',
         'passport_number', 'family_member',
         't_address',
         't_city',

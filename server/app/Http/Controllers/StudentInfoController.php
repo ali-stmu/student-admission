@@ -102,6 +102,7 @@ class StudentInfoController extends Controller
         $record->date_of_birth = $request->input('date_of_birth');
         $record->religion = $request->input('religion');
         $record->father_name = $request->input('father_name');
+        $record->father_email = $request->input('father_email');
         $record->mother_name = $request->input('mother_name');
         $record->father_occupation = $request->input('father_occupation');
         $record->land_line = $request->input('land_line');
@@ -206,13 +207,13 @@ class StudentInfoController extends Controller
                 $student->date_of_birth = $request->input('date_of_birth');
                 $student->religion = $request->input('religion');
                 $student->father_name = $request->input('father_name');
+                $student->father_email = $request->input('father_email');
                 $student->mother_name = $request->input('mother_name');
                 $student->father_occupation = $request->input('father_occupation');
                 $student->land_line = $request->input('land_line');
                 $student->user_id = $request->input('user_id');
                 $student->save();
                 if ($request->hasFile('temp_image')) {
-                    Log::debug("Sadi image k andr");
                     $image = $request->file('temp_image');
                     $imageName = time() . '.' . $image->getClientOriginalExtension();
                     $storagePath = public_path('studentsImages');

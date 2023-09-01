@@ -24,6 +24,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 const PersonalInfo = ({ stepper, type }) => {
   const formDataAutoFill = new FormData();
   const [email, setEmail] = useState("");
+  const [fatheremail, setFatherEmail] = useState("");
   const [user_id, setUserId] = useState("");
   const { register, errors, handleSubmit, trigger } = useForm();
   const [firstName, setFirstName] = useState("");
@@ -85,6 +86,7 @@ const PersonalInfo = ({ stepper, type }) => {
           const genratedFullUrlForStudentCnic =
             BASE_URL_OF_SERVER + AutoFillDataRecived.original.cnic_image;
           setSelectedImageCnic(genratedFullUrlForStudentCnic);
+          setFatherEmail(AutoFillDataRecived.original.father_email);
 
           //const cnic = AutoFillDataRecived.cnic; // Replace 'cnic' with the actual property name in the response
           //console.log(cnic);
@@ -128,6 +130,7 @@ const PersonalInfo = ({ stepper, type }) => {
     formData.append("date_of_birth", dateofbirth);
     formData.append("religion", religion);
     formData.append("father_name", fname);
+    formData.append("father_email", fatheremail);
     formData.append("mother_name", mname);
     formData.append("father_occupation", foccupation);
     formData.append("land_line", phone);
@@ -188,7 +191,7 @@ const PersonalInfo = ({ stepper, type }) => {
   };
 
   const handleEmailChange = (event) => {
-    //setEmail(event.target.value);
+    setFatherEmail(event.target.value);
   };
   const handleFnameChange = (event) => {
     setFname(event.target.value);
@@ -483,6 +486,19 @@ const PersonalInfo = ({ stepper, type }) => {
               onChange={handleFatherContactChange}
               placeholder="Enter a valid phone number"
               maxLength={13} // Maximum length of a Pakistani phone number is 13
+              required
+            />
+          </FormGroup>
+          <FormGroup tag={Col} md="4">
+            <Label className="form-label" for={`first-name-${type}`}>
+              Father Email<sup>*</sup>
+            </Label>
+            <Input
+              type="email"
+              id="email"
+              name="email"
+              value={fatheremail}
+              onChange={handleEmailChange}
               required
             />
           </FormGroup>
