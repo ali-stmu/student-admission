@@ -38,6 +38,7 @@ class student extends Model
         'land_line',
         'image',
         'cnic',
+        'cnic_image',
         'religion'
     ];
 }

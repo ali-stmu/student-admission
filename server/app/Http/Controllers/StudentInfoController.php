@@ -132,6 +132,27 @@ class StudentInfoController extends Controller
             log::debug($relativeImagePath);
             $record->image = $relativeImagePath;
         }
+        if ($request->hasFile('temp_image_cnic')) {
+            $image = $request->file('temp_image_cnic');
+
+            // Generate a unique filename for the image
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            // Specify the storage path for the image
+            $storagePath = public_path('studentsImagesCnic');
+
+            // Move the uploaded file to the specified storage path
+            $image->move($storagePath, $imageName);
+
+            // Get the full path of the saved image
+            $fullImagePath = $storagePath . '/' . $imageName;
+            // Get the relative path by subtracting the base path
+            $relativeImagePath = str_replace(public_path(), '', $fullImagePath);
+            // Log the full path of the saved image
+            // Log::debug('Full path of the saved image: '.$fullImagePath);
+            log::debug($relativeImagePath);
+            $record->cnic_image = $relativeImagePath;
+        }
         $record->save();
 
         // Return a response if needed
@@ -191,6 +212,7 @@ class StudentInfoController extends Controller
                 $student->user_id = $request->input('user_id');
                 $student->save();
                 if ($request->hasFile('temp_image')) {
+                    Log::debug("Sadi image k andr");
                     $image = $request->file('temp_image');
                     $imageName = time() . '.' . $image->getClientOriginalExtension();
                     $storagePath = public_path('studentsImages');
@@ -198,9 +220,22 @@ class StudentInfoController extends Controller
                     $fullImagePath = $storagePath . '/' . $imageName;
                     $relativeImagePath = str_replace(public_path(), '', $fullImagePath);
                     // Log the full path of the saved image
-                    // Log::debug('Full path of the saved image: '.$fullImagePath);
+                    Log::debug('Full path of the saved image: '.$fullImagePath);
                     // log::debug($relativeImagePath);
                     $student->image = $relativeImagePath;
+                }
+                if ($request->hasFile('temp_image_cnic')) {
+                    $image = $request->file('temp_image_cnic');
+                    log::debug($image);
+                    $imageName = time() . '.' . $image->getClientOriginalExtension();
+                    $storagePath = public_path('studentsImagesCnic');
+                    $image->move($storagePath, $imageName);
+                    $fullImagePath = $storagePath . '/' . $imageName;
+                    $relativeImagePath = str_replace(public_path(), '', $fullImagePath);
+                    // Log the full path of the saved image
+                    //log::debug('Full path of the saved image: '.$fullImagePath);
+                    log::debug($relativeImagePath);
+                    $student->cnic_image = $relativeImagePath;
                 }
                 $student->save();
 
@@ -248,7 +283,7 @@ class StudentInfoController extends Controller
         $data = $request->all();
         $record = student::where('user_id', $request->input('user_id'))->first();
         //log::debug($request->input('user_id'));
-        log::debug("call use effect");
+        //log::debug("call use effect");
         return response()->json(['StudentInfo' => $record]);
     }
 }

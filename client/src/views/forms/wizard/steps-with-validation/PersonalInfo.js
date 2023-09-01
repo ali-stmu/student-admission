@@ -35,10 +35,11 @@ const PersonalInfo = ({ stepper, type }) => {
   const [cnic, setCnic] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageCnic, setSelectedImageCnic] = useState(null);
   const [gender, setGender] = useState("");
   const [dateofbirth, setDateofbirth] = useState("");
   const [image, setImage] = useState("");
-
+  const [imageCnic, setImageCnic] = useState("");
   const [religion, setReligion] = useState("islam");
   const [fname, setFname] = useState("");
   const [mname, setMname] = useState("");
@@ -61,7 +62,7 @@ const PersonalInfo = ({ stepper, type }) => {
       .then((response) => response.json())
       .then((AutoFillDataRecived) => {
         // Handle the response from the backend
-        console.log(AutoFillDataRecived);
+        //console.log(AutoFillDataRecived.original.cnic_image);
         //console.log(AutoFillDataRecived.original.first_name)
         if (AutoFillDataRecived.original.first_name) {
           //console.log('hello from if')
@@ -81,6 +82,9 @@ const PersonalInfo = ({ stepper, type }) => {
           const genratedFullUrlForStudentPicsture =
             BASE_URL_OF_SERVER + AutoFillDataRecived.original.image;
           setSelectedImage(genratedFullUrlForStudentPicsture);
+          const genratedFullUrlForStudentCnic =
+            BASE_URL_OF_SERVER + AutoFillDataRecived.original.cnic_image;
+          setSelectedImageCnic(genratedFullUrlForStudentCnic);
 
           //const cnic = AutoFillDataRecived.cnic; // Replace 'cnic' with the actual property name in the response
           //console.log(cnic);
@@ -111,10 +115,6 @@ const PersonalInfo = ({ stepper, type }) => {
     isValidCnic;
 
   const onSubmit = () => {
-    trigger();
-    if (isObjEmpty(errors)) {
-      stepper.next();
-    }
     console.log("ClickedOnSubmite");
     const formData = new FormData();
     formData.append("first_name", firstName);
@@ -132,6 +132,7 @@ const PersonalInfo = ({ stepper, type }) => {
     formData.append("father_occupation", foccupation);
     formData.append("land_line", phone);
     formData.append("temp_image", image);
+    formData.append("temp_image_cnic", imageCnic);
     formData.append("user_id", user_id);
 
     fetch(`${BASE_URL}storeStudentData`, {
@@ -147,7 +148,12 @@ const PersonalInfo = ({ stepper, type }) => {
         // Handle any errors that occurred during the request
         //console.error(error);
       });
+    trigger();
+    if (isObjEmpty(errors)) {
+      stepper.next();
+    }
   };
+  console.log(selectedImageCnic);
   const genderOption = [
     { value: "", label: "Select" },
     { value: "male", label: "Male" },
@@ -263,6 +269,26 @@ const PersonalInfo = ({ stepper, type }) => {
         setImage(file);
       };
     }
+    console.log(selectedImage);
+  };
+  const handleImageChangeCnic = (event) => {
+    const file = event.target.files[0];
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+
+    if (file.size > maxSizeInBytes) {
+      // Display an error message or take appropriate action
+      alert(
+        "Error: The uploaded image exceeds the maximum allowed size of 2MB."
+      );
+    } else {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setSelectedImageCnic(reader.result);
+        setImageCnic(file);
+      };
+    }
+    console.log(selectedImageCnic);
   };
   return (
     <Fragment>
@@ -274,7 +300,7 @@ const PersonalInfo = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              First Name
+              First Name<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -300,7 +326,7 @@ const PersonalInfo = ({ stepper, type }) => {
 
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`last-name-${type}`}>
-              Last Name
+              Last Name<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -315,7 +341,7 @@ const PersonalInfo = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Contact*
+              Contact<sup>*</sup>
             </Label>
             <Input
               type="tel"
@@ -330,7 +356,7 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`email-${type}`}>
-              Email
+              Email<sup>*</sup>
             </Label>
             <Input
               type="email"
@@ -345,7 +371,7 @@ const PersonalInfo = ({ stepper, type }) => {
 
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`last-name-${type}`}>
-              CNIC*
+              CNIC<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -362,7 +388,7 @@ const PersonalInfo = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Gender*
+              Gender<sup>*</sup>
             </Label>
             <Select
               theme={selectThemeColors}
@@ -377,7 +403,7 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`last-name-${type}`}>
-              Religion
+              Religion<sup>*</sup>
             </Label>
             <Select
               theme={selectThemeColors}
@@ -392,7 +418,7 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`email-${type}`}>
-              Date of Birth
+              Date of Birth<sup>*</sup>
             </Label>
             <Input
               type="date"
@@ -407,7 +433,7 @@ const PersonalInfo = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Father Name*
+              Father Name<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -420,7 +446,7 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`middle-name-${type}`}>
-              Mother Name*
+              Mother Name<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -432,7 +458,7 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`last-name-${type}`}>
-              Father Occupation*
+              Father Occupation<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -447,7 +473,7 @@ const PersonalInfo = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Father Contact*
+              Father Contact<sup>*</sup>
             </Label>
             <Input
               type="tel"
@@ -475,9 +501,12 @@ const PersonalInfo = ({ stepper, type }) => {
               required
             />
           </FormGroup>
+        </Row>
+        <h3>Uploads</h3>
+        <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Upload Picture*
+              Upload Passport Size Picture<sup>*</sup>
             </Label>
             <CustomInput
               type="file"
@@ -489,6 +518,27 @@ const PersonalInfo = ({ stepper, type }) => {
 
             {selectedImage && (
               <img src={selectedImage} alt="Selected" width="50" height="50" />
+            )}
+          </FormGroup>
+          <FormGroup tag={Col} md="4">
+            <Label className="form-label" for={`first-name-${type}`}>
+              Upload CNIC Picture<sup>*</sup>
+            </Label>
+            <CustomInput
+              type="file"
+              onChange={handleImageChangeCnic}
+              accept="image/*"
+              id="exampleCustomFileBrowserr"
+              name="customFile"
+            />
+
+            {selectedImageCnic && (
+              <img
+                src={selectedImageCnic}
+                alt="Selected"
+                width="50"
+                height="50"
+              />
             )}
           </FormGroup>
         </Row>
