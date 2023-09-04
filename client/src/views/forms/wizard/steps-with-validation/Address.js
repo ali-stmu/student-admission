@@ -178,20 +178,20 @@ const Address = ({ stepper, type }) => {
         </Row>
         <Row>
           <FormGroup tag={Col} md="6">
-            <Label className="form-label" for={`pincode-${type}`}>
-              Zip code
+            <Label className="form-label" for={`city-${type}`}>
+              State
             </Label>
             <Input
               type="text"
-              name={`pincode-${type}`}
-              id={`pincode-${type}`}
-              placeholder="658921"
+              name={`city-${type}`}
+              id={`city-${type}`}
+              placeholder="Punjab"
               innerRef={register({ required: true })}
               className={classnames({
-                "is-invalid": errors[`pincode-${type}`],
+                "is-invalid": errors[`city-${type}`],
               })}
-              value={tzipcode}
-              onChange={handletZipcodeChange}
+              value={tstate}
+              onChange={handletStateChange}
             />
           </FormGroup>
           <FormGroup tag={Col} md="6">
@@ -214,20 +214,20 @@ const Address = ({ stepper, type }) => {
         </Row>
         <Row>
           <FormGroup tag={Col} md="6">
-            <Label className="form-label" for={`city-${type}`}>
-              State
+            <Label className="form-label" for={`pincode-${type}`}>
+              Zip code
             </Label>
             <Input
               type="text"
-              name={`city-${type}`}
-              id={`city-${type}`}
-              placeholder="Punjab"
+              name={`pincode-${type}`}
+              id={`pincode-${type}`}
+              placeholder="658921"
               innerRef={register({ required: true })}
               className={classnames({
-                "is-invalid": errors[`city-${type}`],
+                "is-invalid": errors[`pincode-${type}`],
               })}
-              value={tstate}
-              onChange={handletStateChange}
+              value={tzipcode}
+              onChange={handletZipcodeChange}
             />
           </FormGroup>
         </Row>
@@ -282,20 +282,20 @@ const Address = ({ stepper, type }) => {
             </Row>
             <Row>
               <FormGroup tag={Col} md="6">
-                <Label className="form-label" for={`pincode-${type}`}>
-                  Zip code
+                <Label className="form-label" for={`city-${type}`}>
+                  State
                 </Label>
                 <Input
                   type="text"
-                  name={`pincode-${type}`}
-                  id={`pincode-${type}`}
-                  placeholder="658921"
+                  name={`city-${type}`}
+                  id={`city-${type}`}
+                  placeholder="Punjab"
                   innerRef={register({ required: true })}
                   className={classnames({
-                    "is-invalid": errors[`pincode-${type}`],
+                    "is-invalid": errors[`city-${type}`],
                   })}
-                  value={zipcode}
-                  onChange={handleZipcodeChange}
+                  value={state}
+                  onChange={handleStateChange}
                 />
               </FormGroup>
               <FormGroup tag={Col} md="6">
@@ -318,20 +318,20 @@ const Address = ({ stepper, type }) => {
             </Row>
             <Row>
               <FormGroup tag={Col} md="6">
-                <Label className="form-label" for={`city-${type}`}>
-                  State
+                <Label className="form-label" for={`pincode-${type}`}>
+                  Zip code
                 </Label>
                 <Input
                   type="text"
-                  name={`city-${type}`}
-                  id={`city-${type}`}
-                  placeholder="Punjab"
+                  name={`pincode-${type}`}
+                  id={`pincode-${type}`}
+                  placeholder="658921"
                   innerRef={register({ required: true })}
                   className={classnames({
-                    "is-invalid": errors[`city-${type}`],
+                    "is-invalid": errors[`pincode-${type}`],
                   })}
-                  value={state}
-                  onChange={handleStateChange}
+                  value={zipcode}
+                  onChange={handleZipcodeChange}
                 />
               </FormGroup>
             </Row>
