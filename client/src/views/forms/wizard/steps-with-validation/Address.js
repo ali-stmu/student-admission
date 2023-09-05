@@ -81,6 +81,7 @@ const Address = ({ stepper, type }) => {
         const countryOptions = data.countries.map((country) => ({
           label: country.name,
           value: country.name,
+          code: country.code,
         }));
         setCountries(countryOptions);
       })
@@ -92,23 +93,29 @@ const Address = ({ stepper, type }) => {
   };
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
-    console.log("Selected Country:", selectedOption.label);
+    console.log("Selected Country:", selectedOption.code);
   
     // Fetch states based on the selected country
-    fetch(`https://restcountries.com/v2/name/${selectedOption.label}`)
+    fetch(`${BASE_URL}states?country_code=${selectedOption.code}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
+  
         // Check if data is available and has states information
-        if (Array.isArray(data) && data.length > 0 && data[0].states) {
-          const stateOptions = data[0].states.map((state) => ({
-            label: state.name,
-            value: state.name,
+        if (Array.isArray(data) && data.length > 0) {
+          const stateArray = data.map((state) => ({
+            id: state.id,
+            label: state.state_name,
+            value: state.state_name,
+            state_code: state.state_code,
+            // Add other properties as needed
           }));
-          setStates(stateOptions);
+          setStates(stateArray);
+          setSelectedState(stateArray.length > 0 ? stateArray[0] : null);
         } else {
-          // If no states information is available, clear the state dropdown
-          setStates([]);
-          setSelectedState(null);
+          // Handle the case where there is no state information
+          console.error("No state data available");
+          setStates([]); // Clear the states array
         }
       })
       .catch((error) => {
@@ -116,7 +123,6 @@ const Address = ({ stepper, type }) => {
         // Handle errors here, e.g., show an error message to the user
       });
   };
-  
   
   const handleZipcodeChange = (event) => {
     setZipCode(event.target.value);
@@ -174,7 +180,7 @@ const Address = ({ stepper, type }) => {
       .catch((error) => console.error(error));
   };
   //console.log(JSON.stringify(data));
-
+console.log(states);
   return (
     <Fragment>
       <div className="content-header">

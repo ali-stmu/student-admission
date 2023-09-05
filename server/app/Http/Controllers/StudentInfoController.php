@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\student;
 use App\Models\Education;
 use App\Models\Degree;
+use App\Models\State;
 use App\Models\program;
 use App\Models\user;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,17 @@ use App\Models\Country; // Import the Country model at the top of your controlle
 class StudentInfoController extends Controller
 {
     //
+    public function getStatesByCountryCode(Request $request)
+    {
+        $countryCode = $request->query('country_code');
+        log::debug($countryCode);
+        
+        // Assuming you have a 'states' table with a 'country_code' column
+        $states = State::where('country_code', $countryCode)->get();
+        log::debug($states);
+        
+        return response()->json($states);
+    }
 public function getAllCountries()
 {
     $countries = Country::all();
