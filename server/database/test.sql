@@ -94,7 +94,7 @@ CREATE TABLE `document` (
   `student_id` int(11) DEFAULT NULL,
   `degree_id` int(255) NOT NULL,
   `document_file_path` varchar(255) NOT NULL,
-  `upload_date` date NOT NULL DEFAULT current_timestamp(),
+  `upload_date` date DEFAULT NULL,
   `status` varchar(255) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
