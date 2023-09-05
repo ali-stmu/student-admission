@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\Student;
+use App\Models\student;
 use Illuminate\Http\Response;
 
 
@@ -18,7 +18,7 @@ class EducationAndDegreeController extends Controller
 
     public function findStudentId($user_id)
     {
-        $student = Student::where('user_id', $user_id)->first();
+        $student = student::where('user_id', $user_id)->first();
         if ($student) {
             $student_id = $student->student_id;
             //Log::debug('Found student_id: ' . $student_id);

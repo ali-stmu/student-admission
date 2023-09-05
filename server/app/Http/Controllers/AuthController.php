@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
-use App\Models\user;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -26,7 +26,7 @@ class AuthController extends Controller
     { 
         $email=$request->input('email');
         $password=$request->input('password');
-        $user = user::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
 
         if ($user && Hash::check($password, $user->password)) {
             
