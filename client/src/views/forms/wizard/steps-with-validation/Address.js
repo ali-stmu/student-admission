@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import classnames from "classnames";
-import { isObjEmpty } from "@utils";
+import Select from "react-select";
+import { selectThemeColors, isObjEmpty } from "@utils";
 import { useForm } from "react-hook-form";
 import { BASE_URL } from "../../../../config";
 import { ArrowLeft, ArrowRight } from "react-feather";
@@ -30,6 +31,8 @@ const Address = ({ stepper, type }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [user_id, setUserId] = useState("");
   const user_id_temp = new FormData();
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const data = {
     address,
     country,
@@ -43,7 +46,6 @@ const Address = ({ stepper, type }) => {
     tstate,
     user_id,
   };
-
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     const studentInfo = JSON.parse(rolesFromStorage);
@@ -69,12 +71,25 @@ const Address = ({ stepper, type }) => {
       })
       .catch((error) => console.error(error));
   }, []);
-
+  useEffect(() => {
+    // Fetch the list of countries from an API
+    fetch("https://restcountries.com/v2/all")
+      .then((response) => response.json())
+      .then((data) => {
+        // Transform the data into the required format for Select component
+        const countryOptions = data.map((country) => ({
+          label: country.name,
+          value: country.name,
+        }));
+        setCountries(countryOptions);
+      })
+      .catch((error) => console.error(error));
+  }, []);
   const handleAddressChange = (event) => {
     setAddress(event.target.value);
   };
-  const handleCountryChange = (event) => {
-    setCountry(event.target.value);
+  const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
   };
   const handleZipcodeChange = (event) => {
     setZipCode(event.target.value);
@@ -88,9 +103,9 @@ const Address = ({ stepper, type }) => {
   const handletAddressChange = (event) => {
     settAddress(event.target.value);
   };
-  const handletCountryChange = (event) => {
-    settCountry(event.target.value);
-  };
+  // const handletCountryChange = (event) => {
+  //   settCountry(event.target.value);
+  // };
   const handletZipcodeChange = (event) => {
     settZipCode(event.target.value);
   };
@@ -132,6 +147,7 @@ const Address = ({ stepper, type }) => {
       .catch((error) => console.error(error));
   };
   console.log(JSON.stringify(data));
+  console.log(selectedCountry);
 
   return (
     <Fragment>
@@ -143,7 +159,7 @@ const Address = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="6">
             <Label className="form-label" for={`address-${type}`}>
-              Address
+              Street Address<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -160,26 +176,23 @@ const Address = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="6">
             <Label className="form-label" for={`landmark-${type}`}>
-              Country
+              Country<sup>*</sup>
             </Label>
-            <Input
-              type="text"
-              name={`landmark-${type}`}
-              id={`landmark-${type}`}
-              placeholder="Pakistan"
-              innerRef={register({ required: true })}
-              className={classnames({
-                "is-invalid": errors[`landmark-${type}`],
-              })}
-              value={tcountry}
-              onChange={handletCountryChange}
+            <Select
+              theme={selectThemeColors}
+              className="react-select"
+              classNamePrefix="select"
+              options={countries}
+              value={selectedCountry}
+              onChange={handleCountryChange}
+              isSearchable={true}
             />
           </FormGroup>
         </Row>
         <Row>
           <FormGroup tag={Col} md="6">
             <Label className="form-label" for={`city-${type}`}>
-              State
+              State<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -196,7 +209,7 @@ const Address = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="6">
             <Label className="form-label" for={`city-${type}`}>
-              City
+              City<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -215,7 +228,7 @@ const Address = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="6">
             <Label className="form-label" for={`pincode-${type}`}>
-              Zip code
+              Zip code<sup>*</sup>
             </Label>
             <Input
               type="text"
