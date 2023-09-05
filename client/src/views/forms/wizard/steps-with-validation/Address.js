@@ -33,6 +33,8 @@ const Address = ({ stepper, type }) => {
   const user_id_temp = new FormData();
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState(null);
   const data = {
     address,
     country,
@@ -88,9 +90,33 @@ const Address = ({ stepper, type }) => {
   const handleAddressChange = (event) => {
     setAddress(event.target.value);
   };
+  console.log(selectedOption.label);
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
+  
+    // Fetch states based on the selected country
+    fetch(`https://restcountries.com/v2/name/${selectedOption.label}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // Check if data is available and has states information
+        if (Array.isArray(data) && data.length > 0 && data[0].states) {
+          const stateOptions = data[0].states.map((state) => ({
+            label: state.name,
+            value: state.name,
+          }));
+          setStates(stateOptions);
+        } else {
+          // If no states information is available, clear the state dropdown
+          setStates([]);
+          setSelectedState(null);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        // Handle errors here, e.g., show an error message to the user
+      });
   };
+  
   const handleZipcodeChange = (event) => {
     setZipCode(event.target.value);
   };
@@ -146,8 +172,7 @@ const Address = ({ stepper, type }) => {
       .then((data) => console.log(data))
       .catch((error) => console.error(error));
   };
-  console.log(JSON.stringify(data));
-  console.log(selectedCountry);
+  //console.log(JSON.stringify(data));
 
   return (
     <Fragment>
@@ -190,21 +215,19 @@ const Address = ({ stepper, type }) => {
           </FormGroup>
         </Row>
         <Row>
-          <FormGroup tag={Col} md="6">
-            <Label className="form-label" for={`city-${type}`}>
+        <FormGroup tag={Col} md="6">
+            <Label className="form-label" for={`state-${type}`}>
               State<sup>*</sup>
             </Label>
-            <Input
-              type="text"
-              name={`city-${type}`}
-              id={`city-${type}`}
-              placeholder="Punjab"
-              innerRef={register({ required: true })}
-              className={classnames({
-                "is-invalid": errors[`city-${type}`],
-              })}
-              value={tstate}
-              onChange={handletStateChange}
+            <Select
+              theme={selectThemeColors}
+              className="react-select"
+              classNamePrefix="select"
+              options={states}
+              value={selectedState}
+              onChange={(selectedOption) => setSelectedState(selectedOption)}
+              isSearchable={true}
+              id={`state-${type}`}
             />
           </FormGroup>
           <FormGroup tag={Col} md="6">
