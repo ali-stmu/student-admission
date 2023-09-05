@@ -74,12 +74,11 @@ const Address = ({ stepper, type }) => {
       .catch((error) => console.error(error));
   }, []);
   useEffect(() => {
-    // Fetch the list of countries from an API
-    fetch("https://restcountries.com/v2/all")
+    fetch(`${BASE_URL}countries`) // Replace BASE_URL with your Laravel API URL
       .then((response) => response.json())
       .then((data) => {
-        // Transform the data into the required format for Select component
-        const countryOptions = data.map((country) => ({
+        // Assuming your Laravel API returns the countries in the expected format
+        const countryOptions = data.countries.map((country) => ({
           label: country.name,
           value: country.name,
         }));
@@ -87,12 +86,13 @@ const Address = ({ stepper, type }) => {
       })
       .catch((error) => console.error(error));
   }, []);
+  
   const handleAddressChange = (event) => {
     setAddress(event.target.value);
   };
-  console.log(selectedOption.label);
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
+    console.log("Selected Country:", selectedOption.label);
   
     // Fetch states based on the selected country
     fetch(`https://restcountries.com/v2/name/${selectedOption.label}`)
@@ -116,6 +116,7 @@ const Address = ({ stepper, type }) => {
         // Handle errors here, e.g., show an error message to the user
       });
   };
+  
   
   const handleZipcodeChange = (event) => {
     setZipCode(event.target.value);

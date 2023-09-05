@@ -14,12 +14,19 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Session;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use App\Models\Country; // Import the Country model at the top of your controller
 
 
 
 class StudentInfoController extends Controller
 {
     //
+public function getAllCountries()
+{
+    $countries = Country::all();
+
+    return response()->json(['countries' => $countries]);
+}
 
     public function getPriority(Request $request)
     {

@@ -8,6 +8,7 @@ use App\Http\Controllers\StudentInfoController;
 use App\Http\Controllers\DegreeController;
 use App\Http\Controllers\educationAndDegreeController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,6 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+// routes/api.php
+
+
+Route::get('/countries', [StudentInfoController::class, 'getAllCountries']);
 Route::post('/register', [userController::class, 'register']);
 Route::post('/SignIn', [AuthController::class, 'SignIn']);
 Route::post('/storeStudentData', [StudentInfoController::class, 'storeStudentData']);
