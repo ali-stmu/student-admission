@@ -248,22 +248,8 @@ function AcademicRecords({ stepper, type }) {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row>
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">Result Status*</Label>
-                <Input
-                  type="select"
-                  name="resultStatus"
-                  id="resultStatus"
-                  value={record.resultStatus}
-                  onChange={(e) => handleRecordChange(e, index)}
-                >
-                  <option value=""></option>
-                  <option value="awaited">Awiated</option>
-                  <option value="declared">Declared</option>
-                </Input>
-              </FormGroup>
-              <FormGroup tag={Col} md="4">
                 <Label for="qualification" className="form-label">
-                  Qualification*
+                  Qualification<sup>*</sup>
                 </Label>
                 <Input
                   type="select"
@@ -281,9 +267,10 @@ function AcademicRecords({ stepper, type }) {
                   ))}
                 </Input>
               </FormGroup>
+
               <FormGroup tag={Col} md="4">
                 <Label for="boardUniversity" className="form-label">
-                  Board/University*
+                  Board/University<sup>*</sup>
                 </Label>
                 <Input
                   type="text"
@@ -293,10 +280,10 @@ function AcademicRecords({ stepper, type }) {
                   onChange={(e) => handleRecordChange(e, index)}
                 ></Input>
               </FormGroup>
-            </Row>
-            <Row>
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">Passing Year*</Label>
+                <Label className="form-label">
+                  Passing Year<sup>*</sup>
+                </Label>
                 <Input
                   type="text"
                   name="passingYear"
@@ -314,9 +301,32 @@ function AcademicRecords({ stepper, type }) {
                   maxLength={4}
                 />
               </FormGroup>
-
+            </Row>
+            <Row>
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">Total Marks/CGPA*</Label>
+                <Label className="form-label">
+                  School Name<sup>*</sup>
+                </Label>
+                <Input></Input>
+              </FormGroup>
+              <FormGroup tag={Col} md="4">
+                <Label className="form-label">
+                  School Country<sup>*</sup>
+                </Label>
+                <Input></Input>
+              </FormGroup>{" "}
+              <FormGroup tag={Col} md="4">
+                <Label className="form-label">
+                  School City<sup>*</sup>
+                </Label>
+                <Input></Input>
+              </FormGroup>
+            </Row>
+            <Row>
+              <FormGroup tag={Col} md="4">
+                <Label className="form-label">
+                  Total Marks<sup>*</sup>
+                </Label>
                 <Input
                   type="text"
                   name="totalMarksCGPA"
@@ -332,9 +342,10 @@ function AcademicRecords({ stepper, type }) {
                   }}
                 />
               </FormGroup>
-
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">Obtained Marks/CGPA*</Label>
+                <Label className="form-label">
+                  Obtained Marks<sup>*</sup>
+                </Label>
                 <Input
                   type="text"
                   name="obtainedMarksCGPA"
@@ -350,8 +361,6 @@ function AcademicRecords({ stepper, type }) {
                   }}
                 />
               </FormGroup>
-            </Row>
-            <Row>
               <FormGroup tag={Col} md="4">
                 <Label className="form-label">Percentage</Label>
                 <Input
@@ -364,9 +373,28 @@ function AcademicRecords({ stepper, type }) {
                   readOnly
                 />
               </FormGroup>
+            </Row>
+            <Row>
+              <FormGroup tag={Col} md="4">
+                <Label className="form-label">
+                  Result Status<sup>*</sup>
+                </Label>
+                <Input
+                  type="select"
+                  name="resultStatus"
+                  id="resultStatus"
+                  value={record.resultStatus}
+                  onChange={(e) => handleRecordChange(e, index)}
+                >
+                  <option value=""></option>
+                  <option value="awaited">Awiated</option>
+                  <option value="declared">Declared</option>
+                </Input>
+              </FormGroup>
+
               <FormGroup tag={Col} md="4">
                 <Label for="degree" className="form-label">
-                  Upload Degree*
+                  Upload Degree<sup>*</sup>
                 </Label>
                 <CustomInput
                   type="file"
