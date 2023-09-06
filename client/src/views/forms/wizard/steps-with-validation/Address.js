@@ -33,8 +33,12 @@ const Address = ({ stepper, type }) => {
   const user_id_temp = new FormData();
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedCountryPermanent, setSelectedCountryPermanent] = useState(null);
   const [states, setStates] = useState([]);
+  const [statesPermanent, setStatesPermanent] = useState([]);
   const [selectedState, setSelectedState] = useState(null);
+  const [selectedStatePermanent, setSelectedStatePermanent] = useState(null);
+
   const data = {
     address,
     country,
@@ -60,6 +64,7 @@ const Address = ({ stepper, type }) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         setAddress(data.StudentInfo.address);
         setZipCode(data.StudentInfo.zip_code);
         setCity(data.StudentInfo.city);
@@ -91,9 +96,19 @@ const Address = ({ stepper, type }) => {
   const handleAddressChange = (event) => {
     setAddress(event.target.value);
   };
+
+  const handleddStateChange = (selectedOption) => {
+    setSelectedState(selectedOption)
+    settState(selectedOption.label);
+  }
+  const handleddStateChangePermanent = (selectedOption) => {
+    setSelectedStatePermanent(selectedOption)
+    setState(selectedOption.label);
+  }
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
-    console.log("Selected Country:", selectedOption.code);
+    settCountry(selectedOption.label);
+    console.log("Selected Country:", selectedOption.label);
   
     // Fetch states based on the selected country
     fetch(`${BASE_URL}states?country_code=${selectedOption.code}`)
@@ -116,6 +131,41 @@ const Address = ({ stepper, type }) => {
           // Handle the case where there is no state information
           console.error("No state data available");
           setStates([]); // Clear the states array
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        // Handle errors here, e.g., show an error message to the user
+      });
+  };
+
+  
+  const handleCountryChangePermanent = (selectedOption) => {
+    setSelectedCountryPermanent(selectedOption);
+    setCountry(selectedOption.label);
+    console.log("Selected Country:", selectedOption.label);
+  
+    // Fetch states based on the selected country
+    fetch(`${BASE_URL}states?country_code=${selectedOption.code}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+  
+        // Check if data is available and has states information
+        if (Array.isArray(data) && data.length > 0) {
+          const stateArray = data.map((state) => ({
+            id: state.id,
+            label: state.state_name,
+            value: state.state_name,
+            state_code: state.state_code,
+            // Add other properties as needed
+          }));
+          setStatesPermanent(stateArray);
+          setSelectedStatePermanent(stateArray.length > 0 ? stateArray[0] : null);
+        } else {
+          // Handle the case where there is no state information
+          console.error("No state data available");
+          setStatesPermanent([]); // Clear the states array
         }
       })
       .catch((error) => {
@@ -232,7 +282,7 @@ console.log(states);
               classNamePrefix="select"
               options={states}
               value={selectedState}
-              onChange={(selectedOption) => setSelectedState(selectedOption)}
+              onChange={handleddStateChange}
               isSearchable={true}
               id={`state-${type}`}
             />
@@ -306,41 +356,36 @@ console.log(states);
                 />
               </FormGroup>
               <FormGroup tag={Col} md="6">
-                <Label className="form-label" for={`landmark-${type}`}>
-                  Country
-                </Label>
-                <Input
-                  type="text"
-                  name={`landmark-${type}`}
-                  id={`landmark-${type}`}
-                  placeholder="Pakistan"
-                  innerRef={register({ required: true })}
-                  className={classnames({
-                    "is-invalid": errors[`landmark-${type}`],
-                  })}
-                  value={country}
-                  onChange={handleCountryChange}
-                />
-              </FormGroup>
+            <Label className="form-label" for={`landmark-${type}`}>
+              Country<sup>*</sup>
+            </Label>
+            <Select
+              theme={selectThemeColors}
+              className="react-select"
+              classNamePrefix="select"
+              options={countries}
+              value={selectedCountryPermanent}
+              onChange={handleCountryChangePermanent}
+              isSearchable={true}
+            />
+          </FormGroup>
             </Row>
             <Row>
-              <FormGroup tag={Col} md="6">
-                <Label className="form-label" for={`city-${type}`}>
-                  State
-                </Label>
-                <Input
-                  type="text"
-                  name={`city-${type}`}
-                  id={`city-${type}`}
-                  placeholder="Punjab"
-                  innerRef={register({ required: true })}
-                  className={classnames({
-                    "is-invalid": errors[`city-${type}`],
-                  })}
-                  value={state}
-                  onChange={handleStateChange}
-                />
-              </FormGroup>
+            <FormGroup tag={Col} md="6">
+            <Label className="form-label" for={`state-${type}`}>
+              State<sup>*</sup>
+            </Label>
+            <Select
+              theme={selectThemeColors}
+              className="react-select"
+              classNamePrefix="select"
+              options={statesPermanent}
+              value={selectedStatePermanent}
+              onChange={handleddStateChangePermanent}
+              isSearchable={true}
+              id={`state-${type}`}
+            />
+          </FormGroup>
               <FormGroup tag={Col} md="6">
                 <Label className="form-label" for={`city-${type}`}>
                   City
