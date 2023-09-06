@@ -69,12 +69,29 @@ const Address = ({ stepper, type }) => {
         setZipCode(data.StudentInfo.zip_code);
         setCity(data.StudentInfo.city);
         setCountry(data.StudentInfo.country);
+        setSelectedCountryPermanent({
+          label: data.StudentInfo.country,
+          value: data.StudentInfo.country,
+        });
         setState(data.StudentInfo.state);
+        setSelectedStatePermanent({
+          label: data.StudentInfo.state,
+          value: data.StudentInfo.state,
+        })
         settAddress(data.StudentInfo.t_address);
         settCountry(data.StudentInfo.t_country);
+        setSelectedCountry({
+          label: data.StudentInfo.t_country,
+          value: data.StudentInfo.t_country,
+        });
         settZipCode(data.StudentInfo.t_zip_code);
         settCity(data.StudentInfo.t_city);
         settState(data.StudentInfo.t_state);
+        setSelectedState({
+          label: data.StudentInfo.t_state,
+          value: data.StudentInfo.t_state,
+        })
+  
       })
       .catch((error) => console.error(error));
   }, []);
