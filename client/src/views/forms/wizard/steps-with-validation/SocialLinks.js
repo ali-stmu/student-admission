@@ -1,7 +1,8 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { selectThemeColors } from "@utils";
+import { selectThemeColors, isObjEmpty } from "@utils";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import Select from "react-select";
 import { BASE_URL } from "../../../../config";
 import { BASE_URL_OF_SERVER } from "../../../../configForStudentPictureServer";
 
@@ -16,7 +17,6 @@ import {
   Form,
   Input,
   CustomInput,
-  Select,
 } from "reactstrap";
 
 function AcademicRecords({ stepper, type }) {
@@ -26,6 +26,9 @@ function AcademicRecords({ stepper, type }) {
   const [degreeOptions, setDegreeOptions] = useState([]);
   const [user_id, setUserId] = useState();
   const [degreeFiles, setDegreeFiles] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
   const [uploadedDegrees, setUploadedDegrees] = useState([]);
 
   const [records, setRecords] = useState([
@@ -37,6 +40,9 @@ function AcademicRecords({ stepper, type }) {
       totalMarksCGPA: "",
       obtainedMarksCGPA: "",
       percentage: "",
+      schoolName: "",
+      schoolCountry: "",
+      schoolCity: "",
       degree: null,
     },
     {
@@ -47,6 +53,9 @@ function AcademicRecords({ stepper, type }) {
       totalMarksCGPA: "",
       obtainedMarksCGPA: "",
       percentage: "",
+      schoolName: "",
+      schoolCountry: "",
+      schoolCity: "",
       degree: null,
     },
   ]);
@@ -71,6 +80,20 @@ function AcademicRecords({ stepper, type }) {
   const calculatePercentage = (total, obtained) => {
     return ((obtained / total) * 100).toFixed(2);
   };
+  useEffect(() => {
+    fetch(`${BASE_URL}countries`) // Replace BASE_URL with your Laravel API URL
+      .then((response) => response.json())
+      .then((data) => {
+        // Assuming your Laravel API returns the countries in the expected format
+        const countryOptions = data.countries.map((country) => ({
+          label: country.name,
+          value: country.name,
+          code: country.code,
+        }));
+        setCountries(countryOptions);
+      })
+      .catch((error) => console.error(error));
+  }, []);
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     // Parse the JSON data
@@ -119,6 +142,10 @@ function AcademicRecords({ stepper, type }) {
       });
   }, []);
 
+  const handleCountryChange = (selectedOption) => {
+    setSelectedCountry(selectedOption);
+    console.log("Selected Country:", selectedOption.label);
+  };
   const onSubmit = () => {
     trigger();
     if (isFormValid) {
@@ -168,6 +195,9 @@ function AcademicRecords({ stepper, type }) {
         totalMarksCGPA: "",
         obtainedMarksCGPA: "",
         percentage: "",
+        schoolName: "",
+        schoolCountry: "",
+        schoolCity: "",
         degree: null,
       },
     ]);
@@ -231,7 +261,10 @@ function AcademicRecords({ stepper, type }) {
         record.boardUniversity &&
         record.passingYear &&
         record.totalMarksCGPA &&
-        record.obtainedMarksCGPA
+        record.obtainedMarksCGPA &&
+        record.schoolName &&
+        record.schoolCountry &&
+        record.schoolCity
       );
     });
     setIsFormValid(isFormValid);
@@ -307,19 +340,27 @@ function AcademicRecords({ stepper, type }) {
                 <Label className="form-label">
                   School Name<sup>*</sup>
                 </Label>
-                <Input></Input>
+                <Input type="text"></Input>
               </FormGroup>
               <FormGroup tag={Col} md="4">
-                <Label className="form-label">
-                  School Country<sup>*</sup>
+                <Label className="form-label" for={`landmark-${type}`}>
+                  Country<sup>*</sup>
                 </Label>
-                <Input></Input>
-              </FormGroup>{" "}
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={countries}
+                  value={selectedCountry}
+                  onChange={handleCountryChange}
+                  isSearchable={true}
+                />
+              </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label className="form-label">
                   School City<sup>*</sup>
                 </Label>
-                <Input></Input>
+                <Input type="text"></Input>
               </FormGroup>
             </Row>
             <Row>
