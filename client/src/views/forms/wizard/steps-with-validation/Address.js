@@ -33,7 +33,8 @@ const Address = ({ stepper, type }) => {
   const user_id_temp = new FormData();
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [selectedCountryPermanent, setSelectedCountryPermanent] = useState(null);
+  const [selectedCountryPermanent, setSelectedCountryPermanent] =
+    useState(null);
   const [states, setStates] = useState([]);
   const [statesPermanent, setStatesPermanent] = useState([]);
   const [selectedState, setSelectedState] = useState(null);
@@ -77,7 +78,7 @@ const Address = ({ stepper, type }) => {
         setSelectedStatePermanent({
           label: data.StudentInfo.state,
           value: data.StudentInfo.state,
-        })
+        });
         settAddress(data.StudentInfo.t_address);
         settCountry(data.StudentInfo.t_country);
         setSelectedCountry({
@@ -90,8 +91,7 @@ const Address = ({ stepper, type }) => {
         setSelectedState({
           label: data.StudentInfo.t_state,
           value: data.StudentInfo.t_state,
-        })
-  
+        });
       })
       .catch((error) => console.error(error));
   }, []);
@@ -109,30 +109,30 @@ const Address = ({ stepper, type }) => {
       })
       .catch((error) => console.error(error));
   }, []);
-  
+
   const handleAddressChange = (event) => {
     setAddress(event.target.value);
   };
 
   const handleddStateChange = (selectedOption) => {
-    setSelectedState(selectedOption)
+    setSelectedState(selectedOption);
     settState(selectedOption.label);
-  }
+  };
   const handleddStateChangePermanent = (selectedOption) => {
-    setSelectedStatePermanent(selectedOption)
+    setSelectedStatePermanent(selectedOption);
     setState(selectedOption.label);
-  }
+  };
   const handleCountryChange = (selectedOption) => {
     setSelectedCountry(selectedOption);
     settCountry(selectedOption.label);
     console.log("Selected Country:", selectedOption.label);
-  
+
     // Fetch states based on the selected country
     fetch(`${BASE_URL}states?country_code=${selectedOption.code}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-  
+
         // Check if data is available and has states information
         if (Array.isArray(data) && data.length > 0) {
           const stateArray = data.map((state) => ({
@@ -156,18 +156,17 @@ const Address = ({ stepper, type }) => {
       });
   };
 
-  
   const handleCountryChangePermanent = (selectedOption) => {
     setSelectedCountryPermanent(selectedOption);
     setCountry(selectedOption.label);
     console.log("Selected Country:", selectedOption.label);
-  
+
     // Fetch states based on the selected country
     fetch(`${BASE_URL}states?country_code=${selectedOption.code}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-  
+
         // Check if data is available and has states information
         if (Array.isArray(data) && data.length > 0) {
           const stateArray = data.map((state) => ({
@@ -178,7 +177,9 @@ const Address = ({ stepper, type }) => {
             // Add other properties as needed
           }));
           setStatesPermanent(stateArray);
-          setSelectedStatePermanent(stateArray.length > 0 ? stateArray[0] : null);
+          setSelectedStatePermanent(
+            stateArray.length > 0 ? stateArray[0] : null
+          );
         } else {
           // Handle the case where there is no state information
           console.error("No state data available");
@@ -190,7 +191,7 @@ const Address = ({ stepper, type }) => {
         // Handle errors here, e.g., show an error message to the user
       });
   };
-  
+
   const handleZipcodeChange = (event) => {
     setZipCode(event.target.value);
   };
@@ -247,7 +248,7 @@ const Address = ({ stepper, type }) => {
       .catch((error) => console.error(error));
   };
   //console.log(JSON.stringify(data));
-console.log(states);
+  console.log(states);
   return (
     <Fragment>
       <div className="content-header">
@@ -289,7 +290,7 @@ console.log(states);
           </FormGroup>
         </Row>
         <Row>
-        <FormGroup tag={Col} md="6">
+          <FormGroup tag={Col} md="6">
             <Label className="form-label" for={`state-${type}`}>
               State<sup>*</sup>
             </Label>
@@ -373,36 +374,36 @@ console.log(states);
                 />
               </FormGroup>
               <FormGroup tag={Col} md="6">
-            <Label className="form-label" for={`landmark-${type}`}>
-              Country<sup>*</sup>
-            </Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              options={countries}
-              value={selectedCountryPermanent}
-              onChange={handleCountryChangePermanent}
-              isSearchable={true}
-            />
-          </FormGroup>
+                <Label className="form-label" for={`landmark-${type}`}>
+                  Country<sup>*</sup>
+                </Label>
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={countries}
+                  value={selectedCountryPermanent}
+                  onChange={handleCountryChangePermanent}
+                  isSearchable={true}
+                />
+              </FormGroup>
             </Row>
             <Row>
-            <FormGroup tag={Col} md="6">
-            <Label className="form-label" for={`state-${type}`}>
-              State<sup>*</sup>
-            </Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              options={statesPermanent}
-              value={selectedStatePermanent}
-              onChange={handleddStateChangePermanent}
-              isSearchable={true}
-              id={`state-${type}`}
-            />
-          </FormGroup>
+              <FormGroup tag={Col} md="6">
+                <Label className="form-label" for={`state-${type}`}>
+                  State<sup>*</sup>
+                </Label>
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={statesPermanent}
+                  value={selectedStatePermanent}
+                  onChange={handleddStateChangePermanent}
+                  isSearchable={true}
+                  id={`state-${type}`}
+                />
+              </FormGroup>
               <FormGroup tag={Col} md="6">
                 <Label className="form-label" for={`city-${type}`}>
                   City

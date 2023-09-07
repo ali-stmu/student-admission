@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { useForm } from "react-hook-form";
@@ -26,6 +26,13 @@ const ProgramPriority = ({ stepper, type }) => {
   const [priority1, setPriority1] = useState(null);
   const [priority2, setPriority2] = useState(null);
   const [priority3, setPriority3] = useState(null);
+  const [user_id, setUserId] = useState("");
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    const studentInfo = JSON.parse(rolesFromStorage);
+    setUserId(studentInfo.user_id);
+  }, []);
+  console.log(user_id);
   const onSubmit = () => {
     stepper.next();
   };

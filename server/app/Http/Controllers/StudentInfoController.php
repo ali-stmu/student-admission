@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\student;
-use App\Models\Education;
+use App\Models\education;
 use App\Models\Degree;
 use App\Models\State;
-use App\Models\program;
+use App\Models\Program;
 use App\Models\user;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -50,20 +50,21 @@ public function getAllCountries()
         $student = new student;
         $studentId = student::where('user_id', $request->user_id)->value('student_id');
 
-        $studentInfoToCalcuatePercentage = Education::select('total_marks', 'degree_id', 'result_status', 'obtained_marks')
+        $studentInfoToCalcuatePercentage = education::select('total_marks', 'degree_id', 'result_status', 'obtained_marks')
             ->where('student_id', $studentId)
             ->get();;
 
         log::debug($studentInfoToCalcuatePercentage);
 
-        $intermediateDegrees = Degree::where('degree_description', 'Intermediate')->pluck('degree_name', 'degree_id');
-
+        $intermediateDegrees = Degree::where('degree_description', 'Description Intermediate')->pluck('degree_name', 'degree_id');
+        log::debug($intermediateDegrees);
         foreach ($studentInfoToCalcuatePercentage as $education) {
             $degreeId = $education->degree_id;
             $result_status = $education->result_status;
-
+            //log::debug($degreeId);
             if ($intermediateDegrees->has($degreeId) && $result_status == "declared") {
                 $degreeName = $intermediateDegrees->get($degreeId);
+                log::debug($degreeName);
                 foreach ($studentInfoToCalcuatePercentage as $education) {
                     if ($education['degree_id'] === $degreeId) {
 
@@ -72,7 +73,7 @@ public function getAllCountries()
                         $percentage = ($obtainedMarks / $totalMarks) * 100;
                         log::debug($percentage);
 
-                        $programs = program::select('program_name', 'program_criteria')
+                        $programs = Program::select('program_name', 'program_criteria')
                             ->where('degree_id', $degreeId)
                             ->get();
                         log::debug($programs);
