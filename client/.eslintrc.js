@@ -40,7 +40,7 @@ module.exports = {
     "comma-style": "error",
     "computed-property-spacing": "error",
     "func-call-spacing": "error",
-    "implicit-arrow-linebreak": ["error", "beside"],
+    //"implicit-arrow-linebreak": ["error", "beside"],
     // indent: ['error', 4],
     "keyword-spacing": "error",
     //'multiline-ternary': ['error', 'never'],

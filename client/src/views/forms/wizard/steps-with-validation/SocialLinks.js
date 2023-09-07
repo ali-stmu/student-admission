@@ -370,7 +370,9 @@ function AcademicRecords({ stepper, type }) {
                   classNamePrefix="select"
                   options={countries}
                   value={selectedCountry}
-                  onChange={(selectedOption) => handleCountryChange(selectedOption, index)}
+                  onChange={(selectedOption) =>
+                    handleCountryChange(selectedOption, index)
+                  }
                   isSearchable={true}
                 />
               </FormGroup>
