@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { useForm } from "react-hook-form";
+import { BASE_URL } from "../../../../config";
 
 import {
   Label,
@@ -27,11 +28,33 @@ const ProgramPriority = ({ stepper, type }) => {
   const [priority2, setPriority2] = useState(null);
   const [priority3, setPriority3] = useState(null);
   const [user_id, setUserId] = useState("");
+  const [apiResponse, setApiResponse] = useState(null); // To store the API response
+  const [programOptions, setProgramOptions] = useState([]); // To store program name options
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     const studentInfo = JSON.parse(rolesFromStorage);
     setUserId(studentInfo.user_id);
-  }, []);
+    // Make the API POST request
+    fetch(`${BASE_URL}getPriority?user_id=${studentInfo.user_id}`, {
+      method: "POST",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setApiResponse(data); // Store the API response in the state
+        console.log(data);
+        if (data && data.Programs && Array.isArray(data.Programs)) {
+          const options = data.Programs.map((program) => ({
+            label: program.program_name,
+            value: program.program_name,
+          }));
+          setProgramOptions(options);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []); // The empty dependency array ensures this effect runs once on component mount
+
   console.log(user_id);
   const onSubmit = () => {
     stepper.next();
@@ -56,7 +79,7 @@ const ProgramPriority = ({ stepper, type }) => {
           className="react-select"
           classNamePrefix="select"
           defaultValue={null}
-          options={priorityOptions}
+          options={programOptions}
           value={priority1}
           onChange={handleChangePriority1}
           isClearable={true}
@@ -65,7 +88,7 @@ const ProgramPriority = ({ stepper, type }) => {
           className="react-select"
           classNamePrefix="select"
           defaultValue={null}
-          options={priorityOptions}
+          options={programOptions}
           value={priority2}
           onChange={handleChangePriority2}
           isClearable={true}
@@ -74,7 +97,7 @@ const ProgramPriority = ({ stepper, type }) => {
           className="react-select"
           classNamePrefix="select"
           defaultValue={null}
-          options={priorityOptions}
+          options={programOptions}
           value={priority3}
           onChange={handleChangePriority3}
           isClearable={true}
@@ -99,6 +122,7 @@ const ProgramPriority = ({ stepper, type }) => {
           </tbody>
         </table>
       </div>
+
       <div className="d-flex justify-content-between">
         <Button.Ripple
           color="primary"
