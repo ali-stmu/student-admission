@@ -28,5 +28,8 @@ class education extends Model
         'CGPA',
         'percentage_criteria',
         'result_status',
+        'school_name',
+        'school_country',
+        'school_city',
     ];
 }

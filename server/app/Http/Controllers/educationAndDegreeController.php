@@ -39,6 +39,9 @@ class EducationAndDegreeController extends Controller
                 'education.obtained_marks',
                 'education.passing_year',
                 'education.total_marks',
+                'education.school_name',
+                'education.school_country',
+                'education.school_city',
                 'document.document_file_path',
             )
             ->where('education.student_id', '=', $studentId)
@@ -63,7 +66,6 @@ class EducationAndDegreeController extends Controller
 
             //going to handle deleted rows using by zeroing the status.
             //  $compare_results = $this->findEducationAndDocument($studentId);
-
             $resultStatus = $request->input('resultStatus');
             $qualification = $request->input('qualification');
             $boardUniversity = $request->input('boardUniversity');
@@ -71,6 +73,9 @@ class EducationAndDegreeController extends Controller
             $totalMarksCGPA = $request->input('totalMarksCGPA');
             $result_status = $request->input('resultStatus');
             $obtainedMarksCGPA = $request->input('obtainedMarksCGPA');
+            $schoolName = $request->input('schoolName');
+            $schoolCountry = $request->input('schoolCountry');
+            $schoolCity = $request->input('schoolCity');
             $percentage = $request->input('percentage');
             log::debug($percentage);
             log::debug($degreeFiles = $request->file('degree'));
@@ -87,6 +92,9 @@ class EducationAndDegreeController extends Controller
                 $education->total_marks = $totalMarksCGPA[$index];
                 $education->result_status = $result_status[$index];
                 $education->obtained_marks = $obtainedMarksCGPA[$index];
+                $education->school_name = $schoolName[$index] ?? null;
+                $education->school_country = $schoolCountry[$index] ?? null;
+                $education->school_city = $schoolCity[$index] ?? null;
                 $education->percentage_criteria = $percentage[$index];
                 $education->student_id = $studentId;
                 $document->student_id = $studentId;
@@ -108,6 +116,9 @@ class EducationAndDegreeController extends Controller
             $passingYear = $request->input('passingYear');
             $totalMarksCGPA = $request->input('totalMarksCGPA');
             $result_status = $request->input('resultStatus');
+            $schoolName = $request->input('schoolName');
+            $schoolCountry = $request->input('schoolCountry');
+            $schoolCity = $request->input('schoolCity');
             $obtainedMarksCGPA = $request->input('obtainedMarksCGPA');
             log::debug($percentage = $request->input('percentage'));
             $degreeFiles = $request->file('degree');
@@ -124,12 +135,14 @@ class EducationAndDegreeController extends Controller
                 $education->result_status = $result_status[$index];
                 $education->obtained_marks = $obtainedMarksCGPA[$index];
                 $education->percentage_criteria = $percentage[$index];
+                $education->school_name = $schoolName[$index];
+                $education->school_country = $schoolCountry[$index];
+                $education->school_city = $schoolCity[$index];
                 $education->student_id = $studentId;
                 $document->student_id = $studentId;
                 $document->degree_id = $qualification[$index];
                 // Save the education record
                 // $education->save();
-
                 // Store the degree file if available
                 if ($degreeFiles[$index]) {
                     //log::debug($degreeFiles[$index]->store('degrees'));

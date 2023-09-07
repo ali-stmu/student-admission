@@ -127,6 +127,9 @@ function AcademicRecords({ stepper, type }) {
               ? item.obtained_marks.toString()
               : "",
             percentage: percentage,
+            schoolName: item.school_name,
+            schoolCountry: item.school_country,
+            schoolCity: item.school_city,
             degree: item.document_file_path,
           };
         });
@@ -142,9 +145,14 @@ function AcademicRecords({ stepper, type }) {
       });
   }, []);
 
-  const handleCountryChange = (selectedOption) => {
+  const handleCountryChange = (selectedOption, index) => {
     setSelectedCountry(selectedOption);
-    console.log("Selected Country:", selectedOption.label);
+    const updatedRecords = [...records];
+    updatedRecords[index] = {
+      ...updatedRecords[index],
+      schoolCountry: selectedOption.value, // Assuming `value` holds the country value
+    };
+    setRecords(updatedRecords);
   };
   const onSubmit = () => {
     trigger();
@@ -162,6 +170,10 @@ function AcademicRecords({ stepper, type }) {
           record.obtainedMarksCGPA
         );
         formData.append(`percentage[${index}]`, record.percentage);
+        formData.append(`schoolName[${index}]`, record.schoolName);
+        formData.append(`schoolCountry[${index}]`, record.schoolCountry);
+        formData.append(`schoolCity[${index}]`, record.schoolCity);
+
         formData.append(`degree[${index}]`, degreeFiles[index]);
       });
       formData.append("user_id", user_id);
@@ -340,7 +352,13 @@ function AcademicRecords({ stepper, type }) {
                 <Label className="form-label">
                   School Name<sup>*</sup>
                 </Label>
-                <Input type="text"></Input>
+                <Input
+                  type="text"
+                  name="schoolName"
+                  id="schoolName"
+                  value={record.schoolName}
+                  onChange={(e) => handleRecordChange(e, index)}
+                ></Input>
               </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label className="form-label" for={`landmark-${type}`}>
@@ -352,7 +370,7 @@ function AcademicRecords({ stepper, type }) {
                   classNamePrefix="select"
                   options={countries}
                   value={selectedCountry}
-                  onChange={handleCountryChange}
+                  onChange={(selectedOption) => handleCountryChange(selectedOption, index)}
                   isSearchable={true}
                 />
               </FormGroup>
@@ -360,7 +378,13 @@ function AcademicRecords({ stepper, type }) {
                 <Label className="form-label">
                   School City<sup>*</sup>
                 </Label>
-                <Input type="text"></Input>
+                <Input
+                  type="text"
+                  name="schoolCity"
+                  id="schoolCity"
+                  value={record.schoolCity}
+                  onChange={(e) => handleRecordChange(e, index)}
+                ></Input>
               </FormGroup>
             </Row>
             <Row>
