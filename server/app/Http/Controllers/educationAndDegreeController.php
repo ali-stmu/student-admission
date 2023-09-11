@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\student;
+use App\Models\TestScore;
+
 use Illuminate\Http\Response;
 
 
@@ -49,6 +51,39 @@ class EducationAndDegreeController extends Controller
             ->get());
     }
 
+    public function createTestScore(Request $request)
+{
+    // Validate the incoming request data
+    // $request->validate([
+    //     'student_id' => 'required|integer',
+    //     'test_score' => 'required|integer',
+    //     'test_date' => 'required|date',
+    //     'test_name' => 'nullable|string',
+    //     'skip_test' => 'nullable|boolean',
+    //     'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png',
+    // ]);
+
+    // Handle file upload and storage
+    $attachmentPath = $request->file('attachment')->store('attachments'); // 'attachments' is the directory where attachments will be stored
+
+    // Create a new test score record
+    $testScore = new TestScore([
+        'user_id' => $request->input('user_id'),
+        'test_score' => $request->input('test_score'),
+        'test_date' => $request->input('test_date'),
+        'test_score_total' => $request->input('test_score_total'),
+        'test_name' => $request->input('test_name'),
+        'skip_test' => $request->input('skip_test'),
+        'attachment_url' => $attachmentPath, // Save the attachment path in the column
+    ]);
+    log::debug($testScore);
+
+    // Save the test score record
+    $testScore->save();
+
+    // Return a response
+    return response()->json(['message' => 'Test score inserted successfully']);
+}
 
     public function storeDegreeAndDocument(Request $request)
     {
