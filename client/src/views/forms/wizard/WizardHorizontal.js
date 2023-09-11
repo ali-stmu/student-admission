@@ -7,6 +7,7 @@ import PersonalInfo from "./steps-with-validation/PersonalInfo";
 import AccountDetails from "./steps-with-validation/AccountDetails";
 import ProgramPriority from "./steps-with-validation/ProgramPriority";
 import Challan from "./steps-with-validation/Challan";
+import TestScore from "./steps-with-validation/testScore";
 
 const WizardHorizontal = () => {
   const [stepper, setStepper] = useState(null);
@@ -36,6 +37,12 @@ const WizardHorizontal = () => {
       title: "Academic Information",
       subtitle: "Add Academic Information",
       content: <SocialLinks stepper={stepper} type="wizard-horizontal" />,
+    },
+    {
+      id: "test-scores",
+      title: "Test Scores",
+      subtitle: "Add Test Scores",
+      content: <TestScore stepper={stepper} type="wizard-horizontal" />,
     },
     {
       id: "program-priority",
