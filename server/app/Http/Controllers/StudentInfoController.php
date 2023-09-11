@@ -40,63 +40,53 @@ public function getAllCountries()
     return response()->json(['countries' => $countries]);
 }
 
-    public function getPriority(Request $request)
-    {
+public function getPriority(Request $request)
+{
+    try {
         $totalMarks = 0;
         $obtainedMarks = 0;
-
-        //log::debug("Called");
 
         $student = new student;
         $studentId = student::where('user_id', $request->user_id)->value('student_id');
 
         $studentInfoToCalcuatePercentage = education::select('total_marks', 'degree_id', 'result_status', 'obtained_marks')
             ->where('student_id', $studentId)
-            ->get();;
-
-        log::debug($studentInfoToCalcuatePercentage);
+            ->get();
 
         $intermediateDegrees = Degree::where('degree_description', 'Description Intermediate')->pluck('degree_name', 'degree_id');
-        log::debug($intermediateDegrees);
+
+        $programs = [];
+
         foreach ($studentInfoToCalcuatePercentage as $education) {
             $degreeId = $education->degree_id;
             $result_status = $education->result_status;
-            //log::debug($degreeId);
+
             if ($intermediateDegrees->has($degreeId) && $result_status == "declared") {
-                $degreeName = $intermediateDegrees->get($degreeId);
-                log::debug($degreeName);
-                foreach ($studentInfoToCalcuatePercentage as $education) {
-                    if ($education['degree_id'] === $degreeId) {
-
-                        $totalMarks += $education['total_marks'];
-                        $obtainedMarks += $education['obtained_marks'];
-                        $percentage = ($obtainedMarks / $totalMarks) * 100;
-                        log::debug($percentage);
-
-                        $programs = Program::select('program_name', 'program_criteria')
-                            ->where('degree_id', $degreeId)
-                            ->get();
-                        log::debug($programs);
-                        return response()->json(['Programs' => $programs]);
+                foreach ($studentInfoToCalcuatePercentage as $edu) {
+                    if ($edu->degree_id === $degreeId) {
+                        $totalMarks += $edu->total_marks;
+                        $obtainedMarks += $edu->obtained_marks;
                     }
                 }
-                //log::debug($degreeName);
 
-                // Now you can use $degreeName along with other education data for further calculations
-            } else {
-                // Handle the case where a matching intermediate degree is not found
+                $percentage = ($obtainedMarks / $totalMarks) * 100;
+
+                $programs = Program::select('program_name', 'program_criteria')
+                    ->where('degree_id', $degreeId)
+                    ->get();
             }
         }
 
-
-        if ($studentId) {
-            // return response()->json(['StudentInfo' => $studentId]);
-        } else {
-            // Student record not found
-            return "Not Found";
-            return response()->json(['Awaked' => "Not Found"]);
+        if (empty($programs)) {
+            return response()->json(['error' => 'No programs found'], 404);
         }
+
+        return response()->json(['Programs' => $programs]);
+    } catch (\Exception $e) {
+        // Handle any exceptions that may occur
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
 
 
 

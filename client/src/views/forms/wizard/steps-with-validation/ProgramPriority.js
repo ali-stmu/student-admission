@@ -14,33 +14,27 @@ import {
   Input,
   CustomInput,
 } from "reactstrap";
-const priorityOptions = [
-  { label: "Computer Science", value: "cs" },
-  { label: "Mathematics", value: "math" },
-  { label: "Engineering", value: "eng" },
-  { label: "Biology", value: "bio" },
-  { label: "Psychology", value: "psy" },
-  { label: "English", value: "engli" },
-];
 
 const ProgramPriority = ({ stepper, type }) => {
   const [priority1, setPriority1] = useState(null);
   const [priority2, setPriority2] = useState(null);
   const [priority3, setPriority3] = useState(null);
   const [user_id, setUserId] = useState("");
-  const [apiResponse, setApiResponse] = useState(null); // To store the API response
-  const [programOptions, setProgramOptions] = useState([]); // To store program name options
+  const [apiResponse, setApiResponse] = useState(null);
+  const [programOptions, setProgramOptions] = useState([]);
+  const [isDisabled, setIsDisabled] = useState(true); // Initially, everything is disabled
+
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     const studentInfo = JSON.parse(rolesFromStorage);
     setUserId(studentInfo.user_id);
-    // Make the API POST request
+
     fetch(`${BASE_URL}getPriority?user_id=${studentInfo.user_id}`, {
       method: "POST",
     })
       .then((response) => response.json())
       .then((data) => {
-        setApiResponse(data); // Store the API response in the state
+        setApiResponse(data);
         console.log(data);
         if (data && data.Programs && Array.isArray(data.Programs)) {
           const options = data.Programs.map((program) => ({
@@ -51,11 +45,12 @@ const ProgramPriority = ({ stepper, type }) => {
         }
       })
       .catch((error) => {
+        setProgramOptions([]); // or setProgramOptions({})
         console.error("Error fetching data:", error);
+        // Set programOptions to an empty array or object here
       });
-  }, []); // The empty dependency array ensures this effect runs once on component mount
+  }, [isDisabled]);
 
-  console.log(user_id);
   const onSubmit = () => {
     stepper.next();
   };
@@ -83,6 +78,7 @@ const ProgramPriority = ({ stepper, type }) => {
           value={priority1}
           onChange={handleChangePriority1}
           isClearable={true}
+          isDisabled={isDisabled}
         />
         <Select
           className="react-select"
@@ -92,6 +88,7 @@ const ProgramPriority = ({ stepper, type }) => {
           value={priority2}
           onChange={handleChangePriority2}
           isClearable={true}
+          isDisabled={isDisabled}
         />
         <Select
           className="react-select"
@@ -101,6 +98,7 @@ const ProgramPriority = ({ stepper, type }) => {
           value={priority3}
           onChange={handleChangePriority3}
           isClearable={true}
+          isDisabled={isDisabled}
         />
       </div>
       <div>
@@ -128,6 +126,7 @@ const ProgramPriority = ({ stepper, type }) => {
           color="primary"
           className="btn-prev"
           onClick={() => stepper.previous()}
+          disabled={isDisabled}
         >
           <ArrowLeft
             size={14}
@@ -138,10 +137,17 @@ const ProgramPriority = ({ stepper, type }) => {
           </span>
         </Button.Ripple>
         <Button.Ripple
+          color="danger"
+          onClick={() => setIsDisabled(!isDisabled)}
+        >
+          {isDisabled ? "Click Here To show Priority" : "Clicked..."}
+        </Button.Ripple>
+        <Button.Ripple
           type="submit"
           color="primary"
           className="btn-next"
           onClick={onSubmit}
+          disabled={isDisabled}
         >
           <span className="align-middle d-sm-inline-block d-none">Next</span>
           <ArrowRight
