@@ -126,7 +126,7 @@ const ProgramPriority = ({ stepper, type }) => {
           color="primary"
           className="btn-prev"
           onClick={() => stepper.previous()}
-          disabled={isDisabled}
+          //disabled={isDisabled}
         >
           <ArrowLeft
             size={14}
