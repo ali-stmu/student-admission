@@ -17,6 +17,9 @@ import CreatableSelect from "react-select/creatable";
 const TestScore = ({ stepper, type }) => {
   const { control, handleSubmit, register, errors } = useForm();
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const skipToNextStep = () => {
+    stepper.next();
+  };
   const onSubmit = (data) => {
     // Handle form submission here
     stepper.next();
@@ -118,7 +121,14 @@ const TestScore = ({ stepper, type }) => {
           Previous
         </Button.Ripple>
         <Button.Ripple type="submit" color="primary" className="btn-next">
-          Next
+          Save & Next
+        </Button.Ripple>
+        <Button.Ripple
+          color="secondary"
+          className="btn-skip"
+          onClick={skipToNextStep}
+        >
+          Skip
         </Button.Ripple>
       </div>
     </Form>
