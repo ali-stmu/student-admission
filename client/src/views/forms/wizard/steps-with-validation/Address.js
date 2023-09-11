@@ -343,7 +343,7 @@ const Address = ({ stepper, type }) => {
           </FormGroup>
         </Row>
         <div className="content-header">
-          <h4>Enter Your Permannt Address.</h4>
+          <h4>Enter Your Permanent Address.</h4>
           <CustomInput
             inline
             type="switch"
