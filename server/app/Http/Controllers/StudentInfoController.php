@@ -73,6 +73,7 @@ public function getPriority(Request $request)
 
                 $programs = Program::select('program_name', 'program_criteria')
                     ->where('degree_id', $degreeId)
+                    ->where('program_criteria', '<', $percentage)
                     ->get();
             }
         }
