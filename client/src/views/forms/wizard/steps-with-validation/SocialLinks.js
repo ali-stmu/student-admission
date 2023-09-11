@@ -515,7 +515,9 @@ function AcademicRecords({ stepper, type }) {
           className="btn-next"
           onClick={onSubmit}
         >
-          <span className="align-middle d-sm-inline-block d-none">Next</span>
+          <span className="align-middle d-sm-inline-block d-none">
+            Save & Next
+          </span>
           <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
         </Button.Ripple>
       </div>

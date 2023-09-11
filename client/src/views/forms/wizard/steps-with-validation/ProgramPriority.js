@@ -149,7 +149,9 @@ const ProgramPriority = ({ stepper, type }) => {
           onClick={onSubmit}
           disabled={isDisabled}
         >
-          <span className="align-middle d-sm-inline-block d-none">Next</span>
+          <span className="align-middle d-sm-inline-block d-none">
+            Save & Next
+          </span>
           <ArrowRight
             size={14}
             className="align-middle ml-sm-25 ml-0"
