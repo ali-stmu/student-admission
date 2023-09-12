@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { BASE_URL } from "../../../../config";
 import {
   Label,
@@ -15,19 +15,21 @@ import {
 import CreatableSelect from "react-select/creatable";
 
 const TestScore = ({ stepper, type }) => {
-  const { control, handleSubmit, register, errors, watch } = useForm();
+  const { control, handleSubmit, register, errors, watch, setValue } =
+    useForm();
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [TempUserid, setTempUserid] = useState(null);
+  const [name, setname] = useState(null);
 
   const skipToNextStep = () => {
     stepper.next();
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
+    console.log(name.value);
     try {
       const formData = new FormData();
-      formData.append("test_name", data.testName?.value || ""); // Use the value property
+      formData.append("test_name", name?.value || ""); // Use the value property
       formData.append("test_score_total", data.totalMarks);
       formData.append("test_score", data.obtainedMarks);
       formData.append("test_date", data.testYear);
@@ -66,31 +68,23 @@ const TestScore = ({ stepper, type }) => {
     { value: "Option2", label: "Option 2" },
     // Add more options as needed
   ];
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormGroup>
         <Label className="test-name-label" for="testName">
           Test Name
         </Label>
-        <Controller
+        <Select
           name="testName"
           id="testName"
-          control={control}
           defaultValue=""
-          render={({ field }) => (
-            <>
-              <CreatableSelect
-                {...field}
-                isClearable
-                className="react-select"
-                classNamePrefix="select"
-                options={testNameOptions}
-                onChange={(value) => {
-                  console.log(value); // Add this line to check the selected value
-                }}
-              />
-            </>
-          )}
+          options={testNameOptions}
+          onChange={(value) => {
+            console.log(value); // Add this line to check the selected value
+            setValue("testName", value); // Set the value using react-hook-form
+            setname(value);
+          }}
         />
       </FormGroup>
       <Row>
