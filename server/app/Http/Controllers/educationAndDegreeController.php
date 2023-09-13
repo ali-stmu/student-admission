@@ -85,7 +85,9 @@ class EducationAndDegreeController extends Controller
     log::debug($student_id_json);
     $studentId = $student_id_json->getData()->student_id;
     log::debug("insert test record function");
+    if($request->file('attachment')!== null){
     $attachmentPath = $request->file('attachment')->store('attachments'); // 'attachments' is the directory where attachments will be stored
+    }
 
     $existingTestInfo = TestScore::where('student_id', $studentId)->get();
     if ($existingTestInfo->count() > 0) {

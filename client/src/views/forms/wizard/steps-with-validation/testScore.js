@@ -22,6 +22,8 @@ const TestScore = ({ stepper, type }) => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [TempUserid, setTempUserid] = useState(null);
   const [name, setname] = useState(null);
+  const [attachmentUrl, setAttachmentUrl] = useState(null);
+
   const [testScoreData, setTestScoreData] = useState(null);
   const skipToNextStepWithApiCall = async () => {
     try {
@@ -81,11 +83,11 @@ const TestScore = ({ stepper, type }) => {
       setValue("totalMarks", firstTestData.test_score_total);
       setValue("obtainedMarks", firstTestData.test_score);
       setValue("testYear", firstTestData.test_date);
+      setAttachmentUrl(firstTestData.attachment_url); // Assuming the attachment URL is a property in your testScoreData object
     }
   }, [testScoreData, setValue]);
 
   const onSubmit = async (data) => {
-    console.log(name.value);
     try {
       const formData = new FormData();
       formData.append("test_name", name?.value || ""); // Use the value property
@@ -202,17 +204,33 @@ const TestScore = ({ stepper, type }) => {
       </FormGroup>
       <FormGroup>
         <Label for="attachment">Attachment (PDF/Image)</Label>
-        <CustomInput
-          type="file"
-          name="attachment"
-          id="attachment"
-          accept=".pdf, .jpg, .jpeg, .png"
-          innerRef={register({ required: true })}
-        />
-        {errors.attachment && (
+        {attachmentUrl ? (
+          <div>
+            <b>Already Uploaded</b>
+            <br />
+            <CustomInput
+              type="file"
+              name="attachment"
+              id="attachment"
+              accept=".pdf, .jpg, .jpeg, .png"
+              innerRef={register()}
+            />
+          </div>
+        ) : (
+          <CustomInput
+            type="file"
+            name="attachment"
+            id="attachment"
+            accept=".pdf, .jpg, .jpeg, .png"
+            innerRef={register({ required: true })}
+          />
+        )}
+        {/* Only show the error message if attachment is required and not already uploaded */}
+        {errors.attachment && !attachmentUrl && (
           <span className="text-danger">Please select a valid file.</span>
         )}
       </FormGroup>
+
       <div className="d-flex justify-content-between">
         <Button.Ripple color="primary" className="btn-prev" onClick={previous}>
           Previous
