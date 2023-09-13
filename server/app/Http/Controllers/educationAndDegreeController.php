@@ -65,10 +65,15 @@ class EducationAndDegreeController extends Controller
 
     // Handle file upload and storage
     $attachmentPath = $request->file('attachment')->store('attachments'); // 'attachments' is the directory where attachments will be stored
+    $user_id = $request->input('user_id');
+    log::debug($user_id);
+    $student_id_json= $this->findStudentId($user_id);
+    log::debug($student_id_json);
+    $studentId = $student_id_json->getData()->student_id;
 
     // Create a new test score record
     $testScore = new TestScore([
-        'user_id' => $request->input('user_id'),
+        'student_id' => $studentId,
         'test_score' => $request->input('test_score'),
         'test_date' => $request->input('test_date'),
         'test_score_total' => $request->input('test_score_total'),
