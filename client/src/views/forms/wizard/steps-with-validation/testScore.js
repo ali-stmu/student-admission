@@ -142,6 +142,7 @@ const TestScore = ({ stepper, type }) => {
           id="testName"
           defaultValue=""
           options={testNameOptions}
+          value={testNameOptions[0]}
           onChange={(value) => {
             console.log(value); // Add this line to check the selected value
             setValue("testName", value); // Set the value using react-hook-form
