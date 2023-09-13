@@ -50,6 +50,21 @@ class EducationAndDegreeController extends Controller
             ->where('document.student_id', '=', $studentId)
             ->get());
     }
+    public function findTestInfo($studentId)
+    {
+        return (DB::table('test_score')
+            ->select(
+                'student_id',
+                'test_score',
+                'test_date',
+                'test_score_total',
+                'attachment_url',
+
+            )
+            ->where('student_id', '=', $studentId)
+            ->get());
+    }
+
 
     public function createTestScore(Request $request)
 {
@@ -64,12 +79,15 @@ class EducationAndDegreeController extends Controller
     // ]);
 
     // Handle file upload and storage
-    $attachmentPath = $request->file('attachment')->store('attachments'); // 'attachments' is the directory where attachments will be stored
     $user_id = $request->input('user_id');
     log::debug($user_id);
     $student_id_json= $this->findStudentId($user_id);
     log::debug($student_id_json);
     $studentId = $student_id_json->getData()->student_id;
+    if ($request->input('useEffect') == 1) {
+
+    $attachmentPath = $request->file('attachment')->store('attachments'); // 'attachments' is the directory where attachments will be stored
+
 
     // Create a new test score record
     $testScore = new TestScore([
@@ -81,13 +99,36 @@ class EducationAndDegreeController extends Controller
         'skip_test' => $request->input('skip_test'),
         'attachment_url' => $attachmentPath, // Save the attachment path in the column
     ]);
-    log::debug($testScore);
 
     // Save the test score record
     $testScore->save();
 
+
     // Return a response
     return response()->json(['message' => 'Test score inserted successfully']);
+}
+// Check if useEffect is not equal to 1
+if ($request->input('useEffect') != 1) {
+    // Find existing test information for the student
+    $existingTestInfo = TestScore::where('student_id', $studentId)->get();
+    // Check if there is existing test information
+    if ($existingTestInfo->count() > 0) {
+        // Loop through existing test records and update them as needed
+        foreach ($existingTestInfo as $testRecord) {
+            $testRecord->update([
+                'test_score' => $request->input('test_score'),
+                'test_date' => $request->input('test_date'),
+                'test_score_total' => $request->input('test_score_total'),
+                'test_name' => $request->input('test_name'),
+                'skip_test' => $request->input('skip_test'),
+            ]);
+        }
+
+        // Log that the test update function was called
+        log::debug('test update function called');
+    }
+}
+
 }
 
     public function storeDegreeAndDocument(Request $request)
