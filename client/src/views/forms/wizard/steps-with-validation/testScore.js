@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { selectThemeColors, isObjEmpty } from "@utils";
+
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { BASE_URL } from "../../../../config";
@@ -64,8 +66,14 @@ const TestScore = ({ stepper, type }) => {
 
   // Define options for the testName dropdown
   const testNameOptions = [
-    { value: "Option1", label: "Option 1" },
-    { value: "Option2", label: "Option 2" },
+    { value: "mdcat", label: "UHS MDCAT" },
+    { value: "etea", label: "ETEA Entry Test" },
+    { value: "bmc", label: "BMC Entry Test" },
+    { value: "fmdc", label: "FMDC Entry Test" },
+    { value: "nums", label: "NUMS Entry Test" },
+    { value: "state", label: "State Entry Test" },
+    { value: "sindhmedical", label: "Sindh Medical Test" },
+
     // Add more options as needed
   ];
 
@@ -76,6 +84,9 @@ const TestScore = ({ stepper, type }) => {
           Test Name
         </Label>
         <Select
+          theme={selectThemeColors}
+          className="react-select"
+          classNamePrefix="select"
           name="testName"
           id="testName"
           defaultValue=""
