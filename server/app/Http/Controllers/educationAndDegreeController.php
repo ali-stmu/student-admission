@@ -134,7 +134,16 @@ public function skip_test($user_id)
     // Return a response
     return response()->json(['message' => 'Test score skipped successfully']);
 }
-
+public function getScoresByUserId($user_id)
+    {
+        log::debug("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh".$user_id);
+        // Fetch test scores for the specified user_id
+        $student_id_json = $this->findStudentId($user_id);
+        $studentId = $student_id_json->getData()->student_id;
+        $testScores = TestScore::where('student_id', $studentId)->get();
+        // Return the data as a JSON response
+        return response()->json($testScores);
+    }
 
     public function storeDegreeAndDocument(Request $request)
     {

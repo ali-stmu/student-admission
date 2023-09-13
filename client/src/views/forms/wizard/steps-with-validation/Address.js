@@ -248,7 +248,6 @@ const Address = ({ stepper, type }) => {
       .catch((error) => console.error(error));
   };
   //console.log(JSON.stringify(data));
-  console.log(states);
   return (
     <Fragment>
       <div className="content-header">

@@ -44,3 +44,5 @@ Route::post('/getPriority', [StudentInfoController::class, 'getPriority']);
 Route::post('test-scores', 'StudentInfoController@createTestScore');
 
 Route::post('/savetestinfo', [educationAndDegreeController::class, 'createTestScore']);
+
+Route::get('/scores/{user_id}', [educationAndDegreeController::class, 'getScoresByUserId']);

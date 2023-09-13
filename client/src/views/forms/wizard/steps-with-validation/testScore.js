@@ -22,7 +22,7 @@ const TestScore = ({ stepper, type }) => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [TempUserid, setTempUserid] = useState(null);
   const [name, setname] = useState(null);
-
+  const [testScoreData, setTestScoreData] = useState(null);
   const skipToNextStepWithApiCall = async () => {
     try {
       // Make an API call to update the 'skip_test' column
@@ -41,6 +41,49 @@ const TestScore = ({ stepper, type }) => {
     skipToNextStepWithApiCall();
     stepper.next();
   };
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    const studentInfo = JSON.parse(rolesFromStorage);
+    setTempUserid(studentInfo.user_id);
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Make an API call to fetch test score data for the current user
+        const response = await axios.get(`${BASE_URL}scores/${TempUserid}`);
+
+        if (response.status === 200) {
+          const testData = response.data; // Assuming the API response is an object with the necessary data
+          setTestScoreData(testData);
+        } else {
+          console.error(
+            "API call failed:",
+            response.status,
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
+
+    fetchData();
+  }, [TempUserid]); // Fetch data when TempUserid changes
+
+  useEffect(() => {
+    if (testScoreData && testScoreData.length > 0) {
+      const firstTestData = testScoreData[0]; // Assuming there's only one object in the array
+      setValue("testName", {
+        value: firstTestData.test_name,
+        label: firstTestData.test_name,
+      });
+      setValue("totalMarks", firstTestData.test_score_total);
+      setValue("obtainedMarks", firstTestData.test_score);
+      setValue("testYear", firstTestData.test_date);
+    }
+  }, [testScoreData, setValue]);
+
   const onSubmit = async (data) => {
     console.log(name.value);
     try {
@@ -71,13 +114,6 @@ const TestScore = ({ stepper, type }) => {
     stepper.previous();
   };
 
-  useEffect(() => {
-    const rolesFromStorage = localStorage.getItem("StudentInfo");
-    const studentInfo = JSON.parse(rolesFromStorage);
-    setTempUserid(studentInfo.user_id);
-    setCurrentYear(new Date().getFullYear());
-  }, []);
-
   // Define options for the testName dropdown
   const testNameOptions = [
     { value: "mdcat", label: "UHS MDCAT" },
@@ -90,6 +126,7 @@ const TestScore = ({ stepper, type }) => {
 
     // Add more options as needed
   ];
+  console.log(testScoreData);
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
