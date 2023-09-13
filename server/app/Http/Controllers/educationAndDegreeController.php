@@ -84,34 +84,10 @@ class EducationAndDegreeController extends Controller
     $student_id_json= $this->findStudentId($user_id);
     log::debug($student_id_json);
     $studentId = $student_id_json->getData()->student_id;
-    if ($request->input('useEffect') == 1) {
-
+    log::debug("insert test record function");
     $attachmentPath = $request->file('attachment')->store('attachments'); // 'attachments' is the directory where attachments will be stored
 
-
-    // Create a new test score record
-    $testScore = new TestScore([
-        'student_id' => $studentId,
-        'test_score' => $request->input('test_score'),
-        'test_date' => $request->input('test_date'),
-        'test_score_total' => $request->input('test_score_total'),
-        'test_name' => $request->input('test_name'),
-        'skip_test' => $request->input('skip_test'),
-        'attachment_url' => $attachmentPath, // Save the attachment path in the column
-    ]);
-
-    // Save the test score record
-    $testScore->save();
-
-
-    // Return a response
-    return response()->json(['message' => 'Test score inserted successfully']);
-}
-// Check if useEffect is not equal to 1
-if ($request->input('useEffect') != 1) {
-    // Find existing test information for the student
     $existingTestInfo = TestScore::where('student_id', $studentId)->get();
-    // Check if there is existing test information
     if ($existingTestInfo->count() > 0) {
         // Loop through existing test records and update them as needed
         foreach ($existingTestInfo as $testRecord) {
@@ -126,10 +102,39 @@ if ($request->input('useEffect') != 1) {
 
         // Log that the test update function was called
         log::debug('test update function called');
+    }else{
+        $testScore = new TestScore([
+            'student_id' => $studentId,
+            'test_score' => $request->input('test_score'),
+            'test_date' => $request->input('test_date'),
+            'test_score_total' => $request->input('test_score_total'),
+            'test_name' => $request->input('test_name'),
+            'skip_test' => $request->input('skip_test'),
+            'attachment_url' => $attachmentPath, // Save the attachment path in the column
+        ]);
+    
+        // Save the test score record
+        $testScore->save();
+    
+    
+        // Return a response
+        return response()->json(['message' => 'Test score inserted successfully']);
     }
-}
 
 }
+public function skip_test($user_id)
+{
+    // Find the student ID based on the user ID
+    $student_id_json = $this->findStudentId($user_id);
+    $studentId = $student_id_json->getData()->student_id;
+
+    // Update the 'skip_test' column to 1 for the corresponding student ID
+    TestScore::where('student_id', $studentId)->update(['skip_test' => 1]);
+
+    // Return a response
+    return response()->json(['message' => 'Test score skipped successfully']);
+}
+
 
     public function storeDegreeAndDocument(Request $request)
     {

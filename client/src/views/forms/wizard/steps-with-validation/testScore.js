@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { selectThemeColors, isObjEmpty } from "@utils";
-
+import axios from "axios"; // Example using Axios
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { BASE_URL } from "../../../../config";
@@ -23,10 +23,24 @@ const TestScore = ({ stepper, type }) => {
   const [TempUserid, setTempUserid] = useState(null);
   const [name, setname] = useState(null);
 
+  const skipToNextStepWithApiCall = async () => {
+    try {
+      // Make an API call to update the 'skip_test' column
+      const response = await axios.post(`${BASE_URL}skip/${TempUserid}`);
+
+      if (response.status === 200) {
+        stepper.next(); // Move to the next step on successful API response
+      } else {
+        console.error("API call failed:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
   const skipToNextStep = () => {
+    skipToNextStepWithApiCall();
     stepper.next();
   };
-
   const onSubmit = async (data) => {
     console.log(name.value);
     try {

@@ -36,6 +36,8 @@ Route::post('/useeffectstudentdataaddress', [StudentInfoController::class, 'useE
 Route::post('/storeStudentDataAddress', [StudentInfoController::class, 'storeStudentDataAddress']);
 Route::get('/degree', [DegreeController::class, 'index']);
 Route::post('/educationAndDegreeController', [educationAndDegreeController::class, 'storeDegreeAndDocument']);
+Route::post('/skip/{user_id}', [educationAndDegreeController::class, 'skip_test']);
+
 
 Route::post('/getPriority', [StudentInfoController::class, 'getPriority']);
 
