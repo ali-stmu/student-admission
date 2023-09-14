@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
-use App\Models\user;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 

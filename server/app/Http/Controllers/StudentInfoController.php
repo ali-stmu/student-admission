@@ -89,9 +89,14 @@ public function getPriority(Request $request)
                     $query->whereIn('nationality_check', ['foreign','dual']);
                 }
 
-                $programs = $query->where('program_criteria', '<', $percentage)
-                ->where('test_criteria', '<', $testScores)
-                ->get();
+                if ($testScores == [0]) {
+                    $query->where('test_criteria', 0);
+                } else {
+                    $query->where('test_criteria', '<=', $testScores);
+                }
+
+                $programs = $query->where('program_criteria', '<=', $percentage)
+                    ->get();
             }
         }
 

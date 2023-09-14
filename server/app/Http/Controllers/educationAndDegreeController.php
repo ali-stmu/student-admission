@@ -129,18 +129,30 @@ class EducationAndDegreeController extends Controller
     }
 
 }
-public function skip_test($user_id)
+public function skip_test(Request $request, $user_id)
 {
     // Find the student ID based on the user ID
     $student_id_json = $this->findStudentId($user_id);
     $studentId = $student_id_json->getData()->student_id;
 
-    // Update the 'skip_test' column to 1 for the corresponding student ID
-    TestScore::where('student_id', $studentId)->update(['skip_test' => 1]);
+    // Check if a record exists for the student
+    $existingTestInfo = TestScore::where('student_id', $studentId)->first();
+
+    if ($existingTestInfo) {
+        // Update the 'skip_test' column to 1 for the corresponding student ID
+        $existingTestInfo->update(['skip_test' => 1]);
+    } else {
+        // Insert a new record for the student if it doesn't exist
+        TestScore::create([
+            'student_id' => $studentId,
+            'skip_test' => 1,
+        ]);
+    }
 
     // Return a response
-    return response()->json(['message' => 'Test score skipped successfully']);
+    return response()->json(['message' => 'Test score skipped or inserted successfully']);
 }
+
 public function getScoresByUserId($user_id)
     {
         log::debug("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh".$user_id);
