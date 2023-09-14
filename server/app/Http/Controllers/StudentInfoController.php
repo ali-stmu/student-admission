@@ -20,6 +20,7 @@ use App\Models\Country; // Import the Country model at the top of your controlle
 
 
 
+
 class StudentInfoController extends Controller
 {
     //
@@ -60,6 +61,8 @@ public function getPriority(Request $request)
         Log::debug($studentInfoToCalculatePercentage);
 
         $intermediateDegrees = Degree::where('degree_name', 'Intermediate/HSSE/Equivalent')->pluck('degree_name', 'degree_id');
+        $testScores = TestScore::where('student_id', $studentId)->pluck('percentage');
+        Log::debug($testScores);        
 
         $programs = [];
 
@@ -77,7 +80,7 @@ public function getPriority(Request $request)
 
                 $percentage = ($obtainedMarks / $totalMarks) * 100;
 
-                $query = Program::select('program_name', 'program_criteria')
+                $query = Program::select('program_name', 'program_criteria','test_criteria')
                     ->where('degree_id', $degreeId);
 
                 if ($nationality === 'pakistani') {
@@ -86,7 +89,9 @@ public function getPriority(Request $request)
                     $query->whereIn('nationality_check', ['foreign','dual']);
                 }
 
-                $programs = $query->where('program_criteria', '<', $percentage)->get();
+                $programs = $query->where('program_criteria', '<', $percentage)
+                ->where('test_criteria', '<', $testScores)
+                ->get();
             }
         }
 
