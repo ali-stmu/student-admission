@@ -41,7 +41,7 @@ const TestScore = ({ stepper, type }) => {
   };
   const skipToNextStep = () => {
     skipToNextStepWithApiCall();
-    stepper.next();
+    //stepper.next();
   };
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
