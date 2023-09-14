@@ -118,10 +118,10 @@ const TestScore = ({ stepper, type }) => {
 
   // Define options for the testName dropdown
   const testNameOptions = [
-    { value: "mdcat", label: "UHS MDCAT" },
-    { value: "etea", label: "ETEA Entry Test" },
-    { value: "bmc", label: "BMC Entry Test" },
-    { value: "fmdc", label: "FMDC Entry Test" },
+    { value: "mdcat", label: "MDCAT" },
+    { value: "sat2", label: "SAT-II" },
+    { value: "mcat", label: "MCAT" },
+    { value: "ucat", label: "UCAT" },
     { value: "nums", label: "NUMS Entry Test" },
     { value: "state", label: "State Entry Test" },
     { value: "sindhmedical", label: "Sindh Medical Test" },
