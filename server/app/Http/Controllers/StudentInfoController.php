@@ -9,7 +9,7 @@ use App\Models\education;
 use App\Models\Degree;
 use App\Models\State;
 use App\Models\Program;
-use App\Models\user;
+use App\Models\User;
 use App\Models\TestScore;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -47,23 +47,28 @@ public function getPriority(Request $request)
         $totalMarks = 0;
         $obtainedMarks = 0;
 
-        $student = new student;
-        $studentId = student::where('user_id', $request->user_id)->value('student_id');
+        $student = new Student;
+        $studentId = Student::where('user_id', $request->user_id)->value('student_id');
 
-        $studentInfoToCalcuatePercentage = education::select('total_marks', 'degree_id', 'result_status', 'obtained_marks')
+        // Get the nationality of the user
+        $nationality = User::where('user_id', $request->user_id)->value('nationality');
+        Log::debug($nationality);
+
+        $studentInfoToCalculatePercentage = Education::select('total_marks', 'degree_id', 'result_status', 'obtained_marks')
             ->where('student_id', $studentId)
             ->get();
+        Log::debug($studentInfoToCalculatePercentage);
 
-        $intermediateDegrees = Degree::where('degree_description', 'Description Intermediate')->pluck('degree_name', 'degree_id');
+        $intermediateDegrees = Degree::where('degree_name', 'Intermediate/HSSE/Equivalent')->pluck('degree_name', 'degree_id');
 
         $programs = [];
 
-        foreach ($studentInfoToCalcuatePercentage as $education) {
+        foreach ($studentInfoToCalculatePercentage as $education) {
             $degreeId = $education->degree_id;
-            $result_status = $education->result_status;
+            $resultStatus = $education->result_status;
 
-            if ($intermediateDegrees->has($degreeId) && $result_status == "declared") {
-                foreach ($studentInfoToCalcuatePercentage as $edu) {
+            if ($intermediateDegrees->has($degreeId) && $resultStatus == "declared") {
+                foreach ($studentInfoToCalculatePercentage as $edu) {
                     if ($edu->degree_id === $degreeId) {
                         $totalMarks += $edu->total_marks;
                         $obtainedMarks += $edu->obtained_marks;
@@ -72,10 +77,16 @@ public function getPriority(Request $request)
 
                 $percentage = ($obtainedMarks / $totalMarks) * 100;
 
-                $programs = Program::select('program_name', 'program_criteria')
-                    ->where('degree_id', $degreeId)
-                    ->where('program_criteria', '<', $percentage)
-                    ->get();
+                $query = Program::select('program_name', 'program_criteria')
+                    ->where('degree_id', $degreeId);
+
+                if ($nationality === 'pakistani') {
+                    $query->whereIn('nationality_check', ['pakistani', 'dual']);
+                } else {
+                    $query->whereIn('nationality_check', ['foreign','dual']);
+                }
+
+                $programs = $query->where('program_criteria', '<', $percentage)->get();
             }
         }
 
@@ -89,6 +100,7 @@ public function getPriority(Request $request)
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+
 
 
 
