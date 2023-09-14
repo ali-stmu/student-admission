@@ -88,7 +88,10 @@ class EducationAndDegreeController extends Controller
     if($request->file('attachment')!== null){
     $attachmentPath = $request->file('attachment')->store('attachments'); // 'attachments' is the directory where attachments will be stored
     }
-
+    $totalMarks = $request->input('test_score_total');
+    $obtainedMarks = $request->input('test_score');
+    $percentage = ($obtainedMarks / $totalMarks) * 100;
+    log::debug($percentage);
     $existingTestInfo = TestScore::where('student_id', $studentId)->get();
     if ($existingTestInfo->count() > 0) {
         // Loop through existing test records and update them as needed
@@ -99,6 +102,7 @@ class EducationAndDegreeController extends Controller
                 'test_score_total' => $request->input('test_score_total'),
                 'test_name' => $request->input('test_name'),
                 'skip_test' => $request->input('skip_test'),
+                'percentage' => $percentage, // Update the percentage column
             ]);
         }
 
@@ -113,6 +117,7 @@ class EducationAndDegreeController extends Controller
             'test_name' => $request->input('test_name'),
             'skip_test' => $request->input('skip_test'),
             'attachment_url' => $attachmentPath, // Save the attachment path in the column
+            'percentage' => $percentage, // Store the percentage when inserting a new record
         ]);
     
         // Save the test score record
