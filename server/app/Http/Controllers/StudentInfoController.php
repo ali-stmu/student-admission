@@ -89,7 +89,7 @@ public function getPriority(Request $request)
                     $query->whereIn('nationality_check', ['foreign','dual']);
                 }
 
-                if ($testScores == [0]) {
+                if (is_null($testScores) ||$testScores == [0]) {
                     $query->where('test_criteria', 0);
                 } else {
                     $query->where('test_criteria', '<=', $testScores);
