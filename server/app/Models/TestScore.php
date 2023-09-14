@@ -18,6 +18,7 @@ class TestScore extends Model
         'test_name',
         'skip_test',
         'attachment_url',
+        'percentage',
     ];
 
 
