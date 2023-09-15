@@ -275,12 +275,12 @@ function AcademicRecords({ stepper, type }) {
         record.totalMarksCGPA &&
         record.obtainedMarksCGPA &&
         record.schoolName &&
-        record.schoolCountry &&
+        //record.schoolCountry &&
         record.schoolCity
       );
     });
     setIsFormValid(isFormValid);
-
+    console.log(isFormValid);
     setRecords(updatedRecords);
   };
 
