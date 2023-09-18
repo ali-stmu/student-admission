@@ -122,9 +122,6 @@ const TestScore = ({ stepper, type }) => {
     { value: "sat2", label: "SAT-II" },
     { value: "mcat", label: "MCAT" },
     { value: "ucat", label: "UCAT" },
-    { value: "nums", label: "NUMS Entry Test" },
-    { value: "state", label: "State Entry Test" },
-    { value: "sindhmedical", label: "Sindh Medical Test" },
 
     // Add more options as needed
   ];
