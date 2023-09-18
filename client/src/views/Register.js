@@ -262,7 +262,7 @@ const Register = () => {
                     id="nationality-pakistani"
                     name="nationality"
                     value="pakistani"
-                    label="Pakistani"
+                    label="Pakistani (can apply on local seat only)"
                     checked={nationality === "pakistani"}
                     onChange={handleNationalityChange}
                   />
@@ -271,7 +271,7 @@ const Register = () => {
                     id="nationality-dual"
                     name="nationality"
                     value="dual"
-                    label="Dual National"
+                    label="Dual National (can apply on Local and Foreign seat both)"
                     checked={nationality === "dual"}
                     onChange={handleNationalityChange}
                   />
@@ -280,7 +280,7 @@ const Register = () => {
                     id="nationality-foreign"
                     name="nationality"
                     value="foreign"
-                    label="Foreign"
+                    label="Foreign (can apply on Foreign seat only)"
                     checked={nationality === "foreign"}
                     onChange={handleNationalityChange}
                   />
