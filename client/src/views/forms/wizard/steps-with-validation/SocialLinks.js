@@ -356,7 +356,7 @@ function AcademicRecords({ stepper, type }) {
             <Row>
               <FormGroup tag={Col} md="4">
                 <Label className="form-label">
-                  School Name<sup>*</sup>
+                  Institute Name<sup>*</sup>
                 </Label>
                 <Input
                   type="text"
@@ -368,7 +368,7 @@ function AcademicRecords({ stepper, type }) {
               </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label className="form-label" for={`landmark-${type}`}>
-                  Country<sup>*</sup>
+                  Institute Country<sup>*</sup>
                 </Label>
                 <Select
                   theme={selectThemeColors}
@@ -384,7 +384,7 @@ function AcademicRecords({ stepper, type }) {
               </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label className="form-label">
-                  School City<sup>*</sup>
+                  Institute City<sup>*</sup>
                 </Label>
                 <Input
                   type="text"
