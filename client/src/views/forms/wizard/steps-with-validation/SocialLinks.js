@@ -77,6 +77,10 @@ function AcademicRecords({ stepper, type }) {
       console.error("Error fetching degree options:", error);
     }
   };
+  useEffect(() => {
+    // Call the fetchDegreeOptions function when the component mounts
+    fetchDegreeOptions();
+  }, []);
   const calculatePercentage = (total, obtained) => {
     return ((obtained / total) * 100).toFixed(2);
   };
@@ -300,11 +304,13 @@ function AcademicRecords({ stepper, type }) {
                   type="select"
                   name="qualification"
                   id="qualification"
-                  value={record.qualification}
+                  value={
+                    index === 0 ? "1" : index === 1 ? "2" : record.qualification
+                  }
                   onChange={(e) => handleRecordChange(e, index)}
                   onClick={fetchDegreeOptions}
+                  disabled={index < 2} // Disable for the first two records
                 >
-                  <option value=""></option>
                   {degreeOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
