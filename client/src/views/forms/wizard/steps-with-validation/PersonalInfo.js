@@ -522,7 +522,8 @@ const PersonalInfo = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Upload Passport Size Picture<sup>*</sup>
+              Upload Passport Size Picture with white background only
+              <sup>*</sup>
             </Label>
             <CustomInput
               type="file"
