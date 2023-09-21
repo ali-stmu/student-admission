@@ -4,6 +4,8 @@ import axios from "axios";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { BASE_URL } from "../../../../config";
+import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
+
 import {
   Label,
   FormGroup,
@@ -444,13 +446,19 @@ const TestScore = ({ stepper, type }) => {
               className="btn-prev"
               onClick={previous}
             >
+              <ArrowLeft
+                size={14}
+                className="align-middle mr-sm-25 mr-0"
+              ></ArrowLeft>
               Previous
             </Button.Ripple>
-            <Button.Ripple color="primary" onClick={addRecord}>
-              Add More Records
+            <Button.Ripple color="info" onClick={addRecord}>
+              <Plus size={14} />
+              <span className="align-middle ml-25">Add More Records</span>
             </Button.Ripple>
             <Button.Ripple type="submit" color="primary">
               Save & Next
+              <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
             </Button.Ripple>
             <Button.Ripple
               color="secondary"
@@ -462,10 +470,12 @@ const TestScore = ({ stepper, type }) => {
             <Button.Ripple
               color="danger"
               className="text-nowrap px-1"
-              onClick={() => deleteRecord(index)}
-              disabled={records.length <= 1}
+              onClick={deleteRecord} // Call deleteRecord function to delete from the bottom
+              outline
+              disabled={records.length <= 1} // Disable the delete button if only two records remain
             >
-              Delete
+              <X size={14} className="mr-50" />
+              <span>Delete</span>
             </Button.Ripple>
           </div>
           <br></br>
