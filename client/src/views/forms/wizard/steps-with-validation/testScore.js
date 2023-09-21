@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { selectThemeColors, isObjEmpty } from "@utils";
-import axios from "axios"; // Example using Axios
+import { selectThemeColors } from "@utils";
+import axios from "axios";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { BASE_URL } from "../../../../config";
@@ -14,7 +14,6 @@ import {
   Input,
   CustomInput,
 } from "reactstrap";
-import CreatableSelect from "react-select/creatable";
 
 const TestScore = ({ stepper, type }) => {
   const { control, handleSubmit, register, errors, watch, setValue } =
@@ -24,14 +23,32 @@ const TestScore = ({ stepper, type }) => {
   const [name, setname] = useState(null);
   const [attachmentUrl, setAttachmentUrl] = useState(null);
 
-  const [testScoreData, setTestScoreData] = useState(null);
+  const [testScoreData, setTestScoreData] = useState([]);
+  const [records, setRecords] = useState([
+    {
+      testName: "",
+      totalMarks: 0,
+      obtainedMarks: 0,
+      testYear: "",
+      attachment: null,
+    },
+  ]);
+
+  const testNameOptions = [
+    { value: "mdcat", label: "MDCAT" },
+    { value: "sat2", label: "SAT-II" },
+    { value: "mcat", label: "MCAT" },
+    { value: "ucat", label: "UCAT" },
+    // Add more options as needed
+  ];
+
   const skipToNextStepWithApiCall = async () => {
     try {
       // Make an API call to update the 'skip_test' column
       const response = await axios.post(`${BASE_URL}skip/${TempUserid}`);
 
       if (response.status === 200) {
-        stepper.next(); // Move to the next step on successful API response
+        stepper.next(); // Move to the next step on a successful API response
       } else {
         console.error("API call failed:", response.status, response.statusText);
       }
@@ -39,16 +56,21 @@ const TestScore = ({ stepper, type }) => {
       console.error("An error occurred:", error);
     }
   };
+
+  const previous = () => {
+    stepper.previous();
+  };
   const skipToNextStep = () => {
     skipToNextStepWithApiCall();
-    //stepper.next();
   };
+
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     const studentInfo = JSON.parse(rolesFromStorage);
     setTempUserid(studentInfo.user_id);
     setCurrentYear(new Date().getFullYear());
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -56,7 +78,7 @@ const TestScore = ({ stepper, type }) => {
         const response = await axios.get(`${BASE_URL}scores/${TempUserid}`);
 
         if (response.status === 200) {
-          const testData = response.data; // Assuming the API response is an object with the necessary data
+          const testData = response.data; // Assuming the API response is an array of test score data
           setTestScoreData(testData);
         } else {
           console.error(
@@ -71,39 +93,55 @@ const TestScore = ({ stepper, type }) => {
     };
 
     fetchData();
-  }, [TempUserid]); // Fetch data when TempUserid changes
+  }, [TempUserid]);
 
   useEffect(() => {
     if (testScoreData && testScoreData.length > 0) {
       const firstTestData = testScoreData[0]; // Assuming there's only one object in the array
-      setValue("testName", {
+      setValue("testName-0", {
         value: firstTestData.test_name,
         label: firstTestData.test_name,
       });
-      setValue("totalMarks", firstTestData.test_score_total);
-      setValue("obtainedMarks", firstTestData.test_score);
-      setValue("testYear", firstTestData.test_date);
+      setValue("totalMarks-0", firstTestData.test_score_total);
+      setValue("obtainedMarks-0", firstTestData.test_score);
+      setValue("testYear-0", firstTestData.test_date);
       setAttachmentUrl(firstTestData.attachment_url); // Assuming the attachment URL is a property in your testScoreData object
     }
   }, [testScoreData, setValue]);
-
   const onSubmit = async (data) => {
     try {
-      const formData = new FormData();
-      formData.append("test_name", name?.value || ""); // Use the value property
-      formData.append("test_score_total", data.totalMarks);
-      formData.append("test_score", data.obtainedMarks);
-      formData.append("test_date", data.testYear);
-      formData.append("attachment", data.attachment[0]);
-      formData.append("user_id", TempUserid);
+      // Create an array to store the records
+      const recordsArray = [];
 
-      const response = await fetch(`${BASE_URL}savetestinfo`, {
-        method: "POST",
-        body: formData,
+      // Iterate through the records and add them to the array
+      records.forEach((record, index) => {
+        recordsArray.push({
+          test_name: data[`testName-${index}`],
+          test_score: data[`obtainedMarks-${index}`],
+          test_score_total: data[`totalMarks-${index}`],
+          test_date: data[`testYear-${index}`],
+          attachment_url: data[`attachment-${index}`], // Adjust the field name accordingly
+        });
       });
 
-      if (response.ok) {
-        stepper.next();
+      // Include TempUserid as user_id in the form data
+      const formData = new FormData();
+      formData.append("user_id", TempUserid);
+      formData.append("records", JSON.stringify(recordsArray));
+
+      // Make an API request to send the formData to the server
+      const response = await axios.post(
+        `${BASE_URL}save-test-scores`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        stepper.next(); // Move to the next step on a successful API response
       } else {
         console.error("API call failed:", response.status, response.statusText);
       }
@@ -112,138 +150,118 @@ const TestScore = ({ stepper, type }) => {
     }
   };
 
-  const previous = () => {
-    stepper.previous();
+  const addRecord = () => {
+    setRecords([
+      ...records,
+      {
+        testName: "",
+        totalMarks: 0,
+        obtainedMarks: 0,
+        testYear: "",
+        attachment: null,
+      },
+    ]);
   };
 
-  // Define options for the testName dropdown
-  const testNameOptions = [
-    { value: "mdcat", label: "MDCAT" },
-    { value: "sat2", label: "SAT-II" },
-    { value: "mcat", label: "MCAT" },
-    { value: "ucat", label: "UCAT" },
-
-    // Add more options as needed
-  ];
-  console.log(testScoreData);
-
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      <FormGroup>
-        <Label className="test-name-label" for="testName">
-          Test Name
-        </Label>
-        <Select
-          theme={selectThemeColors}
-          className="react-select"
-          classNamePrefix="select"
-          name="testName"
-          id="testName"
-          defaultValue=""
-          options={testNameOptions}
-          value={testNameOptions[0]}
-          onChange={(value) => {
-            console.log(value); // Add this line to check the selected value
-            setValue("testName", value); // Set the value using react-hook-form
-            setname(value);
-          }}
-        />
-      </FormGroup>
-      <Row>
-        <Col md="6" sm="12">
+    <div>
+      {records.map((record, index) => (
+        <Form key={index} onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
-            <Label for="totalMarks">Total Marks</Label>
-            <Input
-              type="number"
-              name="totalMarks"
-              id="totalMarks"
-              min="0"
-              placeholder="Enter Total Marks"
-              innerRef={register({ required: true, pattern: /^\d+$/ })}
+            <Label className="test-name-label" for={`testName-${index}`}>
+              Test Name
+            </Label>
+            <Select
+              theme={selectThemeColors}
+              className="react-select"
+              classNamePrefix="select"
+              name={`testName-${index}`}
+              id={`testName-${index}`}
+              defaultValue=""
+              options={testNameOptions}
+              value={testNameOptions.find(
+                (option) => option.value === record.testName
+              )}
+              onChange={(value) => {
+                setValue(`testName-${index}`, value);
+                setname(value);
+              }}
             />
           </FormGroup>
-        </Col>
-        <Col md="6" sm="12">
+          <Row>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label for={`totalMarks-${index}`}>Total Marks</Label>
+                <Input
+                  type="number"
+                  name={`totalMarks-${index}`}
+                  id={`totalMarks-${index}`}
+                  placeholder="Total Marks"
+                  innerRef={register({ required: true })}
+                />
+                {errors[`totalMarks-${index}`] && (
+                  <span className="text-danger">Total Marks is required.</span>
+                )}
+              </FormGroup>
+            </Col>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label for={`obtainedMarks-${index}`}>Obtained Marks</Label>
+                <Input
+                  type="number"
+                  name={`obtainedMarks-${index}`}
+                  id={`obtainedMarks-${index}`}
+                  placeholder="Obtained Marks"
+                  innerRef={register({ required: true })}
+                />
+                {errors[`obtainedMarks-${index}`] && (
+                  <span className="text-danger">
+                    Obtained Marks is required.
+                  </span>
+                )}
+              </FormGroup>
+            </Col>
+          </Row>
           <FormGroup>
-            <Label for="obtainedMarks">Obtained Marks</Label>
+            <Label for={`testYear-${index}`}>Test Year</Label>
             <Input
               type="number"
-              name="obtainedMarks"
-              id="obtainedMarks"
-              min="0"
-              placeholder="Enter Obtained Marks"
-              innerRef={register({
-                required: true,
-                pattern: /^\d+$/,
-                validate: (value) =>
-                  parseInt(value) <= parseInt(watch("totalMarks")), // Validate against totalMarks value
-              })}
+              name={`testYear-${index}`}
+              id={`testYear-${index}`}
+              placeholder="Test Year"
+              innerRef={register({ required: true })}
             />
-            {errors.obtainedMarks && (
-              <span className="text-danger">
-                Please enter a valid number not greater than total marks.
-              </span>
+            {errors[`testYear-${index}`] && (
+              <span className="text-danger">Test Year is required.</span>
             )}
           </FormGroup>
-        </Col>
-      </Row>
-      <FormGroup>
-        <Label for="totalMarks">Test Year</Label>
-        <Input
-          type="text"
-          name="testYear"
-          id="testYear"
-          placeholder="Test Year"
-          innerRef={register({ required: true, pattern: /^\d+$/ })}
-          readOnly
-          value={currentYear}
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label for="attachment">Attachment (PDF/Image)</Label>
-        {attachmentUrl ? (
-          <div>
-            <b>Already Uploaded</b>
-            <br />
-            <CustomInput
-              type="file"
-              name="attachment"
-              id="attachment"
-              accept=".pdf, .jpg, .jpeg, .png"
-              innerRef={register()}
-            />
+          {/* Add the attachment field here */}
+          {/* ... */}
+          <div className="d-flex justify-content-between">
+            <Button.Ripple
+              color="primary"
+              className="btn-prev"
+              onClick={previous}
+            >
+              Previous
+            </Button.Ripple>
+            <Button.Ripple color="primary" onClick={addRecord}>
+              Add More Records
+            </Button.Ripple>
+            <Button.Ripple type="submit" color="primary">
+              Save & Next
+            </Button.Ripple>
+            <Button.Ripple
+              color="secondary"
+              className="btn-skip"
+              onClick={skipToNextStep}
+            >
+              Skip
+            </Button.Ripple>
           </div>
-        ) : (
-          <CustomInput
-            type="file"
-            name="attachment"
-            id="attachment"
-            accept=".pdf, .jpg, .jpeg, .png"
-            innerRef={register({ required: true })}
-          />
-        )}
-        {/* Only show the error message if attachment is required and not already uploaded */}
-        {errors.attachment && !attachmentUrl && (
-          <span className="text-danger">Please select a valid file.</span>
-        )}
-      </FormGroup>
-
-      <div className="d-flex justify-content-between">
-        <Button.Ripple color="primary" className="btn-prev" onClick={previous}>
-          Previous
-        </Button.Ripple>
-        <Button.Ripple type="submit" color="primary" className="btn-next">
-          Save & Next
-        </Button.Ripple>
-        <Button.Ripple
-          color="secondary"
-          className="btn-skip"
-          onClick={skipToNextStep}
-        >
-          Skip
-        </Button.Ripple>
-      </div>
-    </Form>
+        </Form>
+      ))}
+    </div>
   );
 };
 
