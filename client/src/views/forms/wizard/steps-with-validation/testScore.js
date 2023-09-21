@@ -22,7 +22,6 @@ const TestScore = ({ stepper, type }) => {
   const [TempUserid, setTempUserid] = useState(null);
   const [name, setname] = useState(null);
   const [attachmentUrl, setAttachmentUrl] = useState(null);
-  const [selectedTestName, setSelectedTestName] = useState(null); // New state variable for selected test name
 
   const [testScoreData, setTestScoreData] = useState([]);
   const [records, setRecords] = useState([
@@ -40,6 +39,9 @@ const TestScore = ({ stepper, type }) => {
       attachment: null,
     },
   ]);
+  const [selectedTestNames, setSelectedTestNames] = useState(
+    Array(records.length).fill(null)
+  );
   const testNameOptions = [
     { value: "mdcat", label: "MDCAT" },
     { value: "sat2", label: "SAT-II" },
@@ -121,13 +123,32 @@ const TestScore = ({ stepper, type }) => {
 
       // Iterate through the records and add them to the array
       records.forEach((record, index) => {
-        recordsArray.push({
+        const recordData = {
           test_name: data[`testName-${index}`],
-          test_score: data[`obtainedMarks-${index}`],
-          test_score_total: data[`totalMarks-${index}`],
           test_date: data[`testYear-${index}`],
-          attachment_url: data[`attachment-${index}`], // Adjust the field name accordingly
-        });
+          attachment_url: data[`attachment-${index}`],
+        };
+
+        // Check the test name and set total score and subject scores accordingly
+        if (recordData.test_name === "mdcat") {
+          recordData.test_score_total = data[`totalMarks-${index}`];
+          recordData.test_score_obtained = data[`obtainedMarks-${index}`];
+          recordData.test_score_bio = null;
+          recordData.test_score_chem = null;
+          recordData.test_score_phy = null;
+        } else {
+          recordData.test_score_total = null; // Adjust this as needed for other tests
+          recordData.test_score_bio = data[`biototalMarks-${index}`];
+          recordData.test_score_chem = data[`chemtotalMarks-${index}`];
+          recordData.test_score_phy_total = data[`phytotalMarks-${index}`];
+          recordData.test_score_phy_obtained =
+            data[`phyobtainedMarks-${index}`];
+          recordData.test_score_chem_obtained =
+            data[`chemobtainedMarks-${index}`];
+          recordData.test_score_bio_obtained =
+            data[`bioobtainedMarks-${index}`];
+        }
+        recordsArray.push(recordData);
       });
 
       // Include TempUserid as user_id in the form data
@@ -136,15 +157,16 @@ const TestScore = ({ stepper, type }) => {
       formData.append("records", JSON.stringify(recordsArray));
 
       // Make an API request to send the formData to the server
-      const response = await axios.post(
-        `${BASE_URL}save-test-scores`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      // const response = await axios.post(
+      //   `${BASE_URL}save-test-scores`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   }
+      // );
+      console.log(formData);
 
       if (response.status === 200) {
         stepper.next(); // Move to the next step on a successful API response
@@ -155,7 +177,15 @@ const TestScore = ({ stepper, type }) => {
       console.error("An error occurred:", error);
     }
   };
+  const deleteRecord = (indexToDelete) => {
+    // Create a copy of the records array without the record to delete
+    const updatedRecords = records.filter(
+      (record, index) => index !== indexToDelete
+    );
 
+    // Update the records state with the updated array
+    setRecords(updatedRecords);
+  };
   const addRecord = () => {
     setRecords([
       ...records,
@@ -174,12 +204,12 @@ const TestScore = ({ stepper, type }) => {
       },
     ]);
   };
-  console.log(name);
 
   return (
     <div>
       {records.map((record, index) => (
         <Form key={index} onSubmit={handleSubmit(onSubmit)}>
+          <h5 className="mb-0">Please Provide Test Information</h5>
           <FormGroup>
             <Label className="test-name-label" for={`testName-${index}`}>
               Test Name
@@ -197,12 +227,16 @@ const TestScore = ({ stepper, type }) => {
               )}
               onChange={(value) => {
                 setValue(`testName-${index}`, value);
-                setSelectedTestName(value.value); // Set the selected test name
+                setSelectedTestNames((prevNames) => {
+                  const newNames = [...prevNames];
+                  newNames[index] = value.value;
+                  return newNames;
+                });
               }}
             />
           </FormGroup>
           {/* Show a message based on the selected test name */}
-          {selectedTestName === "mdcat" ? (
+          {selectedTestNames[index] === "mdcat" ? (
             <Row>
               <Col md="6" sm="12">
                 <FormGroup>
@@ -425,7 +459,16 @@ const TestScore = ({ stepper, type }) => {
             >
               Skip
             </Button.Ripple>
+            <Button.Ripple
+              color="danger"
+              className="text-nowrap px-1"
+              onClick={() => deleteRecord(index)}
+              disabled={records.length <= 1}
+            >
+              Delete
+            </Button.Ripple>
           </div>
+          <br></br>
         </Form>
       ))}
     </div>
