@@ -68,67 +68,81 @@ class EducationAndDegreeController extends Controller
 
     public function createTestScore(Request $request)
 {
-    // Validate the incoming request data
-    // $request->validate([
-    //     'student_id' => 'required|integer',
-    //     'test_score' => 'required|integer',
-    //     'test_date' => 'required|date',
-    //     'test_name' => 'nullable|string',
-    //     'skip_test' => 'nullable|boolean',
-    //     'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png',
-    // ]);
+    $data = $request->all();
+    Log::debug($data);
 
-    // Handle file upload and storage
-    $user_id = $request->input('user_id');
-    log::debug($user_id);
-    $student_id_json= $this->findStudentId($user_id);
-    log::debug($student_id_json);
+    $user_id = $data['user_id'];
+    Log::debug("User Id is " . $user_id);
+
+    $student_id_json = $this->findStudentId($user_id);
     $studentId = $student_id_json->getData()->student_id;
-    log::debug("insert test record function");
-    if($request->file('attachment')!== null){
-    $attachmentPath = $request->file('attachment')->store('attachments'); // 'attachments' is the directory where attachments will be stored
+
+    if ($request->file('attachment') !== null) {
+        $attachmentPath = $request->file('attachment')->store('attachments');
     }
-    $totalMarks = $request->input('test_score_total');
-    $obtainedMarks = $request->input('test_score');
-    $percentage = ($obtainedMarks / $totalMarks) * 100;
-    log::debug($percentage);
-    $existingTestInfo = TestScore::where('student_id', $studentId)->get();
-    if ($existingTestInfo->count() > 0) {
-        // Loop through existing test records and update them as needed
-        foreach ($existingTestInfo as $testRecord) {
-            $testRecord->update([
-                'test_score' => $request->input('test_score'),
-                'test_date' => $request->input('test_date'),
-                'test_score_total' => $request->input('test_score_total'),
-                'test_name' => $request->input('test_name'),
-                'skip_test' => $request->input('skip_test'),
-                'percentage' => $percentage, // Update the percentage column
-            ]);
+    else{
+        $attachmentPath = null;
+    }
+    
+    foreach ($data['records'] as $record) {
+        $test_name = $record['test_name'];
+        $test_date = $record['test_date'];
+        $test_score_total = $record['test_score_total'];
+        $test_score_obtained = $record['test_score_obtained'];
+        
+        if ($test_score_total !== null) {
+            // Calculate percentage if total is not null
+            $percentage = ($test_score_obtained / $test_score_total) * 100;
+        } else {
+            $percentage = null;
         }
 
-        // Log that the test update function was called
-        log::debug('test update function called');
-    }else{
-        $testScore = new TestScore([
-            'student_id' => $studentId,
-            'test_score' => $request->input('test_score'),
-            'test_date' => $request->input('test_date'),
-            'test_score_total' => $request->input('test_score_total'),
-            'test_name' => $request->input('test_name'),
-            'skip_test' => $request->input('skip_test'),
-            'attachment_url' => $attachmentPath, // Save the attachment path in the column
-            'percentage' => $percentage, // Store the percentage when inserting a new record
-        ]);
-    
-        // Save the test score record
-        $testScore->save();
-    
-    
-        // Return a response
-        return response()->json(['message' => 'Test score inserted successfully']);
+        // Check if a record with the same test_name and test_date exists
+        $existingTestInfo = TestScore::where('student_id', $studentId)
+            ->where('test_name', $test_name) 
+            ->where('test_date', $test_date)
+            ->first();
+
+        if ($existingTestInfo) {
+            // Update existing test record
+            $existingTestInfo->update([
+                'test_score_total' => $test_score_total,
+                'test_score' => $test_score_obtained,
+                'attachment_url' => $attachmentPath,
+                'percentage' => $percentage,
+                'test_name' => $test_name,
+                // Update other fields as needed
+            ]);
+        } else {
+            // Insert a new test record
+            $testScore = new TestScore([
+                'student_id' => $studentId,
+                'test_name' => $test_name,
+                'test_date' => $test_date,
+                'test_score_total' => $test_score_total,
+                'test_score' => $test_score_obtained,
+                'attachment_url' => $attachmentPath,
+                'percentage' => $percentage,
+                'skip_test' => 0,
+                'bio_total' => $data['bio_total'],
+                'bio_obtained' => $data['bio_obtained'],
+                'chem_total' => $data['chem_total'],
+                'chem_obtained' => $data['chem_obtained'],
+                'phy_total' => $data['phy_total'],
+                'phy_obtained' => $data['phy_obtained'],
+                // Add other fields as needed
+            ]);
+
+            // Save the record to the database
+            $testScore->save();
+        }
     }
 
+    return response()->json(['message' => 'Test scores inserted or updated successfully']);
 }
+
+
+
 public function skip_test(Request $request, $user_id)
 {
     // Find the student ID based on the user ID

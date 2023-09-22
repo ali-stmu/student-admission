@@ -19,6 +19,12 @@ class TestScore extends Model
         'skip_test',
         'attachment_url',
         'percentage',
+        'bio_total',
+        'bio_obtained',
+        'chem_total',
+        'chem_obtained',
+        'phy_total',
+        'phy_total'
     ];
 
 
