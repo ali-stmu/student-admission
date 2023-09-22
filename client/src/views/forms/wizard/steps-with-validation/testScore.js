@@ -133,14 +133,12 @@ const TestScore = ({ stepper, type }) => {
 
         // Check the test name and set total score and subject scores accordingly
         if (selectedTestNames[index] === "mdcat") {
-          console.log("Mdcat wala if chal gya");
           recordData.test_score_total = data[`totalMarks-${index}`];
           recordData.test_score_obtained = data[`obtainedMarks-${index}`];
           recordData.test_score_bio = null;
           recordData.test_score_chem = null;
           recordData.test_score_phy = null;
         } else {
-          console.log("Mdcat wala else chal gya");
           recordData.test_score_total = null; // Adjust this as needed for other tests
           recordData.test_score_bio = data[`biototalMarks-${index}`];
           recordData.test_score_chem = data[`chemtotalMarks-${index}`];
@@ -152,25 +150,27 @@ const TestScore = ({ stepper, type }) => {
           recordData.test_score_bio_obtained =
             data[`bioobtainedMarks-${index}`];
         }
+
         recordsArray.push(recordData);
       });
 
-      // Include TempUserid as user_id in the form data
-      const formData = new FormData();
-      formData.append("user_id", TempUserid);
-      formData.append("records", JSON.stringify(recordsArray));
+      // Create a JSON object to send in the request body
+      const requestBody = {
+        user_id: TempUserid,
+        records: recordsArray,
+      };
+      console.log(requestBody);
 
-      // Make an API request to send the formData to the server
-      // const response = await axios.post(
-      //   `${BASE_URL}save-test-scores`,
-      //   formData,
-      //   {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   }
-      // );
-      console.log(formData);
+      // Make an API request to send the JSON object to the server
+      const response = await axios.post(
+        `${BASE_URL}savetestinfo`, // Replace with your actual API endpoint
+        requestBody, // Send the JSON object in the request body
+        {
+          headers: {
+            "Content-Type": "application/json", // Set the content type to JSON
+          },
+        }
+      );
 
       if (response.status === 200) {
         stepper.next(); // Move to the next step on a successful API response
@@ -181,6 +181,7 @@ const TestScore = ({ stepper, type }) => {
       console.error("An error occurred:", error);
     }
   };
+
   const deleteRecord = (indexToDelete) => {
     // Create a copy of the records array without the record to delete
     const updatedRecords = records.filter(
@@ -226,7 +227,7 @@ const TestScore = ({ stepper, type }) => {
               id={`testName-${index}`}
               defaultValue={testNameOptions.find(
                 (option) => option.value === record.testName
-              )} // Initialize the value based on record.testName
+              )}
               options={testNameOptions}
               onChange={(value) => {
                 setValue(`testName-${index}`, value);
@@ -239,7 +240,8 @@ const TestScore = ({ stepper, type }) => {
             />
           </FormGroup>
           {/* Show a message based on the selected test name */}
-          {selectedTestNames[index] === "mdcat" ? (
+          {selectedTestNames[index] === "mdcat" ||
+          selectedTestNames[index] === null ? (
             <Row>
               <Col md="6" sm="12">
                 <FormGroup>
@@ -409,6 +411,7 @@ const TestScore = ({ stepper, type }) => {
               id={`testYear-${index}`}
               placeholder="Test Year"
               innerRef={register({ required: true })}
+              //disabled={selectedTestNames[index] === "mdcat"}
             />
             {errors[`testYear-${index}`] && (
               <span className="text-danger">Test Year is required.</span>
