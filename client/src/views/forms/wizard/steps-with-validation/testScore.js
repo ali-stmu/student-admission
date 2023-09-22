@@ -41,6 +41,7 @@ const TestScore = ({ stepper, type }) => {
       attachment: null,
     },
   ]);
+  const [attachmentUrls, setAttachmentUrls] = useState({});
   const [selectedTestNames, setSelectedTestNames] = useState(
     Array(records.length).fill(null)
   );
@@ -107,17 +108,47 @@ const TestScore = ({ stepper, type }) => {
 
   useEffect(() => {
     if (testScoreData && testScoreData.length > 0) {
-      const firstTestData = testScoreData[0]; // Assuming there's only one object in the array
-      setValue("testName-0", {
+      // Assuming there's only one object in the array
+      const firstTestData = testScoreData[0];
+      setValue(`testName-0`, {
         value: firstTestData.test_name,
         label: firstTestData.test_name,
       });
-      setValue("totalMarks-0", firstTestData.test_score_total);
-      setValue("obtainedMarks-0", firstTestData.test_score);
-      setValue("testYear-0", firstTestData.test_date);
-      setAttachmentUrl(firstTestData.attachment_url); // Assuming the attachment URL is a property in your testScoreData object
+      setValue(`totalMarks-0`, firstTestData.test_score_total);
+      setValue(`obtainedMarks-0`, firstTestData.test_score);
+      setValue(`testYear-0`, firstTestData.test_date);
+
+      // Set the attachment URL for the first record
+      setAttachmentUrls({
+        ...attachmentUrls,
+        [0]: firstTestData.attachment_url,
+      });
+
+      // Set attachment URLs for subsequent records if available
+      for (let i = 1; i < testScoreData.length; i++) {
+        const testData = testScoreData[i];
+        setAttachmentUrls((prevUrls) => ({
+          ...prevUrls,
+          [i]: testData.attachment_url,
+        }));
+      }
     }
   }, [testScoreData, setValue]);
+  useEffect(() => {
+    if (testScoreData && testScoreData.length > 0) {
+      const updatedRecords = [...records];
+
+      testScoreData.forEach((testData, index) => {
+        updatedRecords[index] = {
+          ...updatedRecords[index],
+          attachment: testData.attachment_url,
+        };
+      });
+
+      setRecords(updatedRecords);
+    }
+  }, [testScoreData]);
+
   const onSubmit = async (data) => {
     try {
       // Create an array to store the records
@@ -419,14 +450,14 @@ const TestScore = ({ stepper, type }) => {
             )}
           </FormGroup>
           <FormGroup>
-            <Label for="attachment">Attachment (PDF/Image)</Label>
-            {attachmentUrl ? (
+            <Label for={`attachment-${index}`}>Attachment (PDF/Image)</Label>
+            {record.attachment ? (
               <div>
                 <b style={{ color: "green" }}>Already Uploaded</b> <br />
                 <CustomInput
                   type="file"
-                  name="attachment"
-                  id="attachment"
+                  name={`attachment-${index}`}
+                  id={`attachment-${index}`}
                   accept=".pdf, .jpg, .jpeg, .png"
                   innerRef={register()}
                 />
@@ -434,17 +465,18 @@ const TestScore = ({ stepper, type }) => {
             ) : (
               <CustomInput
                 type="file"
-                name="attachment"
-                id="attachment"
+                name={`attachment-${index}`}
+                id={`attachment-${index}`}
                 accept=".pdf, .jpg, .jpeg, .png"
                 innerRef={register({ required: true })}
               />
             )}
             {/* Only show the error message if attachment is required and not already uploaded */}
-            {errors.attachment && !attachmentUrl && (
+            {errors[`attachment-${index}`] && !record.attachment && (
               <span className="text-danger">Please select a valid file.</span>
             )}
           </FormGroup>
+
           <div className="d-flex justify-content-between">
             <Button.Ripple
               color="primary"
