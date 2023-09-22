@@ -126,7 +126,7 @@ const TestScore = ({ stepper, type }) => {
       // Iterate through the records and add them to the array
       records.forEach((record, index) => {
         const recordData = {
-          test_name: data[`testName-${index}`],
+          test_name: name.value,
           test_date: data[`testYear-${index}`],
           attachment_url: data[`attachment-${index}`],
         };
@@ -231,6 +231,7 @@ const TestScore = ({ stepper, type }) => {
               options={testNameOptions}
               onChange={(value) => {
                 setValue(`testName-${index}`, value);
+                setname(value);
                 setSelectedTestNames((prevNames) => {
                   const newNames = [...prevNames];
                   newNames[index] = value.value;
