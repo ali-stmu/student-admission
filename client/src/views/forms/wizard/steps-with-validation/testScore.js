@@ -132,13 +132,15 @@ const TestScore = ({ stepper, type }) => {
         };
 
         // Check the test name and set total score and subject scores accordingly
-        if (recordData.test_name === "mdcat") {
+        if (selectedTestNames[index] === "mdcat") {
+          console.log("Mdcat wala if chal gya");
           recordData.test_score_total = data[`totalMarks-${index}`];
           recordData.test_score_obtained = data[`obtainedMarks-${index}`];
           recordData.test_score_bio = null;
           recordData.test_score_chem = null;
           recordData.test_score_phy = null;
         } else {
+          console.log("Mdcat wala else chal gya");
           recordData.test_score_total = null; // Adjust this as needed for other tests
           recordData.test_score_bio = data[`biototalMarks-${index}`];
           recordData.test_score_chem = data[`chemtotalMarks-${index}`];
@@ -222,11 +224,10 @@ const TestScore = ({ stepper, type }) => {
               classNamePrefix="select"
               name={`testName-${index}`}
               id={`testName-${index}`}
-              defaultValue=""
-              options={testNameOptions}
-              value={testNameOptions.find(
+              defaultValue={testNameOptions.find(
                 (option) => option.value === record.testName
-              )}
+              )} // Initialize the value based on record.testName
+              options={testNameOptions}
               onChange={(value) => {
                 setValue(`testName-${index}`, value);
                 setSelectedTestNames((prevNames) => {
@@ -470,7 +471,7 @@ const TestScore = ({ stepper, type }) => {
             <Button.Ripple
               color="danger"
               className="text-nowrap px-1"
-              onClick={deleteRecord} // Call deleteRecord function to delete from the bottom
+              onClick={() => deleteRecord(index)}
               outline
               disabled={records.length <= 1} // Disable the delete button if only two records remain
             >
