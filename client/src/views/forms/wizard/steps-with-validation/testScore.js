@@ -38,6 +38,8 @@ const TestScore = ({ stepper, type }) => {
       phytotalMarks: 0,
       phyobtainedMarks: 0,
       testYear: "",
+      testCity: "",
+      testRegno: "",
       attachment: null,
     },
   ]);
@@ -160,17 +162,15 @@ const TestScore = ({ stepper, type }) => {
           test_name: name.value,
           test_date: data[`testYear-${index}`],
           attachment_url: data[`attachment-${index}`],
+          test_city: data[`testCity-${index}`],
+          test_reg_no: data[`testRegNo-${index}`],
         };
 
         // Check the test name and set total score and subject scores accordingly
         if (selectedTestNames[index] === "mdcat") {
           recordData.test_score_total = data[`totalMarks-${index}`];
           recordData.test_score_obtained = data[`obtainedMarks-${index}`];
-          recordData.test_score_bio = null;
-          recordData.test_score_chem = null;
-          recordData.test_score_phy = null;
         } else {
-          recordData.test_score_total = null; // Adjust this as needed for other tests
           recordData.test_score_bio = data[`biototalMarks-${index}`];
           recordData.test_score_chem = data[`chemtotalMarks-${index}`];
           recordData.test_score_phy_total = data[`phytotalMarks-${index}`];
@@ -449,6 +449,40 @@ const TestScore = ({ stepper, type }) => {
               <span className="text-danger">Test Year is required.</span>
             )}
           </FormGroup>
+          <Row>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label for={`testCity-${index}`}>Test City</Label>
+                <Input
+                  type="text"
+                  name={`testCity-${index}`}
+                  id={`testCity-${index}`}
+                  placeholder="Test City"
+                  innerRef={register({ required: true })}
+                  //disabled={selectedTestNames[index] === "mdcat"}
+                />
+                {errors[`testCity-${index}`] && (
+                  <span className="text-danger">Test City is required.</span>
+                )}
+              </FormGroup>
+            </Col>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label for={`testRegNo-${index}`}>Test Reg No</Label>
+                <Input
+                  type="text"
+                  name={`testRegNo-${index}`}
+                  id={`testRegNo-${index}`}
+                  placeholder="Test Reg No"
+                  innerRef={register({ required: true })}
+                  //disabled={selectedTestNames[index] === "mdcat"}
+                />
+                {errors[`testRegNo-${index}`] && (
+                  <span className="text-danger">Test Reg No is required.</span>
+                )}
+              </FormGroup>
+            </Col>
+          </Row>
           <FormGroup>
             <Label for={`attachment-${index}`}>Attachment (PDF/Image)</Label>
             {record.attachment ? (

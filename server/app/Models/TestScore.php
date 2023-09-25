@@ -24,7 +24,9 @@ class TestScore extends Model
         'chem_total',
         'chem_obtained',
         'phy_total',
-        'phy_total'
+        'phy_total',
+        'test_city',
+        'test_reg_no'
     ];
 
 
