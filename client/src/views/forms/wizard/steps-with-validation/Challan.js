@@ -1,7 +1,15 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Button, Row, Col, Table } from "reactstrap";
+import {
+  Button,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  Col,
+  CustomInput,
+} from "reactstrap";
 import UniLogo from "../../../../assets/images/logo/ShifaLogo.png";
 import BankLogo from "../../../../assets/images/logo/bank_logo.png";
 import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
@@ -9,6 +17,8 @@ import SignleChallan from "./signleChallan";
 
 const Challan = ({ stepper, type }) => {
   const contentRef = useRef(null);
+  const [challanAttachment, setChallanAttachment] = useState(null);
+  const [challanPaidDate, setChallanPaidDate] = useState("");
 
   const generatePDF = () => {
     const input = contentRef.current;
@@ -41,7 +51,11 @@ const Challan = ({ stepper, type }) => {
       });
     }
   };
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    // Access challanAttachment and challanPaidDate values here and perform your submission logic
+    console.log("Challan Attachment:", challanAttachment);
+    console.log("Challan Paid Date:", challanPaidDate);
+  };
 
   const tableContainerStyle = {
     display: "flex",
@@ -56,8 +70,8 @@ const Challan = ({ stepper, type }) => {
   };
 
   return (
-    <div style={{ backgroundColor: "#FFFFFF" }}>
-      <div ref={contentRef}>
+    <div>
+      <div style={{ backgroundColor: "#FFFFFF" }} ref={contentRef}>
         <div style={tableContainerStyle}>
           <SignleChallan copyStatus="Dept." />
           <SignleChallan copyStatus="Bank" />
@@ -65,6 +79,31 @@ const Challan = ({ stepper, type }) => {
         </div>
       </div>
       <Button onClick={generatePDF}>Download Challan</Button>
+      <h1>Challan Details:</h1>
+      <Row>
+        <Col md="6" sm="12">
+          <FormGroup>
+            <Label for="challanAttachment">Challan Attachment:</Label>
+            <CustomInput
+              type="file"
+              id="challanAttachment"
+              accept=".pdf, .jpg, .jpeg, .png"
+              onChange={(e) => setChallanAttachment(e.target.files[0])}
+            />
+          </FormGroup>
+        </Col>
+        <Col md="6" sm="12">
+          <FormGroup>
+            <Label for="challanPaidDate">Challan Paid Date:</Label>
+            <Input
+              type="date"
+              id="challanPaidDate"
+              value={challanPaidDate}
+              onChange={(e) => setChallanPaidDate(e.target.value)}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
       <div className="d-flex justify-content-between">
         <Button.Ripple
           color="primary"
@@ -95,5 +134,4 @@ const Challan = ({ stepper, type }) => {
     </div>
   );
 };
-
 export default Challan;

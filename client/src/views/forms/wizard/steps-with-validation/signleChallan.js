@@ -3,15 +3,17 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Button, Row, Col, Table } from "reactstrap";
 import UniLogo from "../../../../assets/images/logo/ShifaLogo.png";
-import BankLogo from "../../../../assets/images/logo/bank_logo.png";
+import BankLogoSCM from "../../../../assets/images/logo/HBL-logo.jpg";
+import BankLogoSCD from "../../../../assets/images/logo/Al_Baraka_logo.png";
+
 import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
 const signleChallan = ({ copyStatus }) => {
-  const collegeName = "Your College Name";
+  const collegeName = "Shifa Tameer-e-Millat University";
   const voucherID = "123456";
   const date = "2023-08-23";
   const dueDate = "2023-09-01";
-  const AccountTitle = "Account Title";
-  const bankAccountNumber = "1234567890";
+  const AccountTitle = "SHIFA TAMEER-MILLAT UNIVERSITY";
+  const bankAccountNumber = "50007902906303";
   const programName = "Computer Science";
   const studentName = "John Doe";
   const rollNo = "CS12345";
@@ -68,7 +70,7 @@ const signleChallan = ({ copyStatus }) => {
                       </td>
                       <td>
                         <img
-                          src={BankLogo}
+                          src={BankLogoSCD}
                           alt="Bank Logo"
                           style={{ width: "100px", height: "50px" }}
                         />
@@ -178,7 +180,7 @@ const signleChallan = ({ copyStatus }) => {
                           padding: "5px",
                         }}
                       >
-                        AccountTitle
+                        {AccountTitle}
                       </td>
                     </tr>
                     <tr align="left" style={{ fontSize: "15px" }}>
