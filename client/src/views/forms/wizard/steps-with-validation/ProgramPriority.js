@@ -19,6 +19,8 @@ const ProgramPriority = ({ stepper, type }) => {
   const [priority1, setPriority1] = useState(null);
   const [priority2, setPriority2] = useState(null);
   const [priority3, setPriority3] = useState(null);
+  const [priority4, setPriority4] = useState(null);
+
   const [user_id, setUserId] = useState("");
   const [apiResponse, setApiResponse] = useState(null);
   const [programOptions, setProgramOptions] = useState([]);
@@ -51,9 +53,36 @@ const ProgramPriority = ({ stepper, type }) => {
       });
   }, [isDisabled]);
 
-  const onSubmit = () => {
-    stepper.next();
+  const handleSubmit = () => {
+    // Prepare the data to send to the API
+    const priorities = [priority1, priority2, priority3, priority4].filter(
+      (priority) => priority !== null
+    );
+
+    const dataToSend = {
+      user_id: user_id,
+      priorities: priorities.map((priority) => priority.value), // Assuming you want to send the value property
+    };
+    console.log(dataToSend);
+    // Make an HTTP POST request to save the priorities
+    fetch(`${BASE_URL}savePriorities`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        // Handle the response from the API as needed
+        console.log("Response from API:", responseData);
+        stepper.next();
+      })
+      .catch((error) => {
+        console.error("Error sending data to API:", error);
+      });
   };
+
   const handleChangePriority1 = (selectedOption) => {
     setPriority1(selectedOption);
   };
@@ -65,7 +94,9 @@ const ProgramPriority = ({ stepper, type }) => {
   const handleChangePriority3 = (selectedOption) => {
     setPriority3(selectedOption);
   };
-
+  const handleChangePriority4 = (selectedOption) => {
+    setPriority4(selectedOption);
+  };
   return (
     <div>
       <div>
@@ -100,6 +131,16 @@ const ProgramPriority = ({ stepper, type }) => {
           isClearable={true}
           isDisabled={isDisabled}
         />
+        <Select
+          className="react-select"
+          classNamePrefix="select"
+          defaultValue={null}
+          options={programOptions}
+          value={priority4}
+          onChange={handleChangePriority4}
+          isClearable={true}
+          isDisabled={isDisabled}
+        />
       </div>
       <div>
         <h3>Selected priorities:</h3>
@@ -109,6 +150,7 @@ const ProgramPriority = ({ stepper, type }) => {
               <th>Priority 1</th>
               <th>Priority 2</th>
               <th>Priority 3</th>
+              <th>Priority 4</th>
             </tr>
           </thead>
           <tbody>
@@ -116,6 +158,7 @@ const ProgramPriority = ({ stepper, type }) => {
               <td>{priority1 ? priority1.label : ""}</td>
               <td>{priority2 ? priority2.label : ""}</td>
               <td>{priority3 ? priority3.label : ""}</td>
+              <td>{priority4 ? priority4.label : ""}</td>
             </tr>
           </tbody>
         </table>
@@ -146,7 +189,7 @@ const ProgramPriority = ({ stepper, type }) => {
           type="submit"
           color="primary"
           className="btn-next"
-          onClick={onSubmit}
+          onClick={handleSubmit}
           disabled={isDisabled}
         >
           <span className="align-middle d-sm-inline-block d-none">

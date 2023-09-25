@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StudentInfoController;
 use App\Http\Controllers\DegreeController;
 use App\Http\Controllers\educationAndDegreeController;
+use App\Http\Controllers\ApplicationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -44,4 +46,7 @@ Route::post('/getPriority', [StudentInfoController::class, 'getPriority']);
 Route::post('/savetestinfo', [educationAndDegreeController::class, 'createTestScore']);
 
 Route::get('/scores/{user_id}', [educationAndDegreeController::class, 'getScoresByUserId']);
+
+//Application Api
+Route::post('/savePriorities', [ApplicationController::class, 'savePriorities']);
 
