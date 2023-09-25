@@ -26,7 +26,7 @@ class TestScore extends Model
         'phy_total',
         'phy_total',
         'test_city',
-        'test_reg_no'
+        'test_reg_no',
     ];
 
 

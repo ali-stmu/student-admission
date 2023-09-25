@@ -153,52 +153,81 @@ const TestScore = ({ stepper, type }) => {
 
   const onSubmit = async (data) => {
     try {
-      // Create an array to store the records
-      const recordsArray = [];
+      // Create a new FormData object
+      const formData = new FormData();
 
-      // Iterate through the records and add them to the array
+      // Append user_id to the form data
+      formData.append("user_id", TempUserid);
+
+      // Iterate through the records and add them to the FormData object
       records.forEach((record, index) => {
-        const recordData = {
-          test_name: name.value,
-          test_date: data[`testYear-${index}`],
-          attachment_url: data[`attachment-${index}`],
-          test_city: data[`testCity-${index}`],
-          test_reg_no: data[`testRegNo-${index}`],
-        };
+        formData.append(`records[${index}][test_name]`, name.value);
+        formData.append(
+          `records[${index}][test_date]`,
+          data[`testYear-${index}`]
+        );
+        formData.append(
+          `records[${index}][test_city]`,
+          data[`testCity-${index}`]
+        );
+        formData.append(
+          `records[${index}][test_reg_no]`,
+          data[`testRegNo-${index}`]
+        );
 
         // Check the test name and set total score and subject scores accordingly
         if (selectedTestNames[index] === "mdcat") {
-          recordData.test_score_total = data[`totalMarks-${index}`];
-          recordData.test_score_obtained = data[`obtainedMarks-${index}`];
+          formData.append(
+            `records[${index}][test_score_total]`,
+            data[`totalMarks-${index}`]
+          );
+          formData.append(
+            `records[${index}][test_score_obtained]`,
+            data[`obtainedMarks-${index}`]
+          );
         } else {
-          recordData.test_score_bio = data[`biototalMarks-${index}`];
-          recordData.test_score_chem = data[`chemtotalMarks-${index}`];
-          recordData.test_score_phy_total = data[`phytotalMarks-${index}`];
-          recordData.test_score_phy_obtained =
-            data[`phyobtainedMarks-${index}`];
-          recordData.test_score_chem_obtained =
-            data[`chemobtainedMarks-${index}`];
-          recordData.test_score_bio_obtained =
-            data[`bioobtainedMarks-${index}`];
+          formData.append(
+            `records[${index}][test_score_bio]`,
+            data[`biototalMarks-${index}`]
+          );
+          formData.append(
+            `records[${index}][test_score_chem]`,
+            data[`chemtotalMarks-${index}`]
+          );
+          formData.append(
+            `records[${index}][test_score_phy_total]`,
+            data[`phytotalMarks-${index}`]
+          );
+          formData.append(
+            `records[${index}][test_score_phy_obtained]`,
+            data[`phyobtainedMarks-${index}`]
+          );
+          formData.append(
+            `records[${index}][test_score_chem_obtained]`,
+            data[`chemobtainedMarks-${index}`]
+          );
+          formData.append(
+            `records[${index}][test_score_bio_obtained]`,
+            data[`bioobtainedMarks-${index}`]
+          );
         }
 
-        recordsArray.push(recordData);
+        // Append the file if it exists
+        const fileInput = data[`attachment-${index}`];
+        if (fileInput && fileInput[0]) {
+          formData.append(`records[${index}][attachment]`, fileInput[0]);
+        }
       });
 
-      // Create a JSON object to send in the request body
-      const requestBody = {
-        user_id: TempUserid,
-        records: recordsArray,
-      };
-      console.log(requestBody);
+      console.log(formData);
 
-      // Make an API request to send the JSON object to the server
+      // Make an API request to send the FormData to the server
       const response = await axios.post(
         `${BASE_URL}savetestinfo`, // Replace with your actual API endpoint
-        requestBody, // Send the JSON object in the request body
+        formData, // Send the FormData object
         {
           headers: {
-            "Content-Type": "application/json", // Set the content type to JSON
+            "Content-Type": "multipart/form-data", // Set the content type to multipart form data
           },
         }
       );

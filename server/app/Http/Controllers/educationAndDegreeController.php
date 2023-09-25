@@ -66,7 +66,7 @@ class EducationAndDegreeController extends Controller
     }
 
 
-    public function createTestScore(Request $request)
+   public function createTestScore(Request $request)
 {
     $data = $request->all();
     Log::debug($data);
@@ -76,30 +76,50 @@ class EducationAndDegreeController extends Controller
 
     $student_id_json = $this->findStudentId($user_id);
     $studentId = $student_id_json->getData()->student_id;
+    Log::debug("Student Id is " . $studentId);
 
-    if ($request->file('attachment') !== null) {
-        $attachmentPath = $request->file('attachment')->store('attachments');
-    }
-    else{
-        $attachmentPath = null;
-    }
-    
     foreach ($data['records'] as $record) {
         $test_name = $record['test_name'];
         $test_date = $record['test_date'];
-        $test_score_total = $record['test_score_total'];
-        $test_score_obtained = $record['test_score_obtained'];
-        
-        if ($test_score_total !== null) {
+        $test_city = $record['test_city'];
+        $test_reg_no = $record['test_reg_no'];
+        $attachment_url =  null;
+        if (isset($record['attachment'])) {
+            // Get the uploaded file from the request
+            $attachmentFile = $record['attachment'];
+
+            // Generate a unique filename for the attachment
+            $attachmentFileName = uniqid() . '_' . $attachmentFile->getClientOriginalName();
+
+            // Move the uploaded file to the attachment directory
+            $attachmentFile->move('attachment_directory', $attachmentFileName);
+
+            // Construct the attachment URL
+            $attachment_url = '/attachment_directory/' . $attachmentFileName;
+        }
+        $bio_total = $record['test_score_bio'] ?? null;
+        $chem_total = $record['test_score_chem'] ?? null;
+        $phy_total = $record['test_score_phy_total'] ?? null;
+        $bio_obtained = $record['test_score_bio_obtained'] ?? null;
+        $chem_obtained = $record['test_score_chem_obtained'] ?? null;
+        $phy_obtained = $record['test_score_phy_obtained'] ?? null;
+
+        // Check if test scores are provided in the record
+        if (isset($record['test_score_total']) && isset($record['test_score_obtained'])) {
+            $test_score_total = $record['test_score_total'];
+            $test_score_obtained = $record['test_score_obtained'];
+            
             // Calculate percentage if total is not null
             $percentage = ($test_score_obtained / $test_score_total) * 100;
         } else {
+            $test_score_total = null;
+            $test_score_obtained = null;
             $percentage = null;
         }
 
         // Check if a record with the same test_name and test_date exists
         $existingTestInfo = TestScore::where('student_id', $studentId)
-            ->where('test_name', $test_name) 
+            ->where('test_name', $test_name)
             ->where('test_date', $test_date)
             ->first();
 
@@ -108,10 +128,17 @@ class EducationAndDegreeController extends Controller
             $existingTestInfo->update([
                 'test_score_total' => $test_score_total,
                 'test_score' => $test_score_obtained,
-                'attachment_url' => $attachmentPath,
+                'attachment_url' => $attachment_url,
                 'percentage' => $percentage,
-                'test_name' => $test_name,
-                // Update other fields as needed
+                'test_reg_no' => $test_reg_no,
+                'test_city' => $test_city,
+                'bio_total' => $bio_total,
+                'chem_total' => $chem_total,
+                'phy_total' => $phy_total,
+                'bio_obtained' => $bio_obtained,
+                'chem_obtained' => $chem_obtained,
+                'phy_obtained' => $phy_obtained,
+                // Add other fields as needed
             ]);
         } else {
             // Insert a new test record
@@ -121,15 +148,17 @@ class EducationAndDegreeController extends Controller
                 'test_date' => $test_date,
                 'test_score_total' => $test_score_total,
                 'test_score' => $test_score_obtained,
-                'attachment_url' => $attachmentPath,
+                'attachment_url' => $attachment_url,
+                'test_reg_no' => $test_reg_no,
+                'test_city' => $test_city,
                 'percentage' => $percentage,
                 'skip_test' => 0,
-                'bio_total' => $data['bio_total'],
-                'bio_obtained' => $data['bio_obtained'],
-                'chem_total' => $data['chem_total'],
-                'chem_obtained' => $data['chem_obtained'],
-                'phy_total' => $data['phy_total'],
-                'phy_obtained' => $data['phy_obtained'],
+                'bio_total' => $bio_total,
+                'chem_total' => $chem_total,
+                'phy_total' => $phy_total,
+                'bio_obtained' => $bio_obtained,
+                'chem_obtained' => $chem_obtained,
+                'phy_obtained' => $phy_obtained,
                 // Add other fields as needed
             ]);
 
@@ -138,8 +167,10 @@ class EducationAndDegreeController extends Controller
         }
     }
 
-    return response()->json(['message' => 'Test scores inserted or updated successfully']);
+    // You can add any additional logic or response here as needed
+    return response()->json(['message' => 'Test scores saved/updated successfully']);
 }
+
 
 
 
