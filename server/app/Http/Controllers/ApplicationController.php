@@ -71,6 +71,43 @@ class ApplicationController extends Controller
     // Return a response to the client
     return response()->json(['message' => 'Priorities saved successfully'], 200);
 }
+public function autofilPriority(Request $request)
+{
+    // Validate the incoming request data
+    $request->validate([
+        'user_id' => 'required|integer',
+    ]);
+
+    // Extract the user_id from the request
+    $user_id = $request->input('user_id');
+
+    // Find the student's ID
+    $student_id_json = $this->findStudentId($user_id);
+    $studentId = $student_id_json->getData()->student_id;
+
+    // Initialize an array to store priority names
+    $priorityNames = [];
+
+    // Retrieve priorities from the Application model where the student ID matches
+    $priorities = Application::where('student_id', $studentId)->first();
+
+    if ($priorities) {
+        // Loop through program_ids 1 to 4 and retrieve the corresponding program names
+        for ($i = 1; $i <= 4; $i++) {
+            $programId = $priorities->{'program_id_' . $i};
+            if ($programId) {
+                // Retrieve the program name based on program_id
+                $program = Program::where('program_id', $programId)->first();
+                if ($program) {
+                    $priorityNames[] = $program->program_name;
+                }
+            }
+        }
+    }
+    // Return the array of priority names
+    return response()->json(['priority_names' => $priorityNames], 200);
+}
+
 
 
 }

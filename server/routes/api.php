@@ -43,6 +43,8 @@ Route::post('/skip/{user_id}', [educationAndDegreeController::class, 'skip_test'
 
 Route::post('/getPriority', [StudentInfoController::class, 'getPriority']);
 
+Route::post('/autofilPriority', [ApplicationController::class, 'autofilPriority']);
+
 Route::post('/savetestinfo', [educationAndDegreeController::class, 'createTestScore']);
 
 Route::get('/scores/{user_id}', [educationAndDegreeController::class, 'getScoresByUserId']);

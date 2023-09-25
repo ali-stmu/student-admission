@@ -26,10 +26,50 @@ const ProgramPriority = ({ stepper, type }) => {
   const [programOptions, setProgramOptions] = useState([]);
   const [isDisabled, setIsDisabled] = useState(true); // Initially, everything is disabled
 
+  const fetchPriorities = (user_id) => {
+    fetch(`${BASE_URL}autofilPriority?user_id=${user_id}`, {
+      method: "POST",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setApiResponse(data);
+        console.log(data);
+        if (data && data.priority_names && Array.isArray(data.priority_names)) {
+          // Assume the API response contains an array of selected priorities
+          const priorities = data.priority_names;
+
+          // Autofill the priorities if they exist
+          if (priorities.length >= 1) {
+            setPriority1(
+              programOptions.find((option) => option.value === priorities[0])
+            );
+          }
+          if (priorities.length >= 2) {
+            setPriority2(
+              programOptions.find((option) => option.value === priorities[1])
+            );
+          }
+          if (priorities.length >= 3) {
+            setPriority3(
+              programOptions.find((option) => option.value === priorities[2])
+            );
+          }
+          if (priorities.length >= 4) {
+            setPriority4(
+              programOptions.find((option) => option.value === priorities[3])
+            );
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching priorities:", error);
+      });
+  };
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     const studentInfo = JSON.parse(rolesFromStorage);
     setUserId(studentInfo.user_id);
+    fetchPriorities(studentInfo.user_id);
 
     fetch(`${BASE_URL}getPriority?user_id=${studentInfo.user_id}`, {
       method: "POST",
