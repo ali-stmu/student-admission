@@ -25,13 +25,13 @@
         .col-md-4 table {
             width: 100%;
             font-family: Arial;
-            font-size: 6.5px;
+            font-size: 10px;
             border-collapse: collapse;
         }
 
         .col-md-4 td {
             border: 1px solid black;
-            padding: 5px;
+            padding: 1px;
             /* Increase padding for better visibility */
         }
 
@@ -82,7 +82,7 @@
                         <tr>
                             <td>Issue Date: </td>
                             <td> {{ $data['date'] }}</td>
-                            <td>Due Date: </td>
+                            <td>Due Date:</td>
                             <td>{{ $data['dueDate'] }} </td>
                         </tr>
                         <tr>
@@ -214,6 +214,11 @@
                             <td colspan="2">Late Fee </td>
                             <td></td>
                             <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Total </td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                            <td>{{ $data['totalAmount'] }}</td>
                         </tr>
                         <tr>
                             <td colspan="2">Remarks </td>
@@ -404,6 +409,11 @@
                             <td></td>
                         </tr>
                         <tr>
+                            <td colspan="2">Total </td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                        </tr>
+                        <tr>
                             <td colspan="2">Remarks </td>
                             <td colspan="2">None</td>
                         </tr>
@@ -590,6 +600,11 @@
                             <td colspan="2">Late Fee </td>
                             <td></td>
                             <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Total </td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                            <td>{{ $data['totalAmount'] }}</td>
                         </tr>
                         <tr>
                             <td colspan="2">Remarks </td>
