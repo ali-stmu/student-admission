@@ -68,7 +68,7 @@
                     <table>
                         <tr>
                             <td class="bank-logo">University Logo</td>
-                            <td colspan="2" class="university-logo">Specialized Fee
+                            <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
                                 (Deposit Slip Dept. Copy)</td>
@@ -261,7 +261,7 @@
                     <table>
                         <tr>
                             <td class="bank-logo">University Logo</td>
-                            <td colspan="2" class="university-logo">Specialized Fee
+                            <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
                                 (Deposit Slip Dept. Copy)</td>
@@ -275,7 +275,7 @@
                         <tr>
                             <td>Issue Date: </td>
                             <td> {{ $data['date'] }}</td>
-                            <td>Due Date: </td>
+                            <td>Due Date:</td>
                             <td>{{ $data['dueDate'] }} </td>
                         </tr>
                         <tr>
@@ -454,7 +454,7 @@
                     <table>
                         <tr>
                             <td class="bank-logo">University Logo</td>
-                            <td colspan="2" class="university-logo">Specialized Fee
+                            <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
                                 (Deposit Slip Dept. Copy)</td>
@@ -468,7 +468,7 @@
                         <tr>
                             <td>Issue Date: </td>
                             <td> {{ $data['date'] }}</td>
-                            <td>Due Date: </td>
+                            <td>Due Date:</td>
                             <td>{{ $data['dueDate'] }} </td>
                         </tr>
                         <tr>
