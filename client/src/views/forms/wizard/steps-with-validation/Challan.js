@@ -14,6 +14,8 @@ import UniLogo from "../../../../assets/images/logo/ShifaLogo.png";
 import BankLogo from "../../../../assets/images/logo/bank_logo.png";
 import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
 import SignleChallan from "./signleChallan";
+import { BASE_URL } from "../../../../config";
+import axios from "axios";
 
 const Challan = ({ stepper, type }) => {
   const contentRef = useRef(null);
@@ -49,6 +51,25 @@ const Challan = ({ stepper, type }) => {
         pdf.addImage(imgData, "PNG", 0, 0, width, height);
         pdf.save("challan.pdf");
       });
+    }
+  };
+  const generatePdfffff = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}generate-pdf`, {
+        responseType: "blob", // Important to handle binary data (PDF)
+      });
+
+      // Create a blob URL for the PDF and initiate a download
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "example.pdf";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
     }
   };
   const onSubmit = () => {
@@ -130,6 +151,7 @@ const Challan = ({ stepper, type }) => {
           </span>
           <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
         </Button.Ripple>
+        <button onClick={generatePdfffff}>test</button>
       </div>
     </div>
   );
