@@ -67,7 +67,10 @@
                     <!-- Dummy table for the first column -->
                     <table>
                         <tr>
-                            <td class="bank-logo"><img src="{{ public_path($data['bankLogoPath']) }}" alt="Bank Logo"></td>
+                            <td class="bank-logo">
+                                <img src="{{ $filePath }}" alt="Bank Logo">
+                            </td>
+
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University

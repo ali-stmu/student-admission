@@ -124,9 +124,10 @@ public function generatePdf()
             'pyear' => "2023",
             'session' => "Fall",
             'totalAmount' => "1000",
-            'bankLogoPath' => "server/storage/app/bank_logo/2560px-Al_Baraka_logo.png", // Add the logo path here
+            'bankLogoPath' => "https://drive.google.com/file/d/1WZqHnl8dICzdEGrIU4EL2DwXkGLnvNEW/view?usp=drive_link", // Add the logo path here
         ];
-        $pdf = PDF::loadView('challan', compact('data'));        
+        $filePath = storage_path('bank_logo/2560px-Al_Baraka_logo.png'); // Specify the path to the file you want to access
+        $pdf = PDF::loadView('challan', compact('data','filePath'));        
         // You can customize the PDF options if needed
         // $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
