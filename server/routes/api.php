@@ -52,3 +52,6 @@ Route::get('/scores/{user_id}', [educationAndDegreeController::class, 'getScores
 //Application Api
 Route::post('/savePriorities', [ApplicationController::class, 'savePriorities']);
 
+//testing pdf
+
+Route::get('/generate-pdf', [ApplicationController::class, 'generatePdf']);

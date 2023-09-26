@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Application;
 use App\Models\student;
 use App\Models\Program;
+use PDF;
 
 class ApplicationController extends Controller
 {
@@ -108,6 +109,27 @@ public function autofilPriority(Request $request)
     return response()->json(['priority_names' => $priorityNames], 200);
 }
 
+public function generatePdf()
+    {
+        $data = [
+            'collegeName' => "Shifa Tameer-e-Millat University",
+            'voucherID' => "123456",
+            'date' => "2023-08-23",
+            'dueDate' => "2023-09-01",
+            'AccountTitle' => "SHIFA TAMEER-MILLAT UNIVERSITY",
+            'bankAccountNumber' => "50007902906303",
+            'programName' => "Computer Science",
+            'studentName' => "John Doe",
+            'rollNo' => "CS12345",
+            'pyear' => "2023",
+            'session' => "Fall",
+            'totalAmount' => "1000",
+        ];
+        $pdf = PDF::loadView('challan', compact('data'));        
+        // You can customize the PDF options if needed
+        // $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
 
+        return $pdf->download('challan.pdf');
+    }
 
 }

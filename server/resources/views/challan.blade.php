@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Challan</title>
+    <!-- Add Bootstrap CSS link -->
+    <style>
+        /* Use media query to switch to landscape */
+        @page {
+            size: landscape;
+        }
+
+        /* Add any necessary custom CSS styles here */
+        /* For demonstration purposes, I'm setting the width of the outer div to 800px */
+
+        /* Add more custom styles as needed */
+        .col-md-4 {
+            width: 30%;
+            /* Set column width to 20% for landscape */
+            float: left;
+            padding: 0 10px;
+            /* Add some padding to create space between columns */
+        }
+
+        .col-md-4 table {
+            width: 100%;
+            font-family: Arial;
+            font-size: 12px;
+            border-collapse: collapse;
+        }
+
+        .col-md-4 td {
+            border: 1px solid black;
+            padding: 5px;
+            /* Increase padding for better visibility */
+        }
+
+        /* Add a bottom border to the specific td elements */
+        .col-md-4 td.bank-logo,
+        .col-md-4 td.university-logo {
+            border-bottom: 1px solid #000;
+        }
+
+        /* Clear the float after every third column to prevent overlap */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div>
+                    <!-- Dummy table for the first column -->
+                    <table>
+                        <tr>
+                            <td class="bank-logo">University Logo</td>
+                            <td colspan="2" class="university-logo">Specialized Fee
+                                Challan Form
+                                Shifa Tameer-e-Millat University
+                                (Deposit Slip Dept. Copy)</td>
+                            <td>Bank logo</td>
+                        </tr>
+                        <tr>
+                            <td> Ch./Receipt/Slip No:</td>
+                            <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
+                                {{ $data['voucherID'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Issue Date: </td>
+                            <td> {{ $data['date'] }}</td>
+                            <td>Due Date: </td>
+                            <td>{{ $data['dueDate'] }} </td>
+                        </tr>
+                        <tr>
+                            <td>Credit to: </td>
+                            <td colspan="3"> {{ $data['AccountTitle'] }}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Collection Account#: </td>
+                            <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Program: </td>
+                            <td colspan="3"> {{ $data['programName'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Student Name: </td>
+                            <td colspan="3"> {{ $data['studentName'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Particulars </td>
+                            <td>Amount (PKR)</td>
+                            <td>Total (PKR)</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Admission Fee </td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Remarks </td>
+                            <td colspan="2">None</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">
+                                Please deposit this challan to any branch of the bank within the due date.
+                                <br />
+                                After the due date, an additional fine will be charged as per the university policy.
+                                <br />
+                                Keep the deposit slip safe as proof of payment.
+                                <br />
+                                This is a computer-generated document and does not require any signature.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <!-- Dummy table for the second column -->
+                    <table>
+                        <tr>
+                            <td class="bank-logo">University Logo</td>
+                            <td colspan="2" class="university-logo">Specialized Fee
+                                Challan Form
+                                Shifa Tameer-e-Millat University
+                                (Deposit Slip Dept. Copy)</td>
+                            <td>Bank logo</td>
+                        </tr>
+                        <tr>
+                            <td> Ch./Receipt/Slip No:</td>
+                            <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
+                                {{ $data['voucherID'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Issue Date: </td>
+                            <td> {{ $data['date'] }}</td>
+                            <td>Due Date: </td>
+                            <td>{{ $data['dueDate'] }} </td>
+                        </tr>
+                        <tr>
+                            <td>Credit to: </td>
+                            <td colspan="3"> {{ $data['AccountTitle'] }}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Collection Account#: </td>
+                            <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Program: </td>
+                            <td colspan="3"> {{ $data['programName'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Student Name: </td>
+                            <td colspan="3"> {{ $data['studentName'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Particulars </td>
+                            <td>Amount (PKR)</td>
+                            <td>Total (PKR)</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Admission Fee </td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <!-- Dummy table for the third column -->
+                    <table>
+                        <tr>
+                            <td class="bank-logo">University Logo</td>
+                            <td colspan="2" class="university-logo">Specialized Fee
+                                Challan Form
+                                Shifa Tameer-e-Millat University
+                                (Deposit Slip Dept. Copy)</td>
+                            <td>Bank logo</td>
+                        </tr>
+                        <tr>
+                            <td> Ch./Receipt/Slip No:</td>
+                            <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
+                                {{ $data['voucherID'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Issue Date: </td>
+                            <td> {{ $data['date'] }}</td>
+                            <td>Due Date: </td>
+                            <td>{{ $data['dueDate'] }} </td>
+                        </tr>
+                        <tr>
+                            <td>Credit to: </td>
+                            <td colspan="3"> {{ $data['AccountTitle'] }}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Collection Account#: </td>
+                            <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Program: </td>
+                            <td colspan="3"> {{ $data['programName'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Student Name: </td>
+                            <td colspan="3"> {{ $data['studentName'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Particulars </td>
+                            <td>Amount (PKR)</td>
+                            <td>Total (PKR)</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Admission Fee </td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                            <td>{{ $data['totalAmount'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
