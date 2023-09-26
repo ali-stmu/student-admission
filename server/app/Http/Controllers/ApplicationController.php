@@ -124,6 +124,7 @@ public function generatePdf()
             'pyear' => "2023",
             'session' => "Fall",
             'totalAmount' => "1000",
+            'bankLogoPath' => "server/storage/app/bank_logo/2560px-Al_Baraka_logo.png", // Add the logo path here
         ];
         $pdf = PDF::loadView('challan', compact('data'));        
         // You can customize the PDF options if needed
