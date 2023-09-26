@@ -75,9 +75,10 @@
                             <td>Bank logo</td>
                         </tr>
                         <tr>
-                            <td> Ch./Receipt/Slip No:</td>
+                            <td><b>Ch./Receipt/Slip No:</b></td>
                             <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
-                                {{ $data['voucherID'] }}</td>
+                                <b>{{ $data['voucherID'] }}</b>
+                            </td>
                         </tr>
                         <tr>
                             <td>Issue Date: </td>
@@ -87,12 +88,12 @@
                         </tr>
                         <tr>
                             <td>Credit to: </td>
-                            <td colspan="3"> {{ $data['AccountTitle'] }}</td>
+                            <td colspan="3"> <b>{{ $data['AccountTitle'] }}</b></td>
 
                         </tr>
                         <tr>
                             <td>Collection Account#: </td>
-                            <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
+                            <td colspan="3"> <b>{{ $data['bankAccountNumber'] }}</b></td>
                         </tr>
                         <tr>
                             <td>Instrument Type: </td>
@@ -141,17 +142,18 @@
                         <tr>
                             <td>Registration No:</td>
                             <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
-                                {{ $data['voucherID'] }}</td>
+                                <b>{{ $data['voucherID'] }}</b>
+                            </td>
                         </tr>
                         <tr>
                             <td>Student Name: </td>
-                            <td colspan="3"> {{ $data['studentName'] }}</td>
+                            <td colspan="3"> <b>{{ $data['studentName'] }}</b></td>
                         </tr>
                         <tr>
                             <td>Program: </td>
-                            <td> {{ $data['programName'] }}</td>
+                            <td> <b>{{ $data['programName'] }}</b></td>
                             <td>Semester/Year: </td>
-                            <td> {{ $data['pyear'] }}</td>
+                            <td> <b>{{ $data['pyear'] }}</b></td>
                         </tr>
 
                         <tr>
@@ -268,9 +270,10 @@
                             <td>Bank logo</td>
                         </tr>
                         <tr>
-                            <td> Ch./Receipt/Slip No:</td>
+                            <td> <b>Ch./Receipt/Slip No:</b></td>
                             <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
-                                {{ $data['voucherID'] }}</td>
+                                <b>{{ $data['voucherID'] }}</b>
+                            </td>
                         </tr>
                         <tr>
                             <td>Issue Date: </td>
@@ -280,12 +283,12 @@
                         </tr>
                         <tr>
                             <td>Credit to: </td>
-                            <td colspan="3"> {{ $data['AccountTitle'] }}</td>
+                            <td colspan="3"> <b>{{ $data['AccountTitle'] }}</b></td>
 
                         </tr>
                         <tr>
                             <td>Collection Account#: </td>
-                            <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
+                            <td colspan="3"> <b>{{ $data['bankAccountNumber'] }}</b></td>
                         </tr>
                         <tr>
                             <td>Instrument Type: </td>
@@ -334,17 +337,18 @@
                         <tr>
                             <td>Registration No:</td>
                             <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
-                                {{ $data['voucherID'] }}</td>
+                                <b>{{ $data['voucherID'] }}</b>
+                            </td>
                         </tr>
                         <tr>
                             <td>Student Name: </td>
-                            <td colspan="3"> {{ $data['studentName'] }}</td>
+                            <td colspan="3"> <b>{{ $data['studentName'] }}</b></td>
                         </tr>
                         <tr>
                             <td>Program: </td>
-                            <td> {{ $data['programName'] }}</td>
+                            <td> <b>{{ $data['programName'] }}</b></td>
                             <td>Semester/Year: </td>
-                            <td> {{ $data['pyear'] }}</td>
+                            <td> <b>{{ $data['pyear'] }}</b></td>
                         </tr>
 
                         <tr>
@@ -461,9 +465,10 @@
                             <td>Bank logo</td>
                         </tr>
                         <tr>
-                            <td> Ch./Receipt/Slip No:</td>
+                            <td> <b>Ch./Receipt/Slip No:</b></td>
                             <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
-                                {{ $data['voucherID'] }}</td>
+                                <b>{{ $data['voucherID'] }}</b>
+                            </td>
                         </tr>
                         <tr>
                             <td>Issue Date: </td>
@@ -473,12 +478,12 @@
                         </tr>
                         <tr>
                             <td>Credit to: </td>
-                            <td colspan="3"> {{ $data['AccountTitle'] }}</td>
+                            <td colspan="3"> <b>{{ $data['AccountTitle'] }}</b></td>
 
                         </tr>
                         <tr>
                             <td>Collection Account#: </td>
-                            <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
+                            <td colspan="3"> <b>{{ $data['bankAccountNumber'] }}</b></td>
                         </tr>
                         <tr>
                             <td>Instrument Type: </td>
@@ -527,17 +532,18 @@
                         <tr>
                             <td>Registration No:</td>
                             <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
-                                {{ $data['voucherID'] }}</td>
+                                <b>{{ $data['voucherID'] }}</b>
+                            </td>
                         </tr>
                         <tr>
                             <td>Student Name: </td>
-                            <td colspan="3"> {{ $data['studentName'] }}</td>
+                            <td colspan="3"> <b>{{ $data['studentName'] }}</b></td>
                         </tr>
                         <tr>
                             <td>Program: </td>
-                            <td> {{ $data['programName'] }}</td>
+                            <td> <b>{{ $data['programName'] }}</b></td>
                             <td>Semester/Year: </td>
-                            <td> {{ $data['pyear'] }}</td>
+                            <td> <b>{{ $data['pyear'] }}</b></td>
                         </tr>
 
                         <tr>
