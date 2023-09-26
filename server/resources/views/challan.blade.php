@@ -132,6 +132,21 @@
                             <td colspan="4" style="text-align: left;">
                             </td>
                         </tr>
+                        <tr>
+                            <td>Bank's Teller </td>
+                            <td>None</td>
+                            <td>None</td>
+                            <td>Bank's Officer</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
 
                     </table>
                 </div>
@@ -177,6 +192,11 @@
                             <td colspan="3"> {{ $data['studentName'] }}</td>
                         </tr>
                         <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="2">Particulars </td>
                             <td>Amount (PKR)</td>
                             <td>Total (PKR)</td>
@@ -187,11 +207,45 @@
                             <td>{{ $data['totalAmount'] }}</td>
                         </tr>
                         <tr>
+                            <td colspan="2">Remarks </td>
+                            <td colspan="2">None</td>
+                        </tr>
+                        <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
                             </td>
-
                         </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">
+                                Please deposit this challan to any branch of the bank within the due date.
+                                <br />
+                                After the due date, an additional fine will be charged as per the university policy.
+                                <br />
+                                Keep the deposit slip safe as proof of payment.
+                                <br />
+                                This is a computer-generated document and does not require any signature.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bank's Teller </td>
+                            <td>None</td>
+                            <td>None</td>
+                            <td>Bank's Officer</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+
                     </table>
                 </div>
             </div>
@@ -236,6 +290,11 @@
                             <td colspan="3"> {{ $data['studentName'] }}</td>
                         </tr>
                         <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="2">Particulars </td>
                             <td>Amount (PKR)</td>
                             <td>Total (PKR)</td>
@@ -246,11 +305,45 @@
                             <td>{{ $data['totalAmount'] }}</td>
                         </tr>
                         <tr>
+                            <td colspan="2">Remarks </td>
+                            <td colspan="2">None</td>
+                        </tr>
+                        <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
                             </td>
-
                         </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">
+                                Please deposit this challan to any branch of the bank within the due date.
+                                <br />
+                                After the due date, an additional fine will be charged as per the university policy.
+                                <br />
+                                Keep the deposit slip safe as proof of payment.
+                                <br />
+                                This is a computer-generated document and does not require any signature.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bank's Teller </td>
+                            <td>None</td>
+                            <td>None</td>
+                            <td>Bank's Officer</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+
                     </table>
                 </div>
             </div>
