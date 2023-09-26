@@ -25,7 +25,7 @@
         .col-md-4 table {
             width: 100%;
             font-family: Arial;
-            font-size: 12px;
+            font-size: 6.5px;
             border-collapse: collapse;
         }
 
@@ -46,6 +46,15 @@
             content: "";
             clear: both;
             display: table;
+        }
+
+        .custom-box {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border: 0.5px solid #000;
+            margin-left: 3px;
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -86,13 +95,65 @@
                             <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
                         </tr>
                         <tr>
-                            <td>Program: </td>
-                            <td colspan="3"> {{ $data['programName'] }}</td>
+                            <td>Instrument Type: </td>
+                            <td colspan="3">Cash<span class="custom-box"></span> Cheque<span
+                                    class="custom-box"></span> PO/DD<span class="custom-box"></span> Any other<span
+                                    class="custom-box"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Instrument No: </td>
+                            <td></td>
+                            <td colspan="2">Date:</td>
+                        </tr>
+                        <tr>
+                            <td>Drawn on Bank / Branch:</td>
+                            <td></td>
+                            <td colspan="2">Amount Rs {{ $data['totalAmount'] }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Location:</td>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td>In Words</td>
+                            <td colspan="3">Amount in words will be here</td>
+                        </tr>
+                        <tr>
+                            <td>Depositors CNIC:
+                                Depositors Signature: :</td>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">Official Stamp</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bank's Teller </td>
+                            <td></td>
+                            <td></td>
+                            <td>Bank's Officer</td>
+                        </tr>
+                        <tr>
+                            <td>Registration No:</td>
+                            <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
+                                {{ $data['voucherID'] }}</td>
                         </tr>
                         <tr>
                             <td>Student Name: </td>
                             <td colspan="3"> {{ $data['studentName'] }}</td>
                         </tr>
+                        <tr>
+                            <td>Program: </td>
+                            <td> {{ $data['programName'] }}</td>
+                            <td>Semester/Year: </td>
+                            <td> {{ $data['pyear'] }}</td>
+                        </tr>
+
                         <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
@@ -104,9 +165,55 @@
                             <td>Total (PKR)</td>
                         </tr>
                         <tr>
+                            <td colspan="2">Tution Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td colspan="2">Admission Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Hostel Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Application Fee </td>
                             <td>{{ $data['totalAmount'] }}</td>
                             <td>{{ $data['totalAmount'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Examination Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Prospectus Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Medical Checkup Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Registration Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Other (Specify) </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Late Fee </td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td colspan="2">Remarks </td>
@@ -132,16 +239,8 @@
                             <td colspan="4" style="text-align: left;">
                             </td>
                         </tr>
-                        <tr>
-                            <td>Bank's Teller </td>
-                            <td>None</td>
-                            <td>None</td>
-                            <td>Bank's Officer</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: left;">
-                            </td>
-                        </tr>
+
+
                         <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
@@ -184,13 +283,65 @@
                             <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
                         </tr>
                         <tr>
-                            <td>Program: </td>
-                            <td colspan="3"> {{ $data['programName'] }}</td>
+                            <td>Instrument Type: </td>
+                            <td colspan="3">Cash<span class="custom-box"></span> Cheque<span
+                                    class="custom-box"></span> PO/DD<span class="custom-box"></span> Any other<span
+                                    class="custom-box"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Instrument No: </td>
+                            <td></td>
+                            <td colspan="2">Date:</td>
+                        </tr>
+                        <tr>
+                            <td>Drawn on Bank / Branch:</td>
+                            <td></td>
+                            <td colspan="2">Amount Rs {{ $data['totalAmount'] }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Location:</td>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td>In Words</td>
+                            <td colspan="3">Amount in words will be here</td>
+                        </tr>
+                        <tr>
+                            <td>Depositors CNIC:
+                                Depositors Signature: :</td>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">Official Stamp</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bank's Teller </td>
+                            <td></td>
+                            <td></td>
+                            <td>Bank's Officer</td>
+                        </tr>
+                        <tr>
+                            <td>Registration No:</td>
+                            <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
+                                {{ $data['voucherID'] }}</td>
                         </tr>
                         <tr>
                             <td>Student Name: </td>
                             <td colspan="3"> {{ $data['studentName'] }}</td>
                         </tr>
+                        <tr>
+                            <td>Program: </td>
+                            <td> {{ $data['programName'] }}</td>
+                            <td>Semester/Year: </td>
+                            <td> {{ $data['pyear'] }}</td>
+                        </tr>
+
                         <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
@@ -202,9 +353,55 @@
                             <td>Total (PKR)</td>
                         </tr>
                         <tr>
+                            <td colspan="2">Tution Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td colspan="2">Admission Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Hostel Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Application Fee </td>
                             <td>{{ $data['totalAmount'] }}</td>
                             <td>{{ $data['totalAmount'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Examination Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Prospectus Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Medical Checkup Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Registration Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Other (Specify) </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Late Fee </td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td colspan="2">Remarks </td>
@@ -230,16 +427,8 @@
                             <td colspan="4" style="text-align: left;">
                             </td>
                         </tr>
-                        <tr>
-                            <td>Bank's Teller </td>
-                            <td>None</td>
-                            <td>None</td>
-                            <td>Bank's Officer</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: left;">
-                            </td>
-                        </tr>
+
+
                         <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
@@ -282,13 +471,65 @@
                             <td colspan="3"> {{ $data['bankAccountNumber'] }}</td>
                         </tr>
                         <tr>
-                            <td>Program: </td>
-                            <td colspan="3"> {{ $data['programName'] }}</td>
+                            <td>Instrument Type: </td>
+                            <td colspan="3">Cash<span class="custom-box"></span> Cheque<span
+                                    class="custom-box"></span> PO/DD<span class="custom-box"></span> Any other<span
+                                    class="custom-box"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Instrument No: </td>
+                            <td></td>
+                            <td colspan="2">Date:</td>
+                        </tr>
+                        <tr>
+                            <td>Drawn on Bank / Branch:</td>
+                            <td></td>
+                            <td colspan="2">Amount Rs {{ $data['totalAmount'] }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Location:</td>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td>In Words</td>
+                            <td colspan="3">Amount in words will be here</td>
+                        </tr>
+                        <tr>
+                            <td>Depositors CNIC:
+                                Depositors Signature: :</td>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">Official Stamp</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align: left;">
+                                <hr style="border-top: 1px solid #000;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bank's Teller </td>
+                            <td></td>
+                            <td></td>
+                            <td>Bank's Officer</td>
+                        </tr>
+                        <tr>
+                            <td>Registration No:</td>
+                            <td colspan="3" style="text-align: left; border-right: 1px solid #000;">
+                                {{ $data['voucherID'] }}</td>
                         </tr>
                         <tr>
                             <td>Student Name: </td>
                             <td colspan="3"> {{ $data['studentName'] }}</td>
                         </tr>
+                        <tr>
+                            <td>Program: </td>
+                            <td> {{ $data['programName'] }}</td>
+                            <td>Semester/Year: </td>
+                            <td> {{ $data['pyear'] }}</td>
+                        </tr>
+
                         <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
@@ -300,9 +541,55 @@
                             <td>Total (PKR)</td>
                         </tr>
                         <tr>
+                            <td colspan="2">Tution Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td colspan="2">Admission Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Hostel Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Application Fee </td>
                             <td>{{ $data['totalAmount'] }}</td>
                             <td>{{ $data['totalAmount'] }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Examination Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Prospectus Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Medical Checkup Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Registration Fee </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Other (Specify) </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Late Fee </td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td colspan="2">Remarks </td>
@@ -328,16 +615,8 @@
                             <td colspan="4" style="text-align: left;">
                             </td>
                         </tr>
-                        <tr>
-                            <td>Bank's Teller </td>
-                            <td>None</td>
-                            <td>None</td>
-                            <td>Bank's Officer</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align: left;">
-                            </td>
-                        </tr>
+
+
                         <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
