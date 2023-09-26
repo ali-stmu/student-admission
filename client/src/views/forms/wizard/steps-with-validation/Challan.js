@@ -1,6 +1,6 @@
-import React, { useRef, useState } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import React, { useRef, useState, useEffect } from "react";
+// import html2canvas from "html2canvas";
+// import jsPDF from "jspdf";
 import {
   Button,
   FormGroup,
@@ -10,8 +10,8 @@ import {
   Col,
   CustomInput,
 } from "reactstrap";
-import UniLogo from "../../../../assets/images/logo/ShifaLogo.png";
-import BankLogo from "../../../../assets/images/logo/bank_logo.png";
+// import UniLogo from "../../../../assets/images/logo/ShifaLogo.png";
+// import BankLogo from "../../../../assets/images/logo/bank_logo.png";
 import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
 import SignleChallan from "./signleChallan";
 import { BASE_URL } from "../../../../config";
@@ -21,42 +21,27 @@ const Challan = ({ stepper, type }) => {
   const contentRef = useRef(null);
   const [challanAttachment, setChallanAttachment] = useState(null);
   const [challanPaidDate, setChallanPaidDate] = useState("");
+  const [userID, setUserId] = useState("");
+  const [priorities, setPriorities] = useState(["Loading..."]);
+  const [prioritiesButtons, setPrioritiesButtons] = useState([]);
 
-  const generatePDF = () => {
-    const input = contentRef.current;
-    if (input) {
-      const pdf = new jsPDF("l", "mm", "a4"); // Landscape mode
+  useEffect(() => {
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    const studentInfo = JSON.parse(rolesFromStorage);
+    console.log(studentInfo.user_id);
+    setUserId(studentInfo.user_id);
+  }, []);
 
-      // Determine the dimensions based on the device's screen size
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      const canvasWidth =
-        screenWidth > screenHeight ? screenWidth : screenHeight;
-      const canvasHeight = canvasWidth * 0.75; // Assuming aspect ratio of 4:3
-
-      // Set white background before rendering canvas
-      const canvasOptions = {
-        backgroundColor: "#FFFFFF", // White background color
-      };
-
-      html2canvas(input, {
-        ...canvasOptions,
-        width: canvasWidth,
-        height: canvasHeight,
-      }).then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-        const width = pdf.internal.pageSize.getWidth();
-        const height = (canvas.height * width) / canvas.width;
-
-        pdf.addImage(imgData, "PNG", 0, 0, width, height);
-        pdf.save("challan.pdf");
-      });
-    }
+  const getStoredPriorities = () => {
+    const storedPriorities = localStorage.getItem("priorities");
+    return storedPriorities ? JSON.parse(storedPriorities) : [];
   };
-  const generatePdfffff = async () => {
+  const generatePdfffff = async (program) => {
     try {
+      console.log(userID);
       const response = await axios.get(`${BASE_URL}generate-pdf`, {
         responseType: "blob", // Important to handle binary data (PDF)
+        params: { userID, program }, // Include user_id as a query parameter
       });
 
       // Create a blob URL for the PDF and initiate a download
@@ -64,7 +49,7 @@ const Challan = ({ stepper, type }) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "example.pdf";
+      a.download = "Voucher.pdf";
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -72,6 +57,28 @@ const Challan = ({ stepper, type }) => {
       console.error("Error generating PDF:", error);
     }
   };
+  const loadChallan = () => {
+    // Get priorities from local storage
+    const storedPriorities = getStoredPriorities();
+
+    // Create buttons based on priorities
+    const buttons = storedPriorities.map((priority, index) => (
+      <div
+        onClick={() => generatePdfffff(priority.label)}
+        key={index}
+        style={{ marginBottom: "10px" }}
+      >
+        <Button.Ripple color="info">
+          Download Challan {priority.label}
+        </Button.Ripple>
+      </div>
+    ));
+
+    // Display the buttons (you can replace a div with a suitable container)
+    // For example, create a new state to store the buttons and render them in the JSX
+    setPrioritiesButtons(buttons);
+  };
+
   const onSubmit = () => {
     // Access challanAttachment and challanPaidDate values here and perform your submission logic
     console.log("Challan Attachment:", challanAttachment);
@@ -93,14 +100,13 @@ const Challan = ({ stepper, type }) => {
   return (
     <div>
       <div style={{ backgroundColor: "#FFFFFF" }} ref={contentRef}>
-        <div style={tableContainerStyle}>
-          <SignleChallan copyStatus="Dept." />
-          <SignleChallan copyStatus="Bank" />
-          <SignleChallan copyStatus="Student" />
-        </div>
+        <div style={tableContainerStyle}></div>
       </div>
-      <Button onClick={generatePDF}>Download Challan</Button>
+      <Button.Ripple color="primary" onClick={loadChallan}>
+        Load Challan(s)
+      </Button.Ripple>
       <h1>Challan Details:</h1>
+      <div>{prioritiesButtons}</div>
       <Row>
         <Col md="6" sm="12">
           <FormGroup>
@@ -151,7 +157,6 @@ const Challan = ({ stepper, type }) => {
           </span>
           <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
         </Button.Ripple>
-        <button onClick={generatePdfffff}>test</button>
       </div>
     </div>
   );

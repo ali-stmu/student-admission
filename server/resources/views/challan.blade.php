@@ -68,7 +68,7 @@
                     <table>
                         <tr>
                             <td class="bank-logo">
-                                <img src="{{ $filePath }}" alt="Bank Logo">
+                                <img src="" alt="Bank Logo">
                             </td>
 
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee

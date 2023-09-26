@@ -116,6 +116,7 @@ const ProgramPriority = ({ stepper, type }) => {
       .then((responseData) => {
         // Handle the response from the API as needed
         console.log("Response from API:", responseData);
+        localStorage.setItem("priorities", JSON.stringify(priorities));
         stepper.next();
       })
       .catch((error) => {

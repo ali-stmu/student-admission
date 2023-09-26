@@ -15,14 +15,24 @@ class ApplicationController extends Controller
 
     public function findStudentId($user_id)
     {
-        $student = student::where('user_id', $user_id)->first();
+        $student = Student::where('user_id', $user_id)->first();
         if ($student) {
             $student_id = $student->student_id;
-            //Log::debug('Found student_id: ' . $student_id);
-            return response()->json(['student_id' => $student_id]);
+            $First_name = $student->first_name;
+            $Last_name = $student->last_name;
+        
+            // Log::debug('Found student_id: ' . $student_id);
+            
+            // Return the data as a JSON response with key-value pairs
+            return response()->json([
+                'student_id' => $student_id,
+                'first_name' => $First_name,
+                'last_name' => $Last_name
+            ]);
         } else {
             Log::debug('Student not found for user_id: ' . $user_id);
         }
+        
     }
     public function savePriorities(Request $request)
 {
@@ -109,29 +119,69 @@ public function autofilPriority(Request $request)
     return response()->json(['priority_names' => $priorityNames], 200);
 }
 
-public function generatePdf()
-    {
-        $data = [
-            'collegeName' => "Shifa Tameer-e-Millat University",
-            'voucherID' => "123456",
-            'date' => "2023-08-23",
-            'dueDate' => "2023-09-01",
-            'AccountTitle' => "SHIFA TAMEER-MILLAT UNIVERSITY",
-            'bankAccountNumber' => "50007902906303",
-            'programName' => "Computer Science",
-            'studentName' => "John Doe",
-            'rollNo' => "CS12345",
-            'pyear' => "2023",
-            'session' => "Fall",
-            'totalAmount' => "1000",
-            'bankLogoPath' => "https://drive.google.com/file/d/1WZqHnl8dICzdEGrIU4EL2DwXkGLnvNEW/view?usp=drive_link", // Add the logo path here
-        ];
-        $filePath = storage_path('bank_logo/2560px-Al_Baraka_logo.png'); // Specify the path to the file you want to access
-        $pdf = PDF::loadView('challan', compact('data','filePath'));        
-        // You can customize the PDF options if needed
-        // $pdf->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+public function generatePdf(Request $request)
+{
+    $userId = $request->input('userID');
+    $programFromClient = $request->input('program');
 
-        return $pdf->download('challan.pdf');
+    $student_id_json = $this->findStudentId($userId);
+    $studentId = $student_id_json->getData()->student_id;
+    $first_name = $student_id_json->getData()->first_name;
+    $last_name = $student_id_json->getData()->last_name;
+    $Full_name =  $first_name ." ". $last_name;
+    log::debug($Full_name);
+
+
+    // Initialize an array to store program names
+    $programNames = [];
+    $collegeIds = [];
+
+    // Retrieve the program names associated with program_id_1 to program_id_4
+    $application = Application::where('student_id', $studentId)->first();
+
+    if ($application) {
+        $programIds = [
+            $application->program_id_1,
+            $application->program_id_2,
+            $application->program_id_3,
+            $application->program_id_4,
+        ];
+
+        foreach ($programIds as $programId) {
+            if ($programId) {
+                // Retrieve the program name based on program_id
+                $program = Program::where('program_id', $programId)->first();
+                if ($program) {
+                    $programNames[] = $program->program_name;
+                    $collegeIds[] = $program->college_id;
+                }
+            }
+        }
     }
+    log::debug($collegeIds);
+
+    // Now you have the program names in the $programNames array
+
+    $data = [
+        'collegeName' => "Shifa Tameer-e-Millat University",
+        'voucherID' => "123456",
+        'date' => "2023-08-23",
+        'dueDate' => "2023-09-01",
+        'AccountTitle' => "SHIFA TAMEER-MILLAT UNIVERSITY",
+        'bankAccountNumber' => "50007902906303",
+        'programName' => $programFromClient, // Combine program names into a comma-separated string
+        'studentName' => $Full_name,
+        'rollNo' => "CS12345",
+        'pyear' => "2023",
+        'session' => "Fall",
+        'totalAmount' => "5000",
+        'bankLogoPath' => "https://drive.google.com/file/d/1WZqHnl8dICzdEGrIU4EL2DwXkGLnvNEW/view?usp=drive_link",
+    ];
+
+    $filePath = storage_path('bank_logo/2560px-Al_Baraka_logo.png');
+    $pdf = PDF::loadView('challan', compact('data', 'filePath'));
+
+    return $pdf->download('challan.pdf');
+}
 
 }
