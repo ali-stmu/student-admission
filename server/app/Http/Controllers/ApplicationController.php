@@ -157,12 +157,12 @@ public function generatePdf(Request $request)
         foreach ($programIds as $programId) {
             if ($programId) {
                 // Retrieve the program name based on program_id
-                $program = Program::where('program_id', $programId)->where('program_name', $programFromClient)->first();
+                $program = Program::where('program_id', $programId)->where('program_name', $programFromClient)->where('status', '1')->first();
                 if ($program) {
                     $programNames = $program->program_name;
                     $collegeIds = $program->college_id;
                     $program_ID = $program->program_id;
-                    $session = Session::where('program_id', $programId)->first();
+                    $session = Session::where('program_id', $programId)->where('status', '1')->first();
                 if ($session) {
                     $session_id = $session->session_id;
                     $term_id = $session->term_id;
