@@ -12,7 +12,7 @@ use App\Models\Term;
 use App\Models\Program;
 use App\Models\Bank;
 use App\Models\College;
-
+use App\Models\Voucher;
 
 use PDF;
 
@@ -254,5 +254,31 @@ public function generatePdf(Request $request)
     }
 }
 
+public function store(Request $request)
+{
+    Log::debug('Request data:', $request->all());
+    $user_id = $request->input('user_id');
+    log::debug($user_id);
+    // Handle file upload and generate a unique file name
+    $voucherFileName = uniqid() . '.' . $request->file('challanAttachment')->getClientOriginalExtension();
+    $request->file('challanAttachment')->storeAs('voucher_files', $voucherFileName);
+    // Create a new Voucher instance
+    $voucher = new Voucher([
+        'student_id' => $request->input('student_id'),
+        'voucher_file_name' => $voucherFileName, // Save the file name in the database
+        'upload_date' => $request->input('challanPaidDate'),
+        'status' => 1,
+        'bank_name' => $request->input('bankName'),
+        'branch_code' => $request->input('bankName'),
+        'transaction_id' => $request->input('bankName'),
+        'mode_of_payment' => $request->input('modeOfPayment'),
+    ]);
+
+    // Save the voucher record to the database
+    $voucher->save();
+
+    // Return a success response or any necessary data
+    return response()->json(['message' => 'Voucher saved successfully']);
+}
 
 }

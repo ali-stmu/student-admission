@@ -55,3 +55,4 @@ Route::post('/savePriorities', [ApplicationController::class, 'savePriorities'])
 //testing pdf
 
 Route::get('/generate-pdf', [ApplicationController::class, 'generatePdf']);
+Route::post('/savevoucher', [ApplicationController::class, 'store']);
