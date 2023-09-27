@@ -133,8 +133,8 @@ public function generatePdf(Request $request)
 
 
     // Initialize an array to store program names
-    $programNames = [];
-    $collegeIds = [];
+    $programNames = "";
+    $collegeIds = "";
 
     // Retrieve the program names associated with program_id_1 to program_id_4
     $application = Application::where('student_id', $studentId)->first();
@@ -150,15 +150,17 @@ public function generatePdf(Request $request)
         foreach ($programIds as $programId) {
             if ($programId) {
                 // Retrieve the program name based on program_id
-                $program = Program::where('program_id', $programId)->first();
+                $program = Program::where('program_id', $programId)->where('program_name', $programFromClient)->first();
                 if ($program) {
-                    $programNames[] = $program->program_name;
-                    $collegeIds[] = $program->college_id;
+                    $programNames = $program->program_name;
+                    $collegeIds = $program->college_id;
                 }
             }
         }
     }
     log::debug($collegeIds);
+    log::debug($programNames);
+
 
     // Now you have the program names in the $programNames array
 
@@ -174,7 +176,7 @@ public function generatePdf(Request $request)
         'rollNo' => "CS12345",
         'pyear' => "2023",
         'session' => "Fall",
-        'totalAmount' => "5000",
+        'totalAmount' => "2000",
         'bankLogoPath' => "https://drive.google.com/file/d/1WZqHnl8dICzdEGrIU4EL2DwXkGLnvNEW/view?usp=drive_link",
     ];
 
