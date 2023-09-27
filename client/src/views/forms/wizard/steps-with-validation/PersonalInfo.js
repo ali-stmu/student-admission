@@ -46,6 +46,9 @@ const PersonalInfo = ({ stepper, type }) => {
   const [mname, setMname] = useState("");
   const [foccupation, setFoccupation] = useState("");
   const [phone, setPhone] = useState("");
+  const today = new Date();
+  today.setFullYear(today.getFullYear() - 16);
+  const minDate = today.toISOString().split("T")[0];
   const history = useHistory();
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
@@ -429,6 +432,7 @@ const PersonalInfo = ({ stepper, type }) => {
               name="dob"
               value={dateofbirth}
               onChange={handleDobChange}
+              max={minDate} // Set the maximum allowed date
               required
             />
           </FormGroup>
