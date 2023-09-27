@@ -25,7 +25,7 @@
         .col-md-4 table {
             width: 100%;
             font-family: Arial;
-            font-size: 10px;
+            font-size: 9.5px;
             border-collapse: collapse;
         }
 
