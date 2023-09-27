@@ -10,6 +10,10 @@ use App\Models\student;
 use App\Models\Session;
 use App\Models\Term;
 use App\Models\Program;
+use App\Models\Bank;
+use App\Models\College;
+
+
 use PDF;
 
 class ApplicationController extends Controller
@@ -123,88 +127,132 @@ public function autofilPriority(Request $request)
 
 public function generatePdf(Request $request)
 {
-    $userId = $request->input('userID');
-    $programFromClient = $request->input('program');
+    try {
+        $userId = $request->input('userID');
+        $programFromClient = $request->input('program');
 
-    $student_id_json = $this->findStudentId($userId);
-    $studentId = $student_id_json->getData()->student_id;
-    $first_name = $student_id_json->getData()->first_name;
-    $last_name = $student_id_json->getData()->last_name;
-    $Full_name =  $first_name ." ". $last_name;
-    log::debug($Full_name);
+        $student_id_json = $this->findStudentId($userId);
+        $studentId = $student_id_json->getData()->student_id;
+        $first_name = $student_id_json->getData()->first_name;
+        $last_name = $student_id_json->getData()->last_name;
+        $Full_name =  $first_name . " " . $last_name;
+        Log::debug($Full_name);
+        // Initialize variables
+        $programNames = "";
+        $bankIds = "";
+        $program_ID = "";
+        $session_id = "";
+        $term_id = "";
+        $term_name = "";
+        $amount = "";
+        $dueDate = "";
+        $issueDate = "";
+        $bankName = "";
+        $accountTitle = "";
+        $accountNumber = "";
+        $collegeName = "";
 
 
-    // Initialize an array to store program names
-    $programNames = "";
-    $collegeIds = "";
-    $program_ID = "";
-    $session_id = ""; // Initialize session_id variable
-    $term_id = ""; // Initialize session_id variable
-    $term_name = "";
+        $application = Application::where('student_id', $studentId)->first();
 
+        if ($application) {
+            $issueDate =  $application->updated_at->format('Y-m-d');;
+            $programIds = [
+                $application->program_id_1,
+                $application->program_id_2,
+                $application->program_id_3,
+                $application->program_id_4,
+            ];
 
-    // Retrieve the program names associated with program_id_1 to program_id_4
-    $application = Application::where('student_id', $studentId)->first();
+            foreach ($programIds as $programId) {
+                if ($programId) {
+                    $program = Program::where('program_id', $programId)
+                        ->where('program_name', $programFromClient)
+                        ->where('status', '1')
+                        ->first();
 
-    if ($application) {
-        $programIds = [
-            $application->program_id_1,
-            $application->program_id_2,
-            $application->program_id_3,
-            $application->program_id_4,
-        ];
+                    if ($program) {
+                        $programNames = $program->program_name;
+                        $bankIds = $program->bank_id;                        
+                        if($bankIds){
+                            $bank = Bank::where('bank_id', $bankIds)->first();
+                            if($bank){
+                                $bankName = $bank->bank_name;
+                                $accountTitle = $bank->account_title;
+                                $accountNumber = $bank->account_number;
+                            }
+                        }
+                        $collegeID = $program->college_id;
+                        if($collegeID){
+                            $college = College::where('id',$collegeID)->first();
+                            if($college){
+                                $collegeName = $college->college_name;
+                            }
+                        }
 
-        foreach ($programIds as $programId) {
-            if ($programId) {
-                // Retrieve the program name based on program_id
-                $program = Program::where('program_id', $programId)->where('program_name', $programFromClient)->where('status', '1')->first();
-                if ($program) {
-                    $programNames = $program->program_name;
-                    $collegeIds = $program->college_id;
-                    $program_ID = $program->program_id;
-                    $session = Session::where('program_id', $programId)->where('status', '1')->first();
-                if ($session) {
-                    $session_id = $session->session_id;
-                    $term_id = $session->term_id;
-                    $term = Term::where('term_id', $term_id)->first();
-                    if($term){
-                        $term_name = $term->term_name;
+                        $program_ID = $program->program_id;
+                        $session = Session::where('program_id', $programId)
+                            ->where('status', '1')
+                            ->first();
+                        if ($session) {
+                            $session_id = $session->session_id;
+                            $term_id = $session->term_id;
+                            $amount = $session->amount;
+                            $dueDate = $session->due_date;
+                             if ($issueDate > $dueDate) {
+                                 return response()->json(['error' => 'Issue date cannot be smaller or earlier than due date'], 400);
+                             }
+                            $term = Term::where('term_id', $term_id)->first();
+                            if ($term) {
+                                $term_name = $term->term_name;
+                            }
+                        }
                     }
-                }
-
                 }
             }
         }
+
+        // Check if program names were found
+        if (empty($programNames)) {
+            // Handle the case where program names were not found
+            return response()->json(['error' => 'Program names not found'], 404);
+        }
+
+        Log::debug($bankIds);
+        Log::debug($programNames);
+        Log::debug($program_ID);
+        Log::debug($studentId);
+        Log::debug($session_id);
+        Log::debug($term_id);
+        Log::debug($term_name);
+        Log::debug($dueDate);
+        // Now you have the program names in the $programNames array
+
+        $data = [
+            'collegeName' => $collegeName,
+            'voucherID' => $term_id . $session_id . $bankIds . $studentId . $program_ID,
+            'date' => $issueDate,
+            'dueDate' => $dueDate,
+            'AccountTitle' => $accountTitle,
+            'bankAccountNumber' => $accountNumber,
+            'programName' => $programFromClient,
+            'studentName' => $Full_name,
+            'pyear' => $term_name,
+            'session' => $term_name,
+            'totalAmount' => $amount,
+            'bankLogoPath' => "https://drive.google.com/file/d/1WZqHnl8dICzdEGrIU4EL2DwXkGLnvNEW/view?usp=drive_link",
+        ];
+
+        $filePath = storage_path('bank_logo/2560px-Al_Baraka_logo.png');
+        $pdf = PDF::loadView('challan', compact('data', 'filePath'));
+
+        return $pdf->download('challan.pdf');
+    } catch (\Exception $e) {
+        // Handle any exceptions here
+        Log::error('An error occurred: ' . $e->getMessage());
+        return response()->json(['error' => 'An error occurred'], 500);
     }
-    log::debug($collegeIds);
-    log::debug($programNames);
-    log::debug($program_ID);
-    log::debug($studentId);
-    log::debug($session_id);
-    log::debug($term_id);
-    log::debug($term_name);
-
-    // Now you have the program names in the $programNames array
-
-    $data = [
-        'collegeName' => "Shifa Tameer-e-Millat University",
-        'voucherID' => $term_id.$session_id.$collegeIds.$studentId.$program_ID,
-        'date' => "2023-08-23",
-        'dueDate' => "2023-09-01",
-        'AccountTitle' => "SHIFA TAMEER-MILLAT UNIVERSITY",
-        'bankAccountNumber' => "50007902906303",
-        'programName' => $programFromClient, // Combine program names into a comma-separated string
-        'studentName' => $Full_name,
-        'pyear' => $term_name,
-        'session' => $term_name,
-        'totalAmount' => "2000",
-        'bankLogoPath' => "https://drive.google.com/file/d/1WZqHnl8dICzdEGrIU4EL2DwXkGLnvNEW/view?usp=drive_link",
-    ];
-
-    $filePath = storage_path('bank_logo/2560px-Al_Baraka_logo.png');
-    $pdf = PDF::loadView('challan', compact('data', 'filePath'));
-
-    return $pdf->download('challan.pdf');
 }
+
 
 }

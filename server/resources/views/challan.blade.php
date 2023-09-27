@@ -74,6 +74,7 @@
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
+                                {{ $data['collegeName'] }}
                                 (Deposit Slip Dept. Copy)</td>
                             <td>Bank logo</td>
                         </tr>
@@ -249,8 +250,6 @@
                             <td colspan="4" style="text-align: left;">
                             </td>
                         </tr>
-
-
                         <tr>
                             <td colspan="4" style="text-align: left;">
                                 <hr style="border-top: 1px solid #000;">
@@ -269,7 +268,8 @@
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
-                                (Deposit Slip Dept. Copy)</td>
+                                {{ $data['collegeName'] }}
+                                (Deposit Slip Student Copy)</td>
                             <td>Bank logo</td>
                         </tr>
                         <tr>
@@ -464,7 +464,8 @@
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
-                                (Deposit Slip Dept. Copy)</td>
+                                {{ $data['collegeName'] }}
+                                (Deposit Slip Bank Copy)</td>
                             <td>Bank logo</td>
                         </tr>
                         <tr>
