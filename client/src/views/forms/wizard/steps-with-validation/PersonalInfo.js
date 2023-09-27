@@ -144,11 +144,12 @@ const PersonalInfo = ({ stepper, type }) => {
 
   const onSubmit = () => {
     console.log("ClickedOnSubmite");
+    console.log(selectedCountry + contact);
     const formData = new FormData();
     formData.append("first_name", firstName);
     formData.append("middle_name", middleName);
     formData.append("last_name", lastName);
-    formData.append("phone_number", contact);
+    formData.append("phone_number", selectedCountry + contact);
     formData.append("father_contact", fathercontact);
     formData.append("email", email);
     formData.append("cnic", cnic);
@@ -386,7 +387,7 @@ const PersonalInfo = ({ stepper, type }) => {
                 (option) => option.value === selectedCountry
               )} // Set the selected country
               onChange={(selectedOption) =>
-                setSelectedCountry(selectedOption.value)
+                setSelectedCountry(selectedOption.label)
               } // Update the selected country
               isClearable={false}
             />
