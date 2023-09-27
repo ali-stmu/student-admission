@@ -81,7 +81,7 @@ public function getPriority(Request $request)
                 $percentage = ($obtainedMarks / $totalMarks) * 100;
 
                 $query = Program::select('program_name', 'program_criteria','test_criteria')
-                    ->where('degree_id', $degreeId);
+                    ->where('degree_id', $degreeId)->where('status', '1');
 
                 if ($nationality === 'pakistani') {
                     $query->whereIn('nationality_check', ['pakistani']);
