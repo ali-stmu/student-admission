@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Application;
 use App\Models\student;
+use App\Models\Session;
+use App\Models\Term;
 use App\Models\Program;
 use PDF;
 
@@ -135,6 +137,11 @@ public function generatePdf(Request $request)
     // Initialize an array to store program names
     $programNames = "";
     $collegeIds = "";
+    $program_ID = "";
+    $session_id = ""; // Initialize session_id variable
+    $term_id = ""; // Initialize session_id variable
+    $term_name = "";
+
 
     // Retrieve the program names associated with program_id_1 to program_id_4
     $application = Application::where('student_id', $studentId)->first();
@@ -154,28 +161,42 @@ public function generatePdf(Request $request)
                 if ($program) {
                     $programNames = $program->program_name;
                     $collegeIds = $program->college_id;
+                    $program_ID = $program->program_id;
+                    $session = Session::where('program_id', $programId)->first();
+                if ($session) {
+                    $session_id = $session->session_id;
+                    $term_id = $session->term_id;
+                    $term = Term::where('term_id', $term_id)->first();
+                    if($term){
+                        $term_name = $term->term_name;
+                    }
+                }
+
                 }
             }
         }
     }
     log::debug($collegeIds);
     log::debug($programNames);
-
+    log::debug($program_ID);
+    log::debug($studentId);
+    log::debug($session_id);
+    log::debug($term_id);
+    log::debug($term_name);
 
     // Now you have the program names in the $programNames array
 
     $data = [
         'collegeName' => "Shifa Tameer-e-Millat University",
-        'voucherID' => "123456",
+        'voucherID' => $term_id.$session_id.$collegeIds.$studentId.$program_ID,
         'date' => "2023-08-23",
         'dueDate' => "2023-09-01",
         'AccountTitle' => "SHIFA TAMEER-MILLAT UNIVERSITY",
         'bankAccountNumber' => "50007902906303",
         'programName' => $programFromClient, // Combine program names into a comma-separated string
         'studentName' => $Full_name,
-        'rollNo' => "CS12345",
-        'pyear' => "2023",
-        'session' => "Fall",
+        'pyear' => $term_name,
+        'session' => $term_name,
         'totalAmount' => "2000",
         'bankLogoPath' => "https://drive.google.com/file/d/1WZqHnl8dICzdEGrIU4EL2DwXkGLnvNEW/view?usp=drive_link",
     ];
