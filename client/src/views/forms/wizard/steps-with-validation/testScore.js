@@ -269,6 +269,25 @@ const TestScore = ({ stepper, type }) => {
       },
     ]);
   };
+  const validateObtainedMarks = (value, index) => {
+    const totalMarks = watch(`totalMarks-${index}`);
+    return parseFloat(value) <= parseFloat(totalMarks);
+  };
+
+  const validateBioObtainedMarks = (value, index) => {
+    const bioTotalMarks = watch(`biototalMarks-${index}`);
+    return parseFloat(value) <= parseFloat(bioTotalMarks);
+  };
+
+  const validateChemObtainedMarks = (value, index) => {
+    const chemTotalMarks = watch(`chemtotalMarks-${index}`);
+    return parseFloat(value) <= parseFloat(chemTotalMarks);
+  };
+
+  const validatePhyObtainedMarks = (value, index) => {
+    const phyTotalMarks = watch(`phytotalMarks-${index}`);
+    return parseFloat(value) <= parseFloat(phyTotalMarks);
+  };
 
   return (
     <div>
@@ -329,13 +348,23 @@ const TestScore = ({ stepper, type }) => {
                     name={`obtainedMarks-${index}`}
                     id={`obtainedMarks-${index}`}
                     placeholder="Obtained Marks"
-                    innerRef={register({ required: true })}
+                    innerRef={register({
+                      required: true,
+                      validate: (value) => validateObtainedMarks(value, index),
+                    })}
                   />
-                  {errors[`obtainedMarks-${index}`] && (
-                    <span className="text-danger">
-                      Obtained Marks is required.
-                    </span>
-                  )}
+                  {errors[`obtainedMarks-${index}`] &&
+                    errors[`obtainedMarks-${index}`].type === "required" && (
+                      <span className="text-danger">
+                        Obtained Marks is required.
+                      </span>
+                    )}
+                  {errors[`obtainedMarks-${index}`] &&
+                    errors[`obtainedMarks-${index}`].type === "validate" && (
+                      <span className="text-danger">
+                        Obtained Marks cannot be greater than Total Marks.
+                      </span>
+                    )}
                 </FormGroup>
               </Col>
             </Row>
@@ -364,20 +393,34 @@ const TestScore = ({ stepper, type }) => {
                 <Col md="6" sm="12">
                   <FormGroup>
                     <Label for={`bioobtainedMarks-${index}`}>
-                      Obtained Marks
+                      Biology Obtained Marks
                     </Label>
                     <Input
                       type="number"
                       name={`bioobtainedMarks-${index}`}
                       id={`bioobtainedMarks-${index}`}
                       placeholder="Biology Obtained Marks"
-                      innerRef={register({ required: true })}
+                      innerRef={register({
+                        required: true,
+                        validate: (value) =>
+                          validateBioObtainedMarks(value, index),
+                      })}
                     />
-                    {errors[`bioobtainedMarks-${index}`] && (
-                      <span className="text-danger">
-                        Biology Obtained Marks is required.
-                      </span>
-                    )}
+                    {errors[`bioobtainedMarks-${index}`] &&
+                      errors[`bioobtainedMarks-${index}`].type ===
+                        "required" && (
+                        <span className="text-danger">
+                          Biology Obtained Marks is required.
+                        </span>
+                      )}
+                    {errors[`bioobtainedMarks-${index}`] &&
+                      errors[`bioobtainedMarks-${index}`].type ===
+                        "validate" && (
+                        <span className="text-danger">
+                          Biology Obtained Marks cannot be greater than Biology
+                          Total Marks.
+                        </span>
+                      )}
                   </FormGroup>
                 </Col>
               </Row>{" "}
@@ -394,7 +437,7 @@ const TestScore = ({ stepper, type }) => {
                       placeholder="Chemistry Total Marks"
                       innerRef={register({ required: true })}
                     />
-                    {errors[`totalMarks-${index}`] && (
+                    {errors[`chemtotalMarks-${index}`] && (
                       <span className="text-danger">
                         Chemistry Total Marks is required.
                       </span>
@@ -411,16 +454,30 @@ const TestScore = ({ stepper, type }) => {
                       name={`chemobtainedMarks-${index}`}
                       id={`chemobtainedMarks-${index}`}
                       placeholder="Chemistry Obtained Marks"
-                      innerRef={register({ required: true })}
+                      innerRef={register({
+                        required: true,
+                        validate: (value) =>
+                          validateChemObtainedMarks(value, index),
+                      })}
                     />
-                    {errors[`chemobtainedMarks-${index}`] && (
-                      <span className="text-danger">
-                        Chemsitry Obtained Marks is required.
-                      </span>
-                    )}
+                    {errors[`chemobtainedMarks-${index}`] &&
+                      errors[`chemobtainedMarks-${index}`].type ===
+                        "required" && (
+                        <span className="text-danger">
+                          Chemistry Obtained Marks is required.
+                        </span>
+                      )}
+                    {errors[`chemobtainedMarks-${index}`] &&
+                      errors[`chemobtainedMarks-${index}`].type ===
+                        "validate" && (
+                        <span className="text-danger">
+                          Chemistry Obtained Marks cannot be greater than
+                          Chemistry Total Marks.
+                        </span>
+                      )}
                   </FormGroup>
                 </Col>
-              </Row>{" "}
+              </Row>
               <Row>
                 <Col md="6" sm="12">
                   <FormGroup>
@@ -434,7 +491,7 @@ const TestScore = ({ stepper, type }) => {
                       placeholder="Physics Total Marks"
                       innerRef={register({ required: true })}
                     />
-                    {errors[`totalMarks-${index}`] && (
+                    {errors[`phytotalMarks-${index}`] && (
                       <span className="text-danger">
                         Physics Total Marks is required.
                       </span>
@@ -450,14 +507,28 @@ const TestScore = ({ stepper, type }) => {
                       type="number"
                       name={`phyobtainedMarks-${index}`}
                       id={`phyobtainedMarks-${index}`}
-                      placeholder="Phyiscs Obtained Marks"
-                      innerRef={register({ required: true })}
+                      placeholder="Physics Obtained Marks"
+                      innerRef={register({
+                        required: true,
+                        validate: (value) =>
+                          validatePhyObtainedMarks(value, index),
+                      })}
                     />
-                    {errors[`phyobtainedMarks-${index}`] && (
-                      <span className="text-danger">
-                        Physics Obtained Marks is required.
-                      </span>
-                    )}
+                    {errors[`phyobtainedMarks-${index}`] &&
+                      errors[`phyobtainedMarks-${index}`].type ===
+                        "required" && (
+                        <span className="text-danger">
+                          Physics Obtained Marks is required.
+                        </span>
+                      )}
+                    {errors[`phyobtainedMarks-${index}`] &&
+                      errors[`phyobtainedMarks-${index}`].type ===
+                        "validate" && (
+                        <span className="text-danger">
+                          Physics Obtained Marks cannot be greater than Physics
+                          Total Marks.
+                        </span>
+                      )}
                   </FormGroup>
                 </Col>
               </Row>
