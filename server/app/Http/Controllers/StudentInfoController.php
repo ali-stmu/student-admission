@@ -84,9 +84,11 @@ public function getPriority(Request $request)
                     ->where('degree_id', $degreeId);
 
                 if ($nationality === 'pakistani') {
-                    $query->whereIn('nationality_check', ['pakistani', 'dual']);
-                } else {
-                    $query->whereIn('nationality_check', ['foreign','dual']);
+                    $query->whereIn('nationality_check', ['pakistani']);
+                } else if ($nationality === 'foreign') {
+                    $query->whereIn('nationality_check', ['foreign']);
+                }else{
+                    $query->whereIn('nationality_check', ['foreign','dual','pakistani']);
                 }
 
                 if (is_null($testScores) ||$testScores == [0]) {
