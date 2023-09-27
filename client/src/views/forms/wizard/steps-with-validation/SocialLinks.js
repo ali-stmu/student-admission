@@ -59,6 +59,8 @@ function AcademicRecords({ stepper, type }) {
       degree: null,
     },
   ]);
+  const [obtainedGreaterThanTotalError, setObtainedGreaterThanTotalError] =
+    useState(new Array(records.length).fill(false));
   const fetchDegreeOptions = async () => {
     try {
       const response = await axios.get(`${BASE_URL}degree`);
@@ -230,13 +232,7 @@ function AcademicRecords({ stepper, type }) {
     let updatedValue = value;
 
     // Check if the changed field is "obtainedMarksCGPA"
-    if (name === "obtainedMarksCGPA") {
-      const totalMarks = records[index].totalMarksCGPA;
-      // If obtained marks are greater than total marks, set it to the total marks
-      if (parseFloat(value) > parseFloat(totalMarks)) {
-        updatedValue = totalMarks;
-      }
-    }
+
     // Check if the changed field is "passingYear"
     if (name === "passingYear") {
       const currentYear = new Date().getFullYear();
@@ -270,6 +266,22 @@ function AcademicRecords({ stepper, type }) {
         updatedRecords[index].obtainedMarksCGPA
       ), // Calculate and assign the percentage
     };
+    if (name === "obtainedMarksCGPA") {
+      const totalMarks = parseFloat(updatedRecords[index].totalMarksCGPA);
+      const obtainedMarks = parseFloat(updatedValue);
+
+      if (obtainedMarks > totalMarks) {
+        // Set error state to true
+        const updatedErrorState = [...obtainedGreaterThanTotalError];
+        updatedErrorState[index] = true;
+        setObtainedGreaterThanTotalError(updatedErrorState);
+      } else {
+        // Set error state to false
+        const updatedErrorState = [...obtainedGreaterThanTotalError];
+        updatedErrorState[index] = false;
+        setObtainedGreaterThanTotalError(updatedErrorState);
+      }
+    }
     const isFormValid = records.every((record) => {
       return (
         record.resultStatus &&
@@ -433,6 +445,11 @@ function AcademicRecords({ stepper, type }) {
                     }
                   }}
                 />
+                {obtainedGreaterThanTotalError[index] && (
+                  <div style={{ color: "red" }}>
+                    Obtained Marks cannot be greater than Total Marks
+                  </div>
+                )}
               </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label className="form-label">Percentage</Label>
@@ -520,6 +537,7 @@ function AcademicRecords({ stepper, type }) {
           id="btn-next"
           className="btn-next"
           onClick={onSubmit}
+          disabled={obtainedGreaterThanTotalError.includes(true)}
         >
           <span className="align-middle d-sm-inline-block d-none">
             Save & Next
