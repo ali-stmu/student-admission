@@ -48,7 +48,7 @@ const PersonalInfo = ({ stepper, type }) => {
   const [foccupation, setFoccupation] = useState("");
   const [phone, setPhone] = useState("");
   const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState("");
 
   const today = new Date();
   today.setFullYear(today.getFullYear() - 16);
