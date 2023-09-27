@@ -31,6 +31,7 @@ const PersonalInfo = ({ stepper, type }) => {
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [contact, setContact] = useState("");
+
   const [fathercontact, setFatherContact] = useState("");
 
   const [cnic, setCnic] = useState("");
@@ -46,6 +47,9 @@ const PersonalInfo = ({ stepper, type }) => {
   const [mname, setMname] = useState("");
   const [foccupation, setFoccupation] = useState("");
   const [phone, setPhone] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
   const today = new Date();
   today.setFullYear(today.getFullYear() - 16);
   const minDate = today.toISOString().split("T")[0];
@@ -107,15 +111,34 @@ const PersonalInfo = ({ stepper, type }) => {
     }
   }, []);
 
+  useEffect(() => {
+    // Define an async function to fetch data from the API
+    async function fetchData() {
+      try {
+        const response = await fetch(`${BASE_URL}countries`);
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        setCountries(data.countries); // Set the retrieved data in your state variable
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    fetchData(); // Call the async function to fetch data when the component mounts
+  }, []);
   const isValidFirstName = firstName.trim().length > 0;
   const isValidLastName = lastName.trim().length > 0;
-  const isValidContact = contact > 0 || /^(\+92|92|0)?3\d{9}$/.test(contact);
+  //const isValidContact = contact > 0 || /^(\+92|92|0)?3\d{9}$/.test(contact);
   const isValidEmail = email > 0 || /\S+@\S+\.\S+/.test(email);
   const isValidCnic = cnic > 0 || /^\d{5}-\d{7}-\d$/.test(cnic);
   const isFormValid =
     isValidFirstName &&
     isValidLastName &&
-    isValidContact &&
+    //isValidContact &&
     isValidEmail &&
     isValidCnic;
 
@@ -296,6 +319,11 @@ const PersonalInfo = ({ stepper, type }) => {
     }
     console.log(selectedImageCnic);
   };
+  const countryOptions = countries.map((country) => ({
+    value: country.id, // Use a unique identifier for each country
+    label: country.phonecode, // Display the country name in the dropdown
+  }));
+
   return (
     <Fragment>
       <div className="content-header">
@@ -345,7 +373,25 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
         </Row>
         <Row>
-          <FormGroup tag={Col} md="4">
+          <FormGroup tag={Col} md="1">
+            <Label className="form-label" for={`country-${type}`}>
+              Country Code<sup>*</sup>
+            </Label>
+            <Select
+              theme={selectThemeColors}
+              className="react-select"
+              classNamePrefix="select"
+              options={countryOptions} // Pass the country options to the Select component
+              value={countryOptions.find(
+                (option) => option.value === selectedCountry
+              )} // Set the selected country
+              onChange={(selectedOption) =>
+                setSelectedCountry(selectedOption.value)
+              } // Update the selected country
+              isClearable={false}
+            />
+          </FormGroup>
+          <FormGroup tag={Col} md="3">
             <Label className="form-label" for={`first-name-${type}`}>
               Contact<sup>*</sup>
             </Label>
@@ -543,7 +589,7 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Upload CNIC Picture<sup>*</sup>
+              Upload CNIC/Passport Picture<sup>*</sup>
             </Label>
             <CustomInput
               type="file"
