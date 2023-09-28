@@ -227,6 +227,7 @@ public function generatePdf(Request $request)
         Log::debug($term_name);
         Log::debug($dueDate);
         // Now you have the program names in the $programNames array
+        $fullpath = storage_path('app/bank_logo/ShifaLogo.png'); 
 
         $data = [
             'collegeName' => $collegeName,
@@ -240,7 +241,7 @@ public function generatePdf(Request $request)
             'pyear' => $term_name,
             'session' => $term_name,
             'totalAmount' => $amount,
-            'bankLogoPath' => "https://drive.google.com/file/d/1WZqHnl8dICzdEGrIU4EL2DwXkGLnvNEW/view?usp=drive_link",
+            'bankLogoPath' => $fullpath,
         ];
 
         $filePath = storage_path('bank_logo/2560px-Al_Baraka_logo.png');

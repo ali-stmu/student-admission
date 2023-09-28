@@ -67,10 +67,9 @@
                     <!-- Dummy table for the first column -->
                     <table>
                         <tr>
-                            <td class="bank-logo">
-                                <img src="" alt="Bank Logo">
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogoPath'] }}"
+                                    alt="Bank Logo">
                             </td>
-
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
@@ -264,7 +263,9 @@
                     <!-- Dummy table for the second column -->
                     <table>
                         <tr>
-                            <td class="bank-logo">University Logo</td>
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogoPath'] }}"
+                                    alt="Bank Logo">
+                            </td>
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
@@ -460,7 +461,9 @@
                     <!-- Dummy table for the third column -->
                     <table>
                         <tr>
-                            <td class="bank-logo">University Logo</td>
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogoPath'] }}"
+                                    alt="Bank Logo">
+                            </td>
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
