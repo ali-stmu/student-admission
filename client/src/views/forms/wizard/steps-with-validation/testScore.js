@@ -112,13 +112,25 @@ const TestScore = ({ stepper, type }) => {
     if (testScoreData && testScoreData.length > 0) {
       // Assuming there's only one object in the array
       const firstTestData = testScoreData[0];
-      setValue(`testName-0`, {
-        value: firstTestData.test_name,
-        label: firstTestData.test_name,
-      });
+      const matchingOption = testNameOptions.find(
+        (option) => option.value === firstTestData.test_name
+      );
+
+      if (matchingOption) {
+        setValue(`testName-0`, matchingOption);
+        setname(matchingOption);
+        setSelectedTestNames((prevNames) => {
+          const newNames = [...prevNames];
+          newNames[0] = matchingOption.value;
+          return newNames;
+        });
+      }
       setValue(`totalMarks-0`, firstTestData.test_score_total);
       setValue(`obtainedMarks-0`, firstTestData.test_score);
       setValue(`testYear-0`, firstTestData.test_date);
+      setValue(`testCity-0`, firstTestData.test_city);
+      setValue(`testYear-0`, firstTestData.test_date);
+      setValue(`testRegNo-0`, firstTestData.test_reg_no);
 
       // Set the attachment URL for the first record
       setAttachmentUrls({
@@ -135,7 +147,7 @@ const TestScore = ({ stepper, type }) => {
         }));
       }
     }
-  }, [testScoreData, setValue]);
+  }, [testScoreData, testNameOptions, setValue]);
   useEffect(() => {
     if (testScoreData && testScoreData.length > 0) {
       const updatedRecords = [...records];

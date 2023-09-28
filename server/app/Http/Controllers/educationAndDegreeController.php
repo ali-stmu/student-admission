@@ -229,6 +229,7 @@ public function getScoresByUserId($user_id)
         $student_id_json = $this->findStudentId($user_id);
         $studentId = $student_id_json->getData()->student_id;
         $testScores = TestScore::where('student_id', $studentId)->get();
+        log::debug($testScores);
         // Return the data as a JSON response
         return response()->json($testScores);
     }
