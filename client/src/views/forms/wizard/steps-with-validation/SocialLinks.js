@@ -28,7 +28,7 @@ function AcademicRecords({ stepper, type }) {
   const [degreeFiles, setDegreeFiles] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-
+  const [boardUniversityOptions, setBoardUniversityOptions] = useState([]);
   const [uploadedDegrees, setUploadedDegrees] = useState([]);
 
   const [records, setRecords] = useState([
@@ -86,7 +86,23 @@ function AcademicRecords({ stepper, type }) {
   const calculatePercentage = (total, obtained) => {
     return ((obtained / total) * 100).toFixed(2);
   };
+  const fetchBoardUniversityOptions = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}boards`);
+      const data = response.data;
+      const options = data.map((board) => ({
+        value: board.board_name,
+        label: board.board_name,
+      }));
+      setBoardUniversityOptions(options);
+    } catch (error) {
+      console.error("Error fetching board/university options:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchBoardUniversityOptions();
+
     fetch(`${BASE_URL}countries`) // Replace BASE_URL with your Laravel API URL
       .then((response) => response.json())
       .then((data) => {
@@ -322,6 +338,14 @@ function AcademicRecords({ stepper, type }) {
     console.log(isFormValid);
     setRecords(updatedRecords);
   };
+  const handleBoardUniversityChange = (selectedOption, index) => {
+    const updatedRecords = [...records];
+    updatedRecords[index] = {
+      ...updatedRecords[index],
+      boardUniversity: selectedOption.value,
+    };
+    setRecords(updatedRecords);
+  };
 
   console.log(records);
   return (
@@ -358,13 +382,18 @@ function AcademicRecords({ stepper, type }) {
                 <Label for="boardUniversity" className="form-label">
                   Board/University<sup>*</sup>
                 </Label>
-                <Input
-                  type="text"
-                  name="boardUniversity"
-                  id="boardUniversity"
-                  value={record.boardUniversity}
-                  onChange={(e) => handleRecordChange(e, index)}
-                ></Input>
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={boardUniversityOptions} // Use the fetched options
+                  value={boardUniversityOptions.find(
+                    (option) => option.value === record.boardUniversity
+                  )}
+                  onChange={(selectedOption) =>
+                    handleBoardUniversityChange(selectedOption, index)
+                  }
+                />
               </FormGroup>
               <FormGroup tag={Col} md="4">
                 <Label className="form-label">
