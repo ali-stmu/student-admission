@@ -393,7 +393,7 @@ const TestScore = ({ stepper, type }) => {
                       name={`biototalMarks-${index}`}
                       id={`biototalMarks-${index}`}
                       placeholder="Biology Total Marks"
-                      innerRef={register({ required: true })}
+                      innerRef={register({ required: false })}
                     />
                     {errors[`biototalMarks-${index}`] && (
                       <span className="text-danger">
@@ -413,21 +413,17 @@ const TestScore = ({ stepper, type }) => {
                       id={`bioobtainedMarks-${index}`}
                       placeholder="Biology Obtained Marks"
                       innerRef={register({
-                        required: true,
-                        validate: (value) =>
-                          validateBioObtainedMarks(value, index),
+                        required: false,
                       })}
                     />
                     {errors[`bioobtainedMarks-${index}`] &&
-                      errors[`bioobtainedMarks-${index}`].type ===
-                        "required" && (
+                      errors[`bioobtainedMarks-${index}`].type === "" && (
                         <span className="text-danger">
                           Biology Obtained Marks is required.
                         </span>
                       )}
                     {errors[`bioobtainedMarks-${index}`] &&
-                      errors[`bioobtainedMarks-${index}`].type ===
-                        "validate" && (
+                      errors[`bioobtainedMarks-${index}`].type === "" && (
                         <span className="text-danger">
                           Biology Obtained Marks cannot be greater than Biology
                           Total Marks.
@@ -447,7 +443,7 @@ const TestScore = ({ stepper, type }) => {
                       name={`chemtotalMarks-${index}`}
                       id={`chemtotalMarks-${index}`}
                       placeholder="Chemistry Total Marks"
-                      innerRef={register({ required: true })}
+                      innerRef={register({ required: false })}
                     />
                     {errors[`chemtotalMarks-${index}`] && (
                       <span className="text-danger">
@@ -467,9 +463,7 @@ const TestScore = ({ stepper, type }) => {
                       id={`chemobtainedMarks-${index}`}
                       placeholder="Chemistry Obtained Marks"
                       innerRef={register({
-                        required: true,
-                        validate: (value) =>
-                          validateChemObtainedMarks(value, index),
+                        required: false,
                       })}
                     />
                     {errors[`chemobtainedMarks-${index}`] &&
@@ -480,8 +474,7 @@ const TestScore = ({ stepper, type }) => {
                         </span>
                       )}
                     {errors[`chemobtainedMarks-${index}`] &&
-                      errors[`chemobtainedMarks-${index}`].type ===
-                        "validate" && (
+                      errors[`chemobtainedMarks-${index}`].type === "" && (
                         <span className="text-danger">
                           Chemistry Obtained Marks cannot be greater than
                           Chemistry Total Marks.
@@ -501,7 +494,7 @@ const TestScore = ({ stepper, type }) => {
                       name={`phytotalMarks-${index}`}
                       id={`phytotalMarks-${index}`}
                       placeholder="Physics Total Marks"
-                      innerRef={register({ required: true })}
+                      innerRef={register({ required: false })}
                     />
                     {errors[`phytotalMarks-${index}`] && (
                       <span className="text-danger">
@@ -521,21 +514,17 @@ const TestScore = ({ stepper, type }) => {
                       id={`phyobtainedMarks-${index}`}
                       placeholder="Physics Obtained Marks"
                       innerRef={register({
-                        required: true,
-                        validate: (value) =>
-                          validatePhyObtainedMarks(value, index),
+                        //required: true,
                       })}
                     />
                     {errors[`phyobtainedMarks-${index}`] &&
-                      errors[`phyobtainedMarks-${index}`].type ===
-                        "required" && (
+                      errors[`phyobtainedMarks-${index}`].type === "" && (
                         <span className="text-danger">
                           Physics Obtained Marks is required.
                         </span>
                       )}
                     {errors[`phyobtainedMarks-${index}`] &&
-                      errors[`phyobtainedMarks-${index}`].type ===
-                        "validate" && (
+                      errors[`phyobtainedMarks-${index}`].type === "" && (
                         <span className="text-danger">
                           Physics Obtained Marks cannot be greater than Physics
                           Total Marks.
