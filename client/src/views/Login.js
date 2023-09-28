@@ -12,6 +12,7 @@ import { Link, useHistory } from "react-router-dom";
 import InputPasswordToggle from "@components/input-password-toggle";
 import { getHomeRouteForLoggedInUser, isObjEmpty } from "@utils";
 import UniLogo from "../../src/assets/images/logo/ShifaLogo.png";
+import FullLogo from "../../src/assets/images/logo/uni_logo.png";
 
 import {
   Facebook,
@@ -104,7 +105,7 @@ const Login = (props) => {
     <div className="auth-wrapper auth-v2">
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
-          <svg viewBox="0 0 139 95" version="1.1" height="28">
+          {/* <svg viewBox="0 0 139 95" version="1.1" height="28">
             <defs>
               <linearGradient
                 x1="100%"
@@ -169,14 +170,14 @@ const Login = (props) => {
                 </g>
               </g>
             </g>
-          </svg>
-          {/* <img
+          </svg> */}
+          <img
             className="fallback-logo"
-            src={UniLogo}
+            src={FullLogo}
             alt="logo"
-            style={{ height: "30px", width: "30px" }}
-          /> */}
-          <h2 className="brand-text text-primary ml-1">STMU</h2>
+            style={{ paddingLeft: "50px", width: "500px" }}
+          />
+          {/* <h2 className="brand-text text-primary ml-1">STMU</h2> */}
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -192,9 +193,9 @@ const Login = (props) => {
             <CardTitle tag="h2" className="font-weight-bold mb-1">
               Welcome to Shifa Tameer-e-Millat University!
             </CardTitle>
-            <CardText className="mb-2">
+            {/* <CardText className="mb-2">
               Please sign-in to your account and start the adventure
-            </CardText>
+            </CardText> */}
             <Alert color="primary">
               <div className="alert-body font-small-2">
                 <p>
