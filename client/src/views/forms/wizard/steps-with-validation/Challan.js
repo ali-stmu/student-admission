@@ -197,20 +197,27 @@ const Challan = ({ stepper, type }) => {
       <Row>
         <Col md="6" sm="12">
           <FormGroup>
-            <Label for="challanAttachment">
-              Challan Attachment:<sup>*</sup>
+            <Label for="priority">
+              Select Voucher's Program: <sup>*</sup>
             </Label>
-            <CustomInput
-              type="file"
-              id="challanAttachment"
-              accept=".pdf, .jpg, .jpeg, .png"
-              onChange={(e) => setChallanAttachment(e.target.files[0])}
+            <Input
+              type="select"
+              id="priority"
+              value={selectedPriority}
+              onChange={(e) => setSelectedPriority(e.target.value)}
               required
-              invalid={challanAttachmentError}
-            />
-            <FormFeedback>Please provide a Challan Attachment.</FormFeedback>
+              invalid={programError}
+            >
+              {storedPriorities.map((priority, index) => (
+                <option key={index} value={priority.label}>
+                  {priority.label}
+                </option>
+              ))}
+            </Input>
+            <FormFeedback>Please provide Program</FormFeedback>
           </FormGroup>
         </Col>
+
         <Col md="6" sm="12">
           <FormGroup>
             <Label for="challanPaidDate">
@@ -299,24 +306,18 @@ const Challan = ({ stepper, type }) => {
       <Row>
         <Col md="6" sm="12">
           <FormGroup>
-            <Label for="priority">
-              Select Voucher's Program: <sup>*</sup>
+            <Label for="challanAttachment">
+              Challan Attachment:<sup>*</sup>
             </Label>
-            <Input
-              type="select"
-              id="priority"
-              value={selectedPriority}
-              onChange={(e) => setSelectedPriority(e.target.value)}
+            <CustomInput
+              type="file"
+              id="challanAttachment"
+              accept=".pdf, .jpg, .jpeg, .png"
+              onChange={(e) => setChallanAttachment(e.target.files[0])}
               required
-              invalid={programError}
-            >
-              {storedPriorities.map((priority, index) => (
-                <option key={index} value={priority.label}>
-                  {priority.label}
-                </option>
-              ))}
-            </Input>
-            <FormFeedback>Please provide Program</FormFeedback>
+              invalid={challanAttachmentError}
+            />
+            <FormFeedback>Please provide a Challan Attachment.</FormFeedback>
           </FormGroup>
         </Col>
       </Row>
