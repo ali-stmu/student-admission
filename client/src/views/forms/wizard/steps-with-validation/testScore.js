@@ -623,14 +623,10 @@ const TestScore = ({ stepper, type }) => {
               ></ArrowLeft>
               Previous
             </Button.Ripple>
-            <Button.Ripple color="info" onClick={addRecord}>
+            {/* <Button.Ripple color="info" onClick={addRecord}>
               <Plus size={14} />
               <span className="align-middle ml-25">Add More Records</span>
-            </Button.Ripple>
-            <Button.Ripple type="submit" color="primary">
-              Save & Next
-              <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
-            </Button.Ripple>
+            </Button.Ripple> */}
             <Button.Ripple
               color="secondary"
               className="btn-skip"
@@ -638,7 +634,12 @@ const TestScore = ({ stepper, type }) => {
             >
               Skip
             </Button.Ripple>
-            <Button.Ripple
+            <Button.Ripple type="submit" color="primary">
+              Save & Next
+              <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
+            </Button.Ripple>
+
+            {/* <Button.Ripple
               color="danger"
               className="text-nowrap px-1"
               onClick={() => deleteRecord(index)}
@@ -647,7 +648,7 @@ const TestScore = ({ stepper, type }) => {
             >
               <X size={14} className="mr-50" />
               <span>Delete</span>
-            </Button.Ripple>
+            </Button.Ripple> */}
           </div>
           <br></br>
         </Form>

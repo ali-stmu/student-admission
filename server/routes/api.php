@@ -38,6 +38,13 @@ Route::post('/useeffectstudentdataaddress', [StudentInfoController::class, 'useE
 Route::post('/storeStudentDataAddress', [StudentInfoController::class, 'storeStudentDataAddress']);
 Route::get('/degree', [DegreeController::class, 'index']);
 Route::post('/educationAndDegreeController', [educationAndDegreeController::class, 'storeDegreeAndDocument']);
+
+
+//deleting education
+Route::post('/deleteRecordEndpoint', [educationAndDegreeController::class, 'modifyEducationStatus']);
+
+
+
 Route::post('/skip/{user_id}', [educationAndDegreeController::class, 'skip_test']);
 
 

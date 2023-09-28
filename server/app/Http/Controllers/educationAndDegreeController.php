@@ -47,6 +47,7 @@ class EducationAndDegreeController extends Controller
                 'document.document_file_path',
             )
             ->where('education.student_id', '=', $studentId)
+            ->where('education.status', '=', '1')
             ->where('document.student_id', '=', $studentId)
             ->get());
     }
@@ -197,6 +198,29 @@ public function skip_test(Request $request, $user_id)
     // Return a response
     return response()->json(['message' => 'Test score skipped or inserted successfully']);
 }
+public function modifyEducationStatus(Request $request)
+{
+    log::debug($request->all());
+    $user_id = $request->input('params.user_id');
+    $qualification = $request->input('params.qualification');
+    log::debug($user_id);
+    
+    // Find the student ID based on the user ID
+    $student_id_json = $this->findStudentId($user_id);
+    $studentId = $student_id_json->getData()->student_id;
+
+    // Update the 'status' column to 0 where student ID and qualification match
+    $updatedRows = Education::where('student_id', $studentId)
+        ->where('degree_id', $qualification)
+        ->update(['status' => 0]);
+
+    if ($updatedRows > 0) {
+        return response()->json(['message' => 'Education status updated successfully']);
+    } else {
+        return response()->json(['message' => 'No matching records found'], Response::HTTP_NOT_FOUND);
+    }
+}
+
 
 public function getScoresByUserId($user_id)
     {
