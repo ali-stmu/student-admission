@@ -8,7 +8,7 @@ use App\Http\Controllers\StudentInfoController;
 use App\Http\Controllers\DegreeController;
 use App\Http\Controllers\educationAndDegreeController;
 use App\Http\Controllers\ApplicationController;
-
+use App\Http\Controllers\BoardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,3 +63,6 @@ Route::post('/savePriorities', [ApplicationController::class, 'savePriorities'])
 
 Route::get('/generate-pdf', [ApplicationController::class, 'generatePdf']);
 Route::post('/savevoucher', [ApplicationController::class, 'store']);
+
+//boards
+Route::get('/boards', [BoardController::class, 'index']);
