@@ -33,8 +33,7 @@ const Challan = ({ stepper, type }) => {
   const [priorities, setPriorities] = useState(["Loading..."]);
   const [prioritiesButtons, setPrioritiesButtons] = useState([]);
   const [selectedPriority, setSelectedPriority] = useState("");
-  const [programName, setProgramName] = useState("");
-
+  const [apiResponse, setApiResponse] = useState(null);
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     const studentInfo = JSON.parse(rolesFromStorage);
@@ -160,13 +159,16 @@ const Challan = ({ stepper, type }) => {
         .then((response) => {
           // Handle success
           console.log("Voucher saved successfully", response);
+          setApiResponse("Voucher inserted successfully");
         })
         .catch((error) => {
           // Handle error
           console.error("Error saving voucher:", error);
+          setApiResponse("Error occurred. Please try again.");
         });
     } else {
-      console.error("Not validaet form");
+      console.error("Not validate form");
+      setApiResponse("Please fill out all required fields.");
     }
   };
 
@@ -342,6 +344,17 @@ const Challan = ({ stepper, type }) => {
           <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
         </Button.Ripple>
       </div>
+      {apiResponse && (
+        <div
+          className={`alert ${
+            apiResponse.includes("successfully")
+              ? "alert-success"
+              : "alert-danger"
+          }`}
+        >
+          {apiResponse}
+        </div>
+      )}
     </div>
   );
 };
