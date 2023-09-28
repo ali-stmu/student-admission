@@ -25,7 +25,6 @@ const ProgramPriority = ({ stepper, type }) => {
   const [apiResponse, setApiResponse] = useState(null);
   const [programOptions, setProgramOptions] = useState([]);
   const [isDisabled, setIsDisabled] = useState(true); // Initially, everything is disabled
-  const [filteredProgramOptions, setFilteredProgramOptions] = useState([]);
 
   const fetchPriorities = (user_id) => {
     fetch(`${BASE_URL}autofilPriority?user_id=${user_id}`, {
@@ -79,30 +78,12 @@ const ProgramPriority = ({ stepper, type }) => {
       .then((data) => {
         setApiResponse(data);
         console.log(data);
-        // Inside the useEffect block, after setting programOptions, filter out selected priorities
         if (data && data.Programs && Array.isArray(data.Programs)) {
           const options = data.Programs.map((program) => ({
             label: program.program_name,
             value: program.program_name,
           }));
-
-          // Filter out selected priorities from programOptions
-          const selectedPriorities = [
-            priority1,
-            priority2,
-            priority3,
-            priority4,
-          ];
-          const filteredOptions = options.filter(
-            (option) =>
-              !selectedPriorities.some(
-                (selectedPriority) =>
-                  selectedPriority && selectedPriority.value === option.value
-              )
-          );
-
-          // Set the filtered program options
-          setFilteredProgramOptions(filteredOptions);
+          setProgramOptions(options);
         }
       })
       .catch((error) => {
@@ -110,7 +91,7 @@ const ProgramPriority = ({ stepper, type }) => {
         console.error("Error fetching data:", error);
         // Set programOptions to an empty array or object here
       });
-  }, [isDisabled, priority1, priority2, priority3, priority4]);
+  }, [isDisabled]);
 
   const handleSubmit = () => {
     // Prepare the data to send to the API
@@ -165,7 +146,7 @@ const ProgramPriority = ({ stepper, type }) => {
           className="react-select"
           classNamePrefix="select"
           defaultValue={null}
-          options={filteredProgramOptions}
+          options={programOptions}
           value={priority1}
           onChange={handleChangePriority1}
           isClearable={true}
@@ -175,7 +156,7 @@ const ProgramPriority = ({ stepper, type }) => {
           className="react-select"
           classNamePrefix="select"
           defaultValue={null}
-          options={filteredProgramOptions}
+          options={programOptions}
           value={priority2}
           onChange={handleChangePriority2}
           isClearable={true}
@@ -185,7 +166,7 @@ const ProgramPriority = ({ stepper, type }) => {
           className="react-select"
           classNamePrefix="select"
           defaultValue={null}
-          options={filteredProgramOptions}
+          options={programOptions}
           value={priority3}
           onChange={handleChangePriority3}
           isClearable={true}
@@ -195,7 +176,7 @@ const ProgramPriority = ({ stepper, type }) => {
           className="react-select"
           classNamePrefix="select"
           defaultValue={null}
-          options={filteredProgramOptions}
+          options={programOptions}
           value={priority4}
           onChange={handleChangePriority4}
           isClearable={true}

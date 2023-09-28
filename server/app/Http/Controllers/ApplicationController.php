@@ -170,7 +170,6 @@ public function generatePdf(Request $request)
                         ->where('program_name', $programFromClient)
                         ->where('status', '1')
                         ->first();
-
                     if ($program) {
                         $programNames = $program->program_name;
                         $bankIds = $program->bank_id;                        
@@ -182,6 +181,7 @@ public function generatePdf(Request $request)
                                 $accountNumber = $bank->account_number;
                             }
                         }
+                        
                         $collegeID = $program->college_id;
                         if($collegeID){
                             $college = College::where('id',$collegeID)->first();
