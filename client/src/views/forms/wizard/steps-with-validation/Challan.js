@@ -29,8 +29,11 @@ const Challan = ({ stepper, type }) => {
   const [branchCodeError, setBranchCodeError] = useState(false);
   const [transactionIDError, setTransactionIDError] = useState(false);
   const [modeOfPaymentError, setModeOfPaymentError] = useState(false);
+  const [programError, setProgramError] = useState(false);
   const [priorities, setPriorities] = useState(["Loading..."]);
   const [prioritiesButtons, setPrioritiesButtons] = useState([]);
+  const [selectedPriority, setSelectedPriority] = useState("");
+  const [programName, setProgramName] = useState("");
 
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
@@ -43,6 +46,7 @@ const Challan = ({ stepper, type }) => {
     const storedPriorities = localStorage.getItem("priorities");
     return storedPriorities ? JSON.parse(storedPriorities) : [];
   };
+  const storedPriorities = getStoredPriorities();
 
   const generatePdf = async (program) => {
     try {
@@ -125,11 +129,18 @@ const Challan = ({ stepper, type }) => {
     } else {
       setModeOfPaymentError(false);
     }
+    if (selectedPriority === "Select Priority") {
+      // Check if "Program" is not selected
+      isValid = false;
+    } else {
+      setProgramError(false);
+    }
 
     return isValid;
   };
 
   const onSubmit = () => {
+    console.log("submit clicked");
     if (validateForm()) {
       // Create a FormData object
       const formData = new FormData();
@@ -142,7 +153,8 @@ const Challan = ({ stepper, type }) => {
       formData.append("branchCode", branchCode);
       formData.append("transactionID", transactionID);
       formData.append("modeOfPayment", modeOfPayment);
-      // Send the FormData to the API using Axios
+      formData.append("priority", selectedPriority); // Send the FormData to the API using Axios
+      console.log(formData);
       axios
         .post(`${BASE_URL}savevoucher`, formData)
         .then((response) => {
@@ -154,7 +166,7 @@ const Challan = ({ stepper, type }) => {
           console.error("Error saving voucher:", error);
         });
     } else {
-      // Display an error message or handle the error as needed
+      console.error("Not validaet form");
     }
   };
 
@@ -183,7 +195,9 @@ const Challan = ({ stepper, type }) => {
       <Row>
         <Col md="6" sm="12">
           <FormGroup>
-            <Label for="challanAttachment">Challan Attachment:</Label>
+            <Label for="challanAttachment">
+              Challan Attachment:<sup>*</sup>
+            </Label>
             <CustomInput
               type="file"
               id="challanAttachment"
@@ -197,7 +211,9 @@ const Challan = ({ stepper, type }) => {
         </Col>
         <Col md="6" sm="12">
           <FormGroup>
-            <Label for="challanPaidDate">Challan Paid Date:</Label>
+            <Label for="challanPaidDate">
+              Challan Paid Date:<sup>*</sup>
+            </Label>
             <Input
               type="date"
               id="challanPaidDate"
@@ -213,7 +229,9 @@ const Challan = ({ stepper, type }) => {
       <Row>
         <Col md="6" sm="12">
           <FormGroup>
-            <Label for="bankName">Bank Name:</Label>
+            <Label for="bankName">
+              Bank Name:<sup>*</sup>
+            </Label>
             <Input
               type="text"
               id="bankName"
@@ -227,7 +245,9 @@ const Challan = ({ stepper, type }) => {
         </Col>
         <Col md="6" sm="12">
           <FormGroup>
-            <Label for="branchCode">Branch Code:</Label>
+            <Label for="branchCode">
+              Branch Code:<sup>*</sup>
+            </Label>
             <Input
               type="text"
               id="branchCode"
@@ -243,7 +263,9 @@ const Challan = ({ stepper, type }) => {
       <Row>
         <Col md="6" sm="12">
           <FormGroup>
-            <Label for="transactionID">Transaction ID:</Label>
+            <Label for="transactionID">
+              Transaction ID:<sup>*</sup>
+            </Label>
             <Input
               type="text"
               id="transactionID"
@@ -257,7 +279,9 @@ const Challan = ({ stepper, type }) => {
         </Col>
         <Col md="6" sm="12">
           <FormGroup>
-            <Label for="modeOfPayment">Mode of Payment:</Label>
+            <Label for="modeOfPayment">
+              Mode of Payment:<sup>*</sup>
+            </Label>
             <Input
               type="text"
               id="modeOfPayment"
@@ -267,6 +291,30 @@ const Challan = ({ stepper, type }) => {
               invalid={modeOfPaymentError}
             />
             <FormFeedback>Please provide a Mode of Payment.</FormFeedback>
+          </FormGroup>
+        </Col>
+      </Row>
+      <Row>
+        <Col md="6" sm="12">
+          <FormGroup>
+            <Label for="priority">
+              Select Voucher's Program: <sup>*</sup>
+            </Label>
+            <Input
+              type="select"
+              id="priority"
+              value={selectedPriority}
+              onChange={(e) => setSelectedPriority(e.target.value)}
+              required
+              invalid={programError}
+            >
+              {storedPriorities.map((priority, index) => (
+                <option key={index} value={priority.label}>
+                  {priority.label}
+                </option>
+              ))}
+            </Input>
+            <FormFeedback>Please provide Program</FormFeedback>
           </FormGroup>
         </Col>
       </Row>

@@ -16,6 +16,8 @@ class Voucher extends Model
         'branch_code',
         'transaction_id',
         'mode_of_payment',
+        'program_id',
+
     ];
 
     // Rest of your model code...

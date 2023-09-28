@@ -256,9 +256,19 @@ public function generatePdf(Request $request)
 
 public function store(Request $request)
 {
+    $program_id = "";
+    $program_model = "";
+
     Log::debug('Request data:', $request->all());
     $user_id = $request->input('user_id');
-    log::debug($user_id);
+    $program = $request->input('priority');
+    if($program){
+        $program_model = Program::where('program_name', $program)->first();
+        if($program_model){
+            $program_id =$program_model->program_id;
+        }
+    }
+    log::debug($program_id);
     // Handle file upload and generate a unique file name
     $voucherFileName = uniqid() . '.' . $request->file('challanAttachment')->getClientOriginalExtension();
     $request->file('challanAttachment')->storeAs('voucher_files', $voucherFileName);
@@ -272,6 +282,7 @@ public function store(Request $request)
         'branch_code' => $request->input('bankName'),
         'transaction_id' => $request->input('bankName'),
         'mode_of_payment' => $request->input('modeOfPayment'),
+        'program_id' => $program_id,
     ]);
 
     // Save the voucher record to the database
