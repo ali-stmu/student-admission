@@ -97,6 +97,7 @@ class EducationAndDegreeController extends Controller
 
             // Construct the attachment URL
             $attachment_url = '/attachment_directory/' . $attachmentFileName;
+            log::debug($attachment_url);
         }
         $bio_total = $record['test_score_bio'] ?? null;
         $chem_total = $record['test_score_chem'] ?? null;
@@ -120,8 +121,6 @@ class EducationAndDegreeController extends Controller
 
         // Check if a record with the same test_name and test_date exists
         $existingTestInfo = TestScore::where('student_id', $studentId)
-            ->where('test_name', $test_name)
-            ->where('test_date', $test_date)
             ->first();
 
         if ($existingTestInfo) {

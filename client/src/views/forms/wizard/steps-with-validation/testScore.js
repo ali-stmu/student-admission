@@ -186,6 +186,14 @@ const TestScore = ({ stepper, type }) => {
           `records[${index}][test_reg_no]`,
           data[`testRegNo-${index}`]
         );
+        formData.append(
+          `records[${index}][test_score_total]`,
+          data[`totalMarks-${index}`]
+        );
+        formData.append(
+          `records[${index}][test_score_obtained]`,
+          data[`obtainedMarks-${index}`]
+        );
 
         // Check the test name and set total score and subject scores accordingly
         if (selectedTestNames[index] === "mdcat") {
@@ -382,6 +390,53 @@ const TestScore = ({ stepper, type }) => {
             </Row>
           ) : (
             <>
+              <Row>
+                <Col md="6" sm="12">
+                  <FormGroup>
+                    <Label for={`totalMarks-${index}`}>Total Marks</Label>
+                    <Input
+                      type="number"
+                      name={`totalMarks-${index}`}
+                      id={`totalMarks-${index}`}
+                      placeholder="Total Marks"
+                      innerRef={register({ required: true })}
+                    />
+                    {errors[`totalMarks-${index}`] && (
+                      <span className="text-danger">
+                        Total Marks is required.
+                      </span>
+                    )}
+                  </FormGroup>
+                </Col>
+                <Col md="6" sm="12">
+                  <FormGroup>
+                    <Label for={`obtainedMarks-${index}`}>Obtained Marks</Label>
+                    <Input
+                      type="number"
+                      name={`obtainedMarks-${index}`}
+                      id={`obtainedMarks-${index}`}
+                      placeholder="Obtained Marks"
+                      innerRef={register({
+                        required: true,
+                        validate: (value) =>
+                          validateObtainedMarks(value, index),
+                      })}
+                    />
+                    {errors[`obtainedMarks-${index}`] &&
+                      errors[`obtainedMarks-${index}`].type === "required" && (
+                        <span className="text-danger">
+                          Obtained Marks is required.
+                        </span>
+                      )}
+                    {errors[`obtainedMarks-${index}`] &&
+                      errors[`obtainedMarks-${index}`].type === "validate" && (
+                        <span className="text-danger">
+                          Obtained Marks cannot be greater than Total Marks.
+                        </span>
+                      )}
+                  </FormGroup>
+                </Col>
+              </Row>
               <Row>
                 <Col md="6" sm="12">
                   <FormGroup>
