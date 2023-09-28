@@ -147,7 +147,7 @@ const TestScore = ({ stepper, type }) => {
         }));
       }
     }
-  }, [testScoreData, testNameOptions, setValue]);
+  }, [testScoreData, setValue]);
   useEffect(() => {
     if (testScoreData && testScoreData.length > 0) {
       const updatedRecords = [...records];
