@@ -170,14 +170,12 @@ const Login = (props) => {
               </g>
             </g>
           </svg>
-
           {/* <img
             className="fallback-logo"
             src={UniLogo}
             alt="logo"
             style={{ height: "30px", width: "30px" }}
           /> */}
-
           <h2 className="brand-text text-primary ml-1">STMU</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
@@ -279,7 +277,7 @@ const Login = (props) => {
               </Button.Ripple>
             </Form>
             <p className="text-center mt-2">
-              <span className="mr-25">New on our platform?</span>
+              <span className="mr-25">New on our Admission Portal?</span>
               <Link to="/register">
                 <span>Create an account</span>
               </Link>
