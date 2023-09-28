@@ -233,18 +233,18 @@ const PersonalInfo = ({ stepper, type }) => {
     setDateofbirth(event.target.value);
   };
   const handleCnicChange = (event) => {
-    let value = event.target.value;
+    setCnic(event.target.value);
     // Remove all non-numeric characters from the input
-    value = value.replace(/\D/g, "");
-    // Add a dash after the 5th character
-    if (value.length >= 5) {
-      value = `${value.substring(0, 5)}-${value.substring(5)}`;
-    }
-    // Add a dash after the 13th character
-    if (value.length >= 13) {
-      value = `${value.substring(0, 13)}-${value.substring(13)}`;
-    }
-    setCnic(value);
+    // value = value.replace(/\D/g, "");
+    // // Add a dash after the 5th character
+    // if (value.length >= 5) {
+    //   value = `${value.substring(0, 5)}-${value.substring(5)}`;
+    // }
+    // // Add a dash after the 13th character
+    // if (value.length >= 13) {
+    //   value = `${value.substring(0, 13)}-${value.substring(13)}`;
+    // }
+    //setCnic(value);
   };
   function handlePhoneChange(event) {
     const value = event.target.value;
@@ -267,9 +267,9 @@ const PersonalInfo = ({ stepper, type }) => {
     if (!emailRegex.test(email)) {
       errors.push("Please enter a valid email address\n");
     }
-    if (cnic.length !== 15 || !/^\d{5}-\d{7}-\d$/.test(cnic)) {
-      errors.push("Please enter a valid CNIC number\n");
-    }
+    // if (cnic.length !== 15 || !/^\d{5}-\d{7}-\d$/.test(cnic)) {
+    //   errors.push("Please enter a valid CNIC number\n");
+    // }
     if (contact.length !== 11 || !/^\d+$/.test(contact)) {
       errors.push("Please enter a valid contact number\n");
     }
@@ -424,7 +424,7 @@ const PersonalInfo = ({ stepper, type }) => {
 
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`last-name-${type}`}>
-              CNIC<sup>*</sup>
+              CNIC/Passport<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -432,8 +432,8 @@ const PersonalInfo = ({ stepper, type }) => {
               name="cnic"
               value={cnic}
               onChange={handleCnicChange}
-              placeholder="12345-1234567-8"
-              maxLength={15} // Maximum length of a Pakistani CNIC is 15
+              //placeholder="12345-1234567-8"
+              //maxLength={15} // Maximum length of a Pakistani CNIC is 15
               required
             />
           </FormGroup>
