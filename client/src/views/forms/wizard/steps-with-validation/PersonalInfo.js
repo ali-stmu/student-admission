@@ -321,7 +321,7 @@ const PersonalInfo = ({ stepper, type }) => {
     console.log(selectedImageCnic);
   };
   const countryOptions = countries.map((country) => ({
-    value: country.id, // Use a unique identifier for each country
+    value: country.phonecode, // Use a unique identifier for each country
     label: country.phonecode, // Display the country name in the dropdown
   }));
 
