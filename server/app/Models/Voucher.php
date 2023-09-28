@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Voucher extends Model
 {
     protected $table = "voucher";
+    protected $primaryKey = "voucher_id";
+
     protected $fillable = [
         'student_id',
         'voucher_code',
