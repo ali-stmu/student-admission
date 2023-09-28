@@ -150,6 +150,7 @@ public function generatePdf(Request $request)
         $bankName = "";
         $accountTitle = "";
         $accountNumber = "";
+        $bankLogo = "";
         $collegeName = "";
 
 
@@ -179,6 +180,7 @@ public function generatePdf(Request $request)
                                 $bankName = $bank->bank_name;
                                 $accountTitle = $bank->account_title;
                                 $accountNumber = $bank->account_number;
+                                $bankLogo = $bank->logo_path;
                             }
                         }
                         
@@ -228,6 +230,8 @@ public function generatePdf(Request $request)
         Log::debug($dueDate);
         // Now you have the program names in the $programNames array
         $fullpath = storage_path('app/bank_logo/ShifaLogo.png'); 
+        $bankLogoFullPath = storage_path('app/bank_logo/'.$bankLogo); 
+
 
         $data = [
             'collegeName' => $collegeName,
@@ -241,11 +245,12 @@ public function generatePdf(Request $request)
             'pyear' => $term_name,
             'session' => $term_name,
             'totalAmount' => $amount,
-            'bankLogoPath' => $fullpath,
+            'uniLogo' => $fullpath,
+            'bankLogo' => $bankLogoFullPath,
         ];
 
-        $filePath = storage_path('bank_logo/2560px-Al_Baraka_logo.png');
-        $pdf = PDF::loadView('challan', compact('data', 'filePath'));
+
+        $pdf = PDF::loadView('challan', compact('data'));
 
         return $pdf->download('challan.pdf');
     } catch (\Exception $e) {

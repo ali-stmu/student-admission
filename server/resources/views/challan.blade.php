@@ -67,15 +67,16 @@
                     <!-- Dummy table for the first column -->
                     <table>
                         <tr>
-                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogoPath'] }}"
-                                    alt="Bank Logo">
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['uniLogo'] }}" alt="Uni Logo">
                             </td>
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
                                 Challan Form
                                 Shifa Tameer-e-Millat University
                                 {{ $data['collegeName'] }}
                                 (Deposit Slip Dept. Copy)</td>
-                            <td>Bank logo</td>
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogo'] }}"
+                                    alt="Bank Logo">
+                            </td>
                         </tr>
                         <tr>
                             <td><b>Ch./Receipt/Slip No:</b></td>
@@ -263,7 +264,7 @@
                     <!-- Dummy table for the second column -->
                     <table>
                         <tr>
-                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogoPath'] }}"
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['uniLogo'] }}"
                                     alt="Bank Logo">
                             </td>
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
@@ -271,7 +272,9 @@
                                 Shifa Tameer-e-Millat University
                                 {{ $data['collegeName'] }}
                                 (Deposit Slip Student Copy)</td>
-                            <td>Bank logo</td>
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogo'] }}"
+                                    alt="Bank Logo">
+                            </td>
                         </tr>
                         <tr>
                             <td> <b>Ch./Receipt/Slip No:</b></td>
@@ -461,7 +464,7 @@
                     <!-- Dummy table for the third column -->
                     <table>
                         <tr>
-                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogoPath'] }}"
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['uniLogo'] }}"
                                     alt="Bank Logo">
                             </td>
                             <td colspan="2" class="university-logo" style="text-align: center;">Specialized Fee
@@ -469,7 +472,9 @@
                                 Shifa Tameer-e-Millat University
                                 {{ $data['collegeName'] }}
                                 (Deposit Slip Bank Copy)</td>
-                            <td>Bank logo</td>
+                            <td class="bank-logo"><img style="max-width: 70px;" src="{{ $data['bankLogo'] }}"
+                                    alt="Bank Logo">
+                            </td>
                         </tr>
                         <tr>
                             <td> <b>Ch./Receipt/Slip No:</b></td>
