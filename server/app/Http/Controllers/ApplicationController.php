@@ -260,7 +260,10 @@ public function store(Request $request)
     $program_model = "";
 
     Log::debug('Request data:', $request->all());
-    $user_id = $request->input('user_id');
+    $user_id = $request->input('userID');
+    log::debug($user_id);
+    $student_id_json = $this->findStudentId($user_id);
+    $studentId = $student_id_json->getData()->student_id;
     $program = $request->input('priority');
     if($program){
         $program_model = Program::where('program_name', $program)->first();
@@ -274,7 +277,7 @@ public function store(Request $request)
     $request->file('challanAttachment')->storeAs('voucher_files', $voucherFileName);
     // Create a new Voucher instance
     $voucher = new Voucher([
-        'student_id' => $request->input('student_id'),
+        'student_id' => $studentId,
         'voucher_file_name' => $voucherFileName, // Save the file name in the database
         'upload_date' => $request->input('challanPaidDate'),
         'status' => 1,
