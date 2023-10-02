@@ -30,6 +30,8 @@ function AcademicRecords({ stepper, type }) {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [boardUniversityOptions, setBoardUniversityOptions] = useState([]);
   const [uploadedDegrees, setUploadedDegrees] = useState([]);
+  const [isOtherBoardUniversity, setIsOtherBoardUniversity] = useState([]);
+  const [otherBoardUniversity, setOtherBoardUniversity] = useState([""]);
 
   const [records, setRecords] = useState([
     {
@@ -90,10 +92,17 @@ function AcademicRecords({ stepper, type }) {
     try {
       const response = await axios.get(`${BASE_URL}boards`);
       const data = response.data;
-      const options = data.map((board) => ({
-        value: board.board_name,
-        label: board.board_name,
-      }));
+      // Add an "Other" option to the list of board/university options
+      const options = [
+        ...data.map((board) => ({
+          value: board.board_name,
+          label: board.board_name,
+        })),
+        {
+          value: "Other",
+          label: "Other",
+        },
+      ];
       setBoardUniversityOptions(options);
     } catch (error) {
       console.error("Error fetching board/university options:", error);
@@ -218,53 +227,53 @@ function AcademicRecords({ stepper, type }) {
     }
   };
 
-  const addRecord = () => {
-    setRecords([
-      ...records,
-      {
-        resultStatus: "",
-        qualification: "",
-        boardUniversity: "",
-        passingYear: "",
-        totalMarksCGPA: "",
-        obtainedMarksCGPA: "",
-        percentage: "",
-        schoolName: "",
-        schoolCountry: "",
-        schoolCity: "",
-        degree: null,
-      },
-    ]);
-    setDegreeFiles([...degreeFiles, null]);
-  };
-  const deleteRecord = () => {
-    const updatedRecords = [...records];
-    updatedRecords.pop(); // Remove the last record from the array
-    setRecords(updatedRecords);
+  // const addRecord = () => {
+  //   setRecords([
+  //     ...records,
+  //     {
+  //       resultStatus: "",
+  //       qualification: "",
+  //       boardUniversity: "",
+  //       passingYear: "",
+  //       totalMarksCGPA: "",
+  //       obtainedMarksCGPA: "",
+  //       percentage: "",
+  //       schoolName: "",
+  //       schoolCountry: "",
+  //       schoolCity: "",
+  //       degree: null,
+  //     },
+  //   ]);
+  //   setDegreeFiles([...degreeFiles, null]);
+  // };
+  // const deleteRecord = () => {
+  //   const updatedRecords = [...records];
+  //   updatedRecords.pop(); // Remove the last record from the array
+  //   setRecords(updatedRecords);
 
-    // Make an API call to delete the record
-    const deletedRecord = records[records.length - 1]; // Assuming you want to delete the last record
-    if (deletedRecord) {
-      const { qualification } = deletedRecord;
+  //   // Make an API call to delete the record
+  //   const deletedRecord = records[records.length - 1]; // Assuming you want to delete the last record
+  //   if (deletedRecord) {
+  //     const { qualification } = deletedRecord;
 
-      // Create an object with the parameters to send to the API
-      const params = {
-        user_id,
-        qualification,
-      };
+  //     // Create an object with the parameters to send to the API
+  //     const params = {
+  //       user_id,
+  //       qualification,
+  //     };
 
-      axios
-        .post(`${BASE_URL}deleteRecordEndpoint`, { params })
-        .then((response) => {
-          // Handle the API response here
-          console.log("Record deleted successfully.");
-        })
-        .catch((error) => {
-          // Handle any errors that occurred during the request
-          console.error("Error deleting record:", error);
-        });
-    }
-  };
+  //     axios
+  //       .post(`${BASE_URL}deleteRecordEndpoint`, { params })
+  //       .then((response) => {
+  //         // Handle the API response here
+  //         console.log("Record deleted successfully.");
+  //       })
+  //       .catch((error) => {
+  //         // Handle any errors that occurred during the request
+  //         console.error("Error deleting record:", error);
+  //       });
+  //   }
+  // };
 
   const handleRecordChange = (e, index) => {
     const { name, value, files } = e.target;
@@ -339,15 +348,39 @@ function AcademicRecords({ stepper, type }) {
     setRecords(updatedRecords);
   };
   const handleBoardUniversityChange = (selectedOption, index) => {
+    console.log("selectedOption:", selectedOption);
+    console.log("otherBoardUniversity:", otherBoardUniversity);
+
     const updatedRecords = [...records];
-    updatedRecords[index] = {
-      ...updatedRecords[index],
-      boardUniversity: selectedOption.value,
-    };
+    if (selectedOption.value === "Other") {
+      console.log("other chal raha");
+      updatedRecords[index] = {
+        ...updatedRecords[index],
+        boardUniversity: otherBoardUniversity[index], // Assign the value of the "Other" textbox
+      };
+      setIsOtherBoardUniversity((prev) => {
+        const updated = [...prev];
+        updated[index] = true;
+        return updated;
+      });
+    } else {
+      updatedRecords[index] = {
+        ...updatedRecords[index],
+        boardUniversity: selectedOption.value, // Assign the selected option value
+      };
+      setIsOtherBoardUniversity((prev) => {
+        const updated = [...prev];
+        updated[index] = false;
+        return updated;
+      });
+    }
+    console.log("updatedRecords:", updatedRecords);
     setRecords(updatedRecords);
   };
 
+  console.log(otherBoardUniversity);
   console.log(records);
+
   return (
     <Fragment>
       {records.map((record, index) => (
@@ -379,22 +412,47 @@ function AcademicRecords({ stepper, type }) {
               </FormGroup>
 
               <FormGroup tag={Col} md="4">
-                <Label for="boardUniversity" className="form-label">
+                <Label for={`boardUniversity-${index}`} className="form-label">
                   Board/University<sup>*</sup>
                 </Label>
                 <Select
                   theme={selectThemeColors}
                   className="react-select"
                   classNamePrefix="select"
-                  options={boardUniversityOptions} // Use the fetched options
-                  value={boardUniversityOptions.find(
-                    (option) => option.value === record.boardUniversity
-                  )}
+                  options={boardUniversityOptions}
+                  value={
+                    isOtherBoardUniversity[index]
+                      ? { label: "Other", value: "Other" }
+                      : boardUniversityOptions.find(
+                          (option) => option.value === record.boardUniversity
+                        )
+                  }
                   onChange={(selectedOption) =>
                     handleBoardUniversityChange(selectedOption, index)
                   }
                 />
+                {isOtherBoardUniversity[index] && (
+                  <Input
+                    type="text"
+                    name={`otherBoardUniversity-${index}`}
+                    id={`otherBoardUniversity-${index}`}
+                    placeholder="Other Board/University"
+                    value={otherBoardUniversity[index]}
+                    onChange={(e) => {
+                      const updated = [...otherBoardUniversity];
+                      updated[index] = e.target.value;
+                      setOtherBoardUniversity(updated);
+
+                      // Trigger handleBoardUniversityChange when "Other" text box changes
+                      handleBoardUniversityChange(
+                        { label: "Other", value: "Other" },
+                        index
+                      );
+                    }}
+                  />
+                )}
               </FormGroup>
+
               <FormGroup tag={Col} md="4">
                 <Label className="form-label">
                   Passing Year<sup>*</sup>
