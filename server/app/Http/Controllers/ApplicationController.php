@@ -157,10 +157,13 @@ public function generatePdf(Request $request)
         $application = Application::where('student_id', $studentId)->first();
 
         if ($application) {
-            $issueDate =  $application->updated_at->format('Y-m-d');
-            if($issueDate == null){
+            if ($application->updated_at !== null) {
+                $issueDate = $application->updated_at->format('Y-m-d');
+            }
+            else{
                 $issueDate =  $application->created_at->format('Y-m-d');
-            }            
+            }
+           
             $programIds = [
                 $application->program_id_1,
                 $application->program_id_2,
