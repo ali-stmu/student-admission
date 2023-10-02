@@ -58,8 +58,10 @@ const PersonalInfo = ({ stepper, type }) => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     // Parse the JSON data
     const studentInfo = JSON.parse(rolesFromStorage);
+    console.log(studentInfo);
     const Tempemail = studentInfo.email;
     const TempUserid = studentInfo.user_id;
+    const TempUserCnic = studentInfo.cnic;
 
     formDataAutoFill.append("user_id", TempUserid);
     formDataAutoFill.append("userEffectChecked", 1);
@@ -78,7 +80,7 @@ const PersonalInfo = ({ stepper, type }) => {
           setMiddleName(AutoFillDataRecived.original.middle_name);
           setLastName(AutoFillDataRecived.original.last_name);
           setContact(AutoFillDataRecived.original.phone_number);
-          setCnic(AutoFillDataRecived.original.cnic);
+          //setCnic(AutoFillDataRecived.original.cnic);
           setGender(AutoFillDataRecived.original.gender);
           setReligion(AutoFillDataRecived.original.religion);
           setDateofbirth(AutoFillDataRecived.original.date_of_birth);
@@ -105,6 +107,7 @@ const PersonalInfo = ({ stepper, type }) => {
       });
     console.log(Tempemail);
     setEmail(Tempemail);
+    setCnic(TempUserCnic);
     setUserId(TempUserid);
     if (!rolesFromStorage) {
       history.push("/login");
@@ -435,6 +438,7 @@ const PersonalInfo = ({ stepper, type }) => {
               //placeholder="12345-1234567-8"
               //maxLength={15} // Maximum length of a Pakistani CNIC is 15
               required
+              readOnly
             />
           </FormGroup>
         </Row>
