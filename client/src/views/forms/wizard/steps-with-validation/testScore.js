@@ -93,6 +93,7 @@ const TestScore = ({ stepper, type }) => {
         if (response.status === 200) {
           const testData = response.data; // Assuming the API response is an array of test score data
           setTestScoreData(testData);
+          console.log(testData);
         } else {
           console.error(
             "API call failed:",
@@ -342,101 +343,9 @@ const TestScore = ({ stepper, type }) => {
           {/* Show a message based on the selected test name */}
           {selectedTestNames[index] === "mdcat" ||
           selectedTestNames[index] === null ? (
-            <Row>
-              <Col md="6" sm="12">
-                <FormGroup>
-                  <Label for={`totalMarks-${index}`}>Total Marks</Label>
-                  <Input
-                    type="number"
-                    name={`totalMarks-${index}`}
-                    id={`totalMarks-${index}`}
-                    placeholder="Total Marks"
-                    innerRef={register({ required: true })}
-                  />
-                  {errors[`totalMarks-${index}`] && (
-                    <span className="text-danger">
-                      Total Marks is required.
-                    </span>
-                  )}
-                </FormGroup>
-              </Col>
-              <Col md="6" sm="12">
-                <FormGroup>
-                  <Label for={`obtainedMarks-${index}`}>Obtained Marks</Label>
-                  <Input
-                    type="number"
-                    name={`obtainedMarks-${index}`}
-                    id={`obtainedMarks-${index}`}
-                    placeholder="Obtained Marks"
-                    innerRef={register({
-                      required: true,
-                      validate: (value) => validateObtainedMarks(value, index),
-                    })}
-                  />
-                  {errors[`obtainedMarks-${index}`] &&
-                    errors[`obtainedMarks-${index}`].type === "required" && (
-                      <span className="text-danger">
-                        Obtained Marks is required.
-                      </span>
-                    )}
-                  {errors[`obtainedMarks-${index}`] &&
-                    errors[`obtainedMarks-${index}`].type === "validate" && (
-                      <span className="text-danger">
-                        Obtained Marks cannot be greater than Total Marks.
-                      </span>
-                    )}
-                </FormGroup>
-              </Col>
-            </Row>
+            <></>
           ) : (
             <>
-              <Row>
-                <Col md="6" sm="12">
-                  <FormGroup>
-                    <Label for={`totalMarks-${index}`}>Total Marks</Label>
-                    <Input
-                      type="number"
-                      name={`totalMarks-${index}`}
-                      id={`totalMarks-${index}`}
-                      placeholder="Total Marks"
-                      innerRef={register({ required: true })}
-                    />
-                    {errors[`totalMarks-${index}`] && (
-                      <span className="text-danger">
-                        Total Marks is required.
-                      </span>
-                    )}
-                  </FormGroup>
-                </Col>
-                <Col md="6" sm="12">
-                  <FormGroup>
-                    <Label for={`obtainedMarks-${index}`}>Obtained Marks</Label>
-                    <Input
-                      type="number"
-                      name={`obtainedMarks-${index}`}
-                      id={`obtainedMarks-${index}`}
-                      placeholder="Obtained Marks"
-                      innerRef={register({
-                        required: true,
-                        validate: (value) =>
-                          validateObtainedMarks(value, index),
-                      })}
-                    />
-                    {errors[`obtainedMarks-${index}`] &&
-                      errors[`obtainedMarks-${index}`].type === "required" && (
-                        <span className="text-danger">
-                          Obtained Marks is required.
-                        </span>
-                      )}
-                    {errors[`obtainedMarks-${index}`] &&
-                      errors[`obtainedMarks-${index}`].type === "validate" && (
-                        <span className="text-danger">
-                          Obtained Marks cannot be greater than Total Marks.
-                        </span>
-                      )}
-                  </FormGroup>
-                </Col>
-              </Row>
               <Row>
                 <Col md="6" sm="12">
                   <FormGroup>
@@ -590,6 +499,50 @@ const TestScore = ({ stepper, type }) => {
               </Row>
             </>
           )}
+          <Row>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label for={`totalMarks-${index}`}>Total Marks</Label>
+                <Input
+                  type="number"
+                  name={`totalMarks-${index}`}
+                  id={`totalMarks-${index}`}
+                  placeholder="Total Marks"
+                  innerRef={register({ required: true })}
+                />
+                {errors[`totalMarks-${index}`] && (
+                  <span className="text-danger">Total Marks is required.</span>
+                )}
+              </FormGroup>
+            </Col>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label for={`obtainedMarks-${index}`}>Obtained Marks</Label>
+                <Input
+                  type="number"
+                  name={`obtainedMarks-${index}`}
+                  id={`obtainedMarks-${index}`}
+                  placeholder="Obtained Marks"
+                  innerRef={register({
+                    required: true,
+                    validate: (value) => validateObtainedMarks(value, index),
+                  })}
+                />
+                {errors[`obtainedMarks-${index}`] &&
+                  errors[`obtainedMarks-${index}`].type === "required" && (
+                    <span className="text-danger">
+                      Obtained Marks is required.
+                    </span>
+                  )}
+                {errors[`obtainedMarks-${index}`] &&
+                  errors[`obtainedMarks-${index}`].type === "validate" && (
+                    <span className="text-danger">
+                      Obtained Marks cannot be greater than Total Marks.
+                    </span>
+                  )}
+              </FormGroup>
+            </Col>
+          </Row>
 
           <FormGroup>
             <Label for={`testYear-${index}`}>Test Year</Label>
@@ -641,7 +594,7 @@ const TestScore = ({ stepper, type }) => {
           </Row>
           <FormGroup>
             <Label for={`attachment-${index}`}>Attachment (PDF/Image)</Label>
-            {record.attachment ? (
+            {record.attachment || selectedTestNames[index] !== "mdcat" ? (
               <div>
                 <b style={{ color: "green" }}>Already Uploaded</b> <br />
                 <CustomInput
@@ -661,6 +614,7 @@ const TestScore = ({ stepper, type }) => {
                 innerRef={register({ required: true })}
               />
             )}
+
             {/* Only show the error message if attachment is required and not already uploaded */}
             {errors[`attachment-${index}`] && !record.attachment && (
               <span className="text-danger">Please select a valid file.</span>
