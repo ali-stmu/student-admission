@@ -383,6 +383,10 @@ function AcademicRecords({ stepper, type }) {
 
   return (
     <Fragment>
+      <h5 className="mb-0">
+        A-Level student will be required to upload IBCC certificate and
+        transcripts in one pdf file.
+      </h5>
       {records.map((record, index) => (
         <div key={index}>
           <h5 className="mb-0">Enter Academic Information</h5>
