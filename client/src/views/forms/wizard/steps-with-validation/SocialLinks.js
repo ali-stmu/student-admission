@@ -414,6 +414,8 @@ function AcademicRecords({ stepper, type }) {
               <FormGroup tag={Col} md="4">
                 <Label for={`boardUniversity-${index}`} className="form-label">
                   Board/University<sup>*</sup>
+                  <br></br>
+                  {record.boardUniversity}
                 </Label>
                 <Select
                   theme={selectThemeColors}
