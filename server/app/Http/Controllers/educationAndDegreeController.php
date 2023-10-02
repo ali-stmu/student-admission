@@ -126,6 +126,7 @@ class EducationAndDegreeController extends Controller
         if ($existingTestInfo) {
             // Update existing test record
             $existingTestInfo->update([
+                'test_name' => $test_name,
                 'test_score_total' => $test_score_total,
                 'test_score' => $test_score_obtained,
                 'attachment_url' => $attachment_url,
