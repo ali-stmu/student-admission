@@ -49,6 +49,8 @@ const PersonalInfo = ({ stepper, type }) => {
   const [phone, setPhone] = useState("");
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [imageSizeError, setImageSizeError] = useState("");
+  const [cnicImageSizeError, setCnicImageSizeError] = useState("");
 
   const today = new Date();
   today.setFullYear(today.getFullYear() - 16);
@@ -146,44 +148,70 @@ const PersonalInfo = ({ stepper, type }) => {
     isValidCnic;
 
   const onSubmit = () => {
-    console.log("ClickedOnSubmite");
-    console.log(selectedCountry + contact);
-    const formData = new FormData();
-    formData.append("first_name", firstName);
-    formData.append("middle_name", middleName);
-    formData.append("last_name", lastName);
-    formData.append("phone_number", selectedCountry + contact);
-    formData.append("father_contact", fathercontact);
-    formData.append("email", email);
-    formData.append("cnic", cnic);
-    formData.append("gender", gender);
-    formData.append("date_of_birth", dateofbirth);
-    formData.append("religion", religion);
-    formData.append("father_name", fname);
-    formData.append("father_email", fatheremail);
-    formData.append("mother_name", mname);
-    formData.append("father_occupation", foccupation);
-    formData.append("land_line", phone);
-    formData.append("temp_image", image);
-    formData.append("temp_image_cnic", imageCnic);
-    formData.append("user_id", user_id);
+    const errors = [];
+    //const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!firstName) {
+      errors.push("Please enter your first name\n");
+    }
+    if (!lastName) {
+      errors.push("Please enter your last name\n");
+    }
+    // if (!emailRegex.test(email)) {
+    //   errors.push("Please enter a valid email address\n");
+    // }
+    // if (cnic.length !== 15 || !/^\d{5}-\d{7}-\d$/.test(cnic)) {
+    //   errors.push("Please enter a valid CNIC number\n");
+    // }
+    // if (contact.length !== 11 || !/^\d+$/.test(contact)) {
+    //   errors.push("Please enter a valid contact number\n");
+    // }
+    if (imageSizeError) {
+      errors.push("Please Upload Your picture less than 2 MB \n");
+    }
+    if (cnicImageSizeError) {
+      errors.push("Please Upload Your CNIC/Passport picture less than 2 MB \n");
+    }
+    setErrorMessage(errors);
+    if (errors.length === 0) {
+      console.log("ClickedOnSubmite");
+      console.log(selectedCountry + contact);
+      const formData = new FormData();
+      formData.append("first_name", firstName);
+      formData.append("middle_name", middleName);
+      formData.append("last_name", lastName);
+      formData.append("phone_number", selectedCountry + contact);
+      formData.append("father_contact", fathercontact);
+      formData.append("email", email);
+      formData.append("cnic", cnic);
+      formData.append("gender", gender);
+      formData.append("date_of_birth", dateofbirth);
+      formData.append("religion", religion);
+      formData.append("father_name", fname);
+      formData.append("father_email", fatheremail);
+      formData.append("mother_name", mname);
+      formData.append("father_occupation", foccupation);
+      formData.append("land_line", phone);
+      formData.append("temp_image", image);
+      formData.append("temp_image_cnic", imageCnic);
+      formData.append("user_id", user_id);
 
-    fetch(`${BASE_URL}storeStudentData`, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the response from the backend
-        console.log(data);
+      fetch(`${BASE_URL}storeStudentData`, {
+        method: "POST",
+        body: formData,
       })
-      .catch((error) => {
-        // Handle any errors that occurred during the request
-        //console.error(error);
-      });
-    trigger();
-    if (isObjEmpty(errors)) {
-      stepper.next();
+        .then((response) => response.json())
+        .then((data) => {
+          // Handle the response from the backend
+          console.log(data);
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          //console.error(error);
+        });
+      trigger();
+      if (isObjEmpty(errors)) {
+        stepper.next();
+      }
     }
   };
   console.log(selectedImageCnic);
@@ -258,26 +286,7 @@ const PersonalInfo = ({ stepper, type }) => {
       setPhone(value);
     }
   }
-  const validateFields = () => {
-    const errors = [];
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!firstName) {
-      errors.push("Please enter your first name\n");
-    }
-    if (!lastName) {
-      errors.push("Please enter your last name\n");
-    }
-    if (!emailRegex.test(email)) {
-      errors.push("Please enter a valid email address\n");
-    }
-    // if (cnic.length !== 15 || !/^\d{5}-\d{7}-\d$/.test(cnic)) {
-    //   errors.push("Please enter a valid CNIC number\n");
-    // }
-    if (contact.length !== 11 || !/^\d+$/.test(contact)) {
-      errors.push("Please enter a valid contact number\n");
-    }
-    setErrorMessage(errors);
-  };
+  //const validateFields = () => {};
   const handleChangeGender = (selectedOption) => {
     setGender(selectedOption.value);
   };
@@ -294,7 +303,11 @@ const PersonalInfo = ({ stepper, type }) => {
       alert(
         "Error: The uploaded image exceeds the maximum allowed size of 2MB."
       );
+      setImageSizeError(
+        "The uploaded image exceeds the maximum allowed size of 2MB"
+      );
     } else {
+      setImageSizeError("");
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -313,7 +326,12 @@ const PersonalInfo = ({ stepper, type }) => {
       alert(
         "Error: The uploaded image exceeds the maximum allowed size of 2MB."
       );
+      setCnicImageSizeError(
+        "The uploaded image exceeds the maximum allowed size of 2MB"
+      );
     } else {
+      setCnicImageSizeError("");
+      console.log("else chal gya");
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -512,6 +530,7 @@ const PersonalInfo = ({ stepper, type }) => {
               name="middle-name"
               value={mname}
               onChange={handleMnameChange}
+              required
             />
           </FormGroup>
           <FormGroup tag={Col} md="4">
@@ -569,7 +588,6 @@ const PersonalInfo = ({ stepper, type }) => {
               onChange={handlePhoneChange}
               placeholder="Enter a valid phone number"
               maxLength={13} // Maximum length of a Pakistani phone number is 13
-              required
             />
           </FormGroup>
         </Row>
@@ -640,7 +658,7 @@ const PersonalInfo = ({ stepper, type }) => {
             //disabled={!isFormValid}
             id="btn-next"
             className="btn-next"
-            onClick={validateFields}
+            //onClick={validateFields}
           >
             <span className="align-middle d-sm-inline-block d-none">
               Save & Next
