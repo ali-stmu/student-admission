@@ -57,23 +57,31 @@ public function getPriority(Request $request)
         $studentInfoToCalculatePercentage = Education::select('total_marks', 'degree_id', 'result_status', 'obtained_marks')
             ->where('student_id', $studentId)
             ->get();
-        Log::debug($studentInfoToCalculatePercentage);
+        Log::debug("StudentInfo to calculate percentage:".$studentInfoToCalculatePercentage);
 
-        $intermediateDegrees = Degree::where('degree_name', 'Intermediate/HSSE/Equivalent')->pluck('degree_name', 'degree_id');
-        $testScores = TestScore::where('student_id', $studentId)->pluck('percentage');
-        Log::debug($testScores);        
+        $intermediateDegrees = Degree::where('degree_name', 'Intermediate/A-Levels/Equivalent')->pluck('degree_name', 'degree_id');
+        $testScores = TestScore::where('student_id', $studentId)->first()->pluck('percentage');
+        Log::debug($testScores[0]);        
 
         $programs = [];
 
         foreach ($studentInfoToCalculatePercentage as $education) {
             $degreeId = $education->degree_id;
             $resultStatus = $education->result_status;
+            $status = $education->status;
+            $degree_id = $education->degree_id;
 
-            if ($intermediateDegrees->has($degreeId) && $resultStatus == "declared") {
+
+            log::debug("Degree Id".$degreeId);
+            log::debug($intermediateDegrees);
+//This condition checking if result sttaus is declared and its general status is 1 means active and degree id is 2 which measn of intermediate
+            if ($intermediateDegrees->has($degreeId) && $resultStatus == "declared" && $status = '1' && $degree_id == '2' ) {
                 foreach ($studentInfoToCalculatePercentage as $edu) {
                     if ($edu->degree_id === $degreeId) {
                         $totalMarks += $edu->total_marks;
                         $obtainedMarks += $edu->obtained_marks;
+                        log::debug("Total marks is".$totalMarks);
+                        log::debug("Obtined marks is".$obtainedMarks);
                     }
                 }
 
