@@ -124,6 +124,73 @@ public function autofilPriority(Request $request)
     // Return the array of priority names
     return response()->json(['priority_names' => $priorityNames], 200);
 }
+// Add this function before your generatePdf function
+function amountInWords($amount) {
+    $numberToWords = [
+        0 => 'Zero',
+        1 => 'One',
+        2 => 'Two',
+        3 => 'Three',
+        4 => 'Four',
+        5 => 'Five',
+        6 => 'Six',
+        7 => 'Seven',
+        8 => 'Eight',
+        9 => 'Nine',
+        10 => 'Ten',
+        11 => 'Eleven',
+        12 => 'Twelve',
+        13 => 'Thirteen',
+        14 => 'Fourteen',
+        15 => 'Fifteen',
+        16 => 'Sixteen',
+        17 => 'Seventeen',
+        18 => 'Eighteen',
+        19 => 'Nineteen',
+        20 => 'Twenty',
+        30 => 'Thirty',
+        40 => 'Forty',
+        50 => 'Fifty',
+        60 => 'Sixty',
+        70 => 'Seventy',
+        80 => 'Eighty',
+        90 => 'Ninety',
+    ];
+
+    if ($amount < 21) {
+        return $numberToWords[$amount];
+    }
+
+    if ($amount < 100) {
+        $tens = $numberToWords[10 * floor($amount / 10)];
+        $ones = $numberToWords[$amount % 10];
+        return $tens . ($ones ? ' ' . $ones : '');
+    }
+
+    if ($amount < 1000) {
+        $hundreds = $numberToWords[floor($amount / 100)] . ' Hundred';
+        $remainder = $amount % 100;
+
+        if ($remainder === 0) {
+            return $hundreds;
+        }
+
+        return $hundreds . ' and ' . $this->amountInWords($remainder);
+    }
+
+    if ($amount < 100000) {
+        $thousands = $this->amountInWords(floor($amount / 1000)) . ' Thousand';
+        $remainder = $amount % 1000;
+
+        if ($remainder === 0) {
+            return $thousands;
+        }
+
+        return $thousands . ' ' . $this->amountInWords($remainder);
+    }
+
+    return 'Amount too large to convert to words';
+}
 
 public function generatePdf(Request $request)
 {
@@ -237,7 +304,8 @@ public function generatePdf(Request $request)
         // Now you have the program names in the $programNames array
         $fullpath = storage_path('app/bank_logo/ShifaLogo.png'); 
         $bankLogoFullPath = storage_path('app/bank_logo/'.$bankLogo); 
-
+        $amountInWords = $this->amountInWords($amount);
+        log::debug($amountInWords);
 
         $data = [
             'collegeName' => $collegeName,
@@ -253,6 +321,7 @@ public function generatePdf(Request $request)
             'totalAmount' => $amount,
             'uniLogo' => $fullpath,
             'bankLogo' => $bankLogoFullPath,
+            'amountInWords' => $amountInWords." only",
         ];
 
 

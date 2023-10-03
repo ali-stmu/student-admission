@@ -121,7 +121,7 @@
                         </tr>
                         <tr>
                             <td>In Words</td>
-                            <td colspan="3">Amount in words will be here</td>
+                            <td colspan="3">{{ $data['amountInWords'] }}</td>
                         </tr>
                         <tr>
                             <td>Depositors CNIC:
@@ -318,7 +318,7 @@
                         </tr>
                         <tr>
                             <td>In Words</td>
-                            <td colspan="3">Amount in words will be here</td>
+                            <td colspan="3">{{ $data['amountInWords'] }}</td>
                         </tr>
                         <tr>
                             <td>Depositors CNIC:
@@ -517,7 +517,7 @@
                         </tr>
                         <tr>
                             <td>In Words</td>
-                            <td colspan="3">Amount in words will be here</td>
+                            <td colspan="3">{{ $data['amountInWords'] }}</td>
                         </tr>
                         <tr>
                             <td>Depositors CNIC:
