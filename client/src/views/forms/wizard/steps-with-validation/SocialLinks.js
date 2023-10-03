@@ -32,6 +32,7 @@ function AcademicRecords({ stepper, type }) {
   const [uploadedDegrees, setUploadedDegrees] = useState([]);
   const [isOtherBoardUniversity, setIsOtherBoardUniversity] = useState([]);
   const [otherBoardUniversity, setOtherBoardUniversity] = useState([""]);
+  const MAX_FILE_SIZE_MB = 2;
 
   const [records, setRecords] = useState([
     {
@@ -61,6 +62,13 @@ function AcademicRecords({ stepper, type }) {
       degree: null,
     },
   ]);
+  const [selectedCountries, setSelectedCountries] = useState(
+    new Array(records.length).fill(null)
+  );
+
+  const [fileSizeErrors, setFileSizeErrors] = useState(
+    new Array(records.length).fill(false)
+  );
   const [obtainedGreaterThanTotalError, setObtainedGreaterThanTotalError] =
     useState(new Array(records.length).fill(false));
   const fetchDegreeOptions = async () => {
@@ -175,22 +183,35 @@ function AcademicRecords({ stepper, type }) {
         console.error(error);
       });
   }, []);
+  useEffect(() => {
+    // Check for file size errors and update isFormValid
+    const hasFileSizeErrors = fileSizeErrors.includes(true);
+    setIsFormValid(!hasFileSizeErrors);
+  }, [fileSizeErrors]);
 
   const handleCountryChange = (selectedOption, index) => {
-    setSelectedCountry(selectedOption);
+    const updatedSelectedCountries = [...selectedCountries];
+    updatedSelectedCountries[index] = selectedOption;
+    setSelectedCountries(updatedSelectedCountries);
+
     const updatedRecords = [...records];
     updatedRecords[index] = {
       ...updatedRecords[index],
-      schoolCountry: selectedOption.value, // Assuming `value` holds the country value
+      schoolCountry: selectedOption ? selectedOption.value : null,
     };
     setRecords(updatedRecords);
   };
-  const onSubmit = () => {
+
+  const onSubmit = async () => {
     trigger();
     if (isFormValid) {
+      let filesValid = true; // Flag to check if all files are valid
+
       const formData = new FormData();
 
-      records.forEach((record, index) => {
+      for (let index = 0; index < records.length; index++) {
+        const record = records[index];
+
         formData.append(`resultStatus[${index}]`, record.resultStatus);
         formData.append(`qualification[${index}]`, record.qualification);
         formData.append(`boardUniversity[${index}]`, record.boardUniversity);
@@ -205,8 +226,27 @@ function AcademicRecords({ stepper, type }) {
         formData.append(`schoolCountry[${index}]`, record.schoolCountry);
         formData.append(`schoolCity[${index}]`, record.schoolCity);
 
-        formData.append(`degree[${index}]`, degreeFiles[index]);
-      });
+        const degreeFile = degreeFiles[index];
+        if (degreeFile) {
+          const fileSizeInMB = degreeFile.size / (1024 * 1024); // Convert bytes to megabytes
+          if (fileSizeInMB > MAX_FILE_SIZE_MB) {
+            filesValid = false; // Set the flag to false if any file exceeds the limit
+            const updatedFileSizeErrors = [...fileSizeErrors];
+            updatedFileSizeErrors[index] = true;
+            setFileSizeErrors(updatedFileSizeErrors);
+            break; // Stop processing further records
+          }
+
+          formData.append(`degree[${index}]`, degreeFile);
+        } else {
+          formData.append(`degree[${index}]`, ""); // Ensure that an empty value is sent for degree when no file is selected
+        }
+      }
+      if (!filesValid) {
+        setShowValidationMessage(true);
+        return; // Stop the form submission if files are not valid
+      }
+
       formData.append("user_id", user_id);
 
       console.log(formData);
@@ -274,7 +314,6 @@ function AcademicRecords({ stepper, type }) {
   //       });
   //   }
   // };
-
   const handleRecordChange = (e, index) => {
     const { name, value, files } = e.target;
     let updatedValue = value;
@@ -289,19 +328,22 @@ function AcademicRecords({ stepper, type }) {
         updatedValue = currentYear.toString();
       }
     }
-    if (name === "degree") {
-      const file = e.target.files[0];
+    if (name === "degree" && files.length > 0) {
+      const file = files[0];
+      const fileSizeInMB = file.size / (1024 * 1024); // Convert bytes to megabytes
+      if (fileSizeInMB > MAX_FILE_SIZE_MB) {
+        // File size exceeds the limit
+        alert(`File size should not exceed ${MAX_FILE_SIZE_MB} MB`);
+        return; // Do not proceed with the change
+      }
+
       const updatedDegreeFiles = [...degreeFiles];
       updatedDegreeFiles[index] = file;
       setDegreeFiles(updatedDegreeFiles);
 
       // Update uploaded degrees
       const updatedUploadedDegrees = [...uploadedDegrees];
-      if (file) {
-        updatedUploadedDegrees[index] = "Uploaded";
-      } else {
-        updatedUploadedDegrees[index] = null;
-      }
+      updatedUploadedDegrees[index] = "Uploaded";
       setUploadedDegrees(updatedUploadedDegrees);
     }
 
@@ -503,7 +545,7 @@ function AcademicRecords({ stepper, type }) {
                   className="react-select"
                   classNamePrefix="select"
                   options={countries}
-                  value={selectedCountry}
+                  value={selectedCountries[index]}
                   onChange={(selectedOption) =>
                     handleCountryChange(selectedOption, index)
                   }
@@ -615,6 +657,11 @@ function AcademicRecords({ stepper, type }) {
                         color: "green",
                       }}
                     >
+                      {fileSizeErrors.includes(true) && (
+                        <div style={{ color: "red" }}>
+                          File size should not exceed {MAX_FILE_SIZE_MB} MB
+                        </div>
+                      )}
                       <strong>Uploaded Degree:</strong>
                       {uploadedDegrees[index] === "Uploaded" ? (
                         <span>{uploadedDegrees[index]}</span>
