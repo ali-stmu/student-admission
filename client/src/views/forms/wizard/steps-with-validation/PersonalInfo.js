@@ -509,7 +509,7 @@ const PersonalInfo = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Father Name<sup>*</sup>
+              Father/Guardian Name<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -535,7 +535,7 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`last-name-${type}`}>
-              Father Occupation<sup>*</sup>
+              Father/Guardian Occupation<sup>*</sup>
             </Label>
             <Input
               type="text"
@@ -550,7 +550,7 @@ const PersonalInfo = ({ stepper, type }) => {
         <Row>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Father Contact<sup>*</sup>
+              Father/Guardian Contact<sup>*</sup>
             </Label>
             <Input
               type="tel"
@@ -565,7 +565,7 @@ const PersonalInfo = ({ stepper, type }) => {
           </FormGroup>
           <FormGroup tag={Col} md="4">
             <Label className="form-label" for={`first-name-${type}`}>
-              Father Email<sup>*</sup>
+              Father/Guardian Email<sup>*</sup>
             </Label>
             <Input
               type="email"
