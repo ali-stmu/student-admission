@@ -60,7 +60,7 @@ public function getPriority(Request $request)
         Log::debug("StudentInfo to calculate percentage:".$studentInfoToCalculatePercentage);
 
         $intermediateDegrees = Degree::where('degree_name', 'Intermediate/A-Levels/Equivalent')->pluck('degree_name', 'degree_id');
-        $testScores = TestScore::where('student_id', $studentId)->first()->pluck('percentage');
+        $testScores = TestScore::where('student_id', $studentId)->pluck('percentage');
         Log::debug($testScores[0]);        
 
         $programs = [];
@@ -86,6 +86,7 @@ public function getPriority(Request $request)
                 }
 
                 $percentage = ($obtainedMarks / $totalMarks) * 100;
+                log::debug($percentage);
 
                 $query = Program::select('program_name', 'program_criteria','test_criteria')
                     ->where('degree_id', $degreeId)->where('status', '1');
@@ -94,7 +95,7 @@ public function getPriority(Request $request)
                     $query->whereIn('nationality_check', ['pakistani']);
                 } else if ($nationality === 'foreign') {
                     $query->whereIn('nationality_check', ['foreign']);
-                }else{
+                }else if ($nationality === 'dual'){
                     $query->whereIn('nationality_check', ['foreign','dual','pakistani']);
                 }
 
