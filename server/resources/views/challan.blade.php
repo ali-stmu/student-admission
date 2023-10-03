@@ -101,9 +101,8 @@
                         </tr>
                         <tr>
                             <td>Instrument Type: </td>
-                            <td colspan="3">Cash<span class="custom-box"></span> Cheque<span
-                                    class="custom-box"></span> PO/DD<span class="custom-box"></span> Any other<span
-                                    class="custom-box"></span></td>
+                            <td colspan="3">Cash<span class="custom-box"></span> PO/DD<span
+                                    class="custom-box"></span> Any other<span class="custom-box"></span></td>
                         </tr>
                         <tr>
                             <td>Instrument No: </td>
@@ -299,9 +298,8 @@
                         </tr>
                         <tr>
                             <td>Instrument Type: </td>
-                            <td colspan="3">Cash<span class="custom-box"></span> Cheque<span
-                                    class="custom-box"></span> PO/DD<span class="custom-box"></span> Any other<span
-                                    class="custom-box"></span></td>
+                            <td colspan="3">Cash<span class="custom-box"></span> PO/DD<span
+                                    class="custom-box"></span> Any other<span class="custom-box"></span></td>
                         </tr>
                         <tr>
                             <td>Instrument No: </td>
@@ -499,9 +497,8 @@
                         </tr>
                         <tr>
                             <td>Instrument Type: </td>
-                            <td colspan="3">Cash<span class="custom-box"></span> Cheque<span
-                                    class="custom-box"></span> PO/DD<span class="custom-box"></span> Any other<span
-                                    class="custom-box"></span></td>
+                            <td colspan="3">Cash<span class="custom-box"></span> PO/DD<span
+                                    class="custom-box"></span> Any other<span class="custom-box"></span></td>
                         </tr>
                         <tr>
                             <td>Instrument No: </td>
