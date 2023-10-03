@@ -74,7 +74,7 @@ public function getPriority(Request $request)
 
             log::debug("Degree Id".$degreeId);
             log::debug($intermediateDegrees);
-//This condition checking if result sttaus is declared and its general status is 1 means active and degree id is 2 which measn of intermediate
+            //This condition checking if result sttaus is declared and its general status is 1 means active and degree id is 2 which means of intermediate
             if ($intermediateDegrees->has($degreeId) && $resultStatus == "declared" && $status = '1' && $degree_id == '2' ) {
                 foreach ($studentInfoToCalculatePercentage as $edu) {
                     if ($edu->degree_id === $degreeId) {
