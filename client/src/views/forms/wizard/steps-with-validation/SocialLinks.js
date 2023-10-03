@@ -183,11 +183,11 @@ function AcademicRecords({ stepper, type }) {
         console.error(error);
       });
   }, []);
-  useEffect(() => {
-    // Check for file size errors and update isFormValid
-    const hasFileSizeErrors = fileSizeErrors.includes(true);
-    setIsFormValid(!hasFileSizeErrors);
-  }, [fileSizeErrors]);
+  // useEffect(() => {
+  //   // Check for file size errors and update isFormValid
+  //   const hasFileSizeErrors = fileSizeErrors.includes(true);
+  //   //setIsFormValid(!hasFileSizeErrors);
+  // }, [fileSizeErrors]);
 
   const handleCountryChange = (selectedOption, index) => {
     const updatedSelectedCountries = [...selectedCountries];
