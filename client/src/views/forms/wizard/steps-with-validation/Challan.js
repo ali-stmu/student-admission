@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom"; // Import useHistory from react-router-dom
 import {
   Button,
   FormGroup,
@@ -15,6 +16,7 @@ import { BASE_URL } from "../../../../config";
 import axios from "axios";
 
 const Challan = ({ stepper, type }) => {
+  const history = useHistory(); // Create history object for navigation
   const contentRef = useRef(null);
   const [challanAttachment, setChallanAttachment] = useState(null);
   const [challanPaidDate, setChallanPaidDate] = useState("");
@@ -165,6 +167,14 @@ const Challan = ({ stepper, type }) => {
           // Handle success
           console.log("Voucher saved successfully", response);
           setApiResponse("Voucher inserted successfully");
+
+          // Check if the response is successful, then navigate to /myapplications
+          if (response.status === 200) {
+            // Add a 3-second delay before navigating
+            setTimeout(() => {
+              history.push("/myapplications");
+            }, 3000);
+          }
         })
         .catch((error) => {
           // Handle error
