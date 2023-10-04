@@ -9,6 +9,8 @@ use App\Http\Controllers\DegreeController;
 use App\Http\Controllers\educationAndDegreeController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BoardController;
+use App\Http\Controllers\VoucherController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -66,3 +68,7 @@ Route::post('/savevoucher', [ApplicationController::class, 'store']);
 
 //boards
 Route::get('/boards', [BoardController::class, 'index']);
+
+Route::get('/voucherdetail', [VoucherController::class, 'index']);
+
+

@@ -362,7 +362,7 @@ public function store(Request $request)
         [
             'voucher_file_name' => $voucherFileName,
             'upload_date' => $request->input('challanPaidDate'),
-            'status' => 1,
+            'status' => 'Pending',
             'bank_name' => $request->input('bankName'),
             'branch_code' => $request->input('bankName'),
             'transaction_id' => $request->input('bankName'),
