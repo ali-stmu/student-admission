@@ -20,6 +20,10 @@ const Routes = [
     component: lazy(() => import("../../views/forms/wizard")),
   },
   {
+    path: "/myapplications",
+    component: lazy(() => import("../../views/MyApplications")),
+  },
+  {
     path: "/register",
     component: lazy(() => import("../../views/Register")),
     layout: "BlankLayout",

@@ -20,4 +20,11 @@ export default [
 
     navLink: "/forms/wizard",
   },
+  {
+    id: "myApllications",
+    title: "My Application",
+    icon: <Mail size={20} />,
+
+    navLink: "/myapplications",
+  },
 ];
