@@ -11,6 +11,52 @@ use App\Models\User;
 class AuthController extends Controller
 {
     //
+    function AdminloginCheck(Request $request)
+    { 
+        $email = $request->input('email');
+        $password = $request->input('password');
+    
+        // Find the user by email
+        $user = User::where('email', $email)->first();
+        log::debug($user);
+    
+        if (!$user) {
+            // User with the provided email doesn't exist
+            $data = [
+                'error' => 'User not found'
+            ];
+            return response()->json($data, 404);
+        }
+    
+        // Check if the password matches
+        if (Hash::check($password, $user->password)) {
+            // Check if the user has the "admin" role
+            log::debug("Password match hoo gya");
+            if ($user->role === 'Admin') {
+                // User is an admin, respond with "OK"
+                $data = [
+                    'message' => 'Admin authenticated'
+                ];
+            log::debug("Admin login hoo gya");
+
+                return response()->json($data, 200);
+            } else {
+                // User does not have the "admin" role
+                $data = [
+                    'error' => 'User is not an admin'
+                ];
+                return response()->json($data, 403);
+            }
+        } else {
+            // Password does not match
+            $data = [
+                'error' => 'Invalid password'
+            ];
+            return response()->json($data, 400);
+        }
+    }
+    
+
     public function getUserDetails($email) {
         $user = User::find($email);
         $details = DB::table('user')->where('email', $email)->first();

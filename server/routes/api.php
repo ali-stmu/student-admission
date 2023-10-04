@@ -45,10 +45,7 @@ Route::post('/educationAndDegreeController', [educationAndDegreeController::clas
 //deleting education
 Route::post('/deleteRecordEndpoint', [educationAndDegreeController::class, 'modifyEducationStatus']);
 
-
-
 Route::post('/skip/{user_id}', [educationAndDegreeController::class, 'skip_test']);
-
 
 Route::post('/getPriority', [StudentInfoController::class, 'getPriority']);
 
@@ -61,7 +58,7 @@ Route::get('/scores/{user_id}', [educationAndDegreeController::class, 'getScores
 //Application Api
 Route::post('/savePriorities', [ApplicationController::class, 'savePriorities']);
 
-//testing pdf
+//Downloading pdf
 
 Route::get('/generate-pdf', [ApplicationController::class, 'generatePdf']);
 Route::post('/savevoucher', [ApplicationController::class, 'store']);
@@ -72,3 +69,6 @@ Route::get('/boards', [BoardController::class, 'index']);
 Route::get('/voucherdetail', [VoucherController::class, 'index']);
 
 
+//Admin APIs
+
+Route::post('/adminlogin', [AuthController::class, 'AdminloginCheck']);

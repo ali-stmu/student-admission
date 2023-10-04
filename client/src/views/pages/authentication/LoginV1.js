@@ -33,15 +33,13 @@ const LoginV1 = () => {
       setError("Email and password are required.");
       return;
     }
-
-    // Create a data object with email and password
     const data = {
       email,
       password,
     };
     console.log("Sending request with data:", data);
     try {
-      const response = await fetch(`${BASE_URL}/adminlogin`, {
+      const response = await fetch(`${BASE_URL}adminlogin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,11 +63,8 @@ const LoginV1 = () => {
     }
 
     // Continue with your form submission logic here
-    console.log("Sign in clicked");
-    console.log(data);
 
     // Reset the error state if there was an error previously
-    setError("");
   };
 
   return (
