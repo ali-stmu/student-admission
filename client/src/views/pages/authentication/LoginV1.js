@@ -25,7 +25,7 @@ const LoginV1 = () => {
   const [password, setPassword] = useState("");
   console.log("Email:", email);
   console.log("Password:", password);
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     //e.preventDefault();
 
     // Check if email and password are empty
@@ -39,6 +39,30 @@ const LoginV1 = () => {
       email,
       password,
     };
+    console.log("Sending request with data:", data);
+    try {
+      const response = await fetch(`${BASE_URL}/adminlogin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      console.log("Response:", response);
+
+      if (response.ok) {
+        // Login successful, you can redirect or handle success here
+        console.log("Login successful");
+      } else {
+        // Handle login failure, e.g., show an error message
+        console.error("Login failed");
+        setError("Login failed. Please check your credentials.");
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error("An error occurred:", error);
+    }
 
     // Continue with your form submission logic here
     console.log("Sign in clicked");
