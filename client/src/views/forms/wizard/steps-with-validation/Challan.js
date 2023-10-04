@@ -39,6 +39,7 @@ const Challan = ({ stepper, type }) => {
     const studentInfo = JSON.parse(rolesFromStorage);
     console.log(studentInfo.user_id);
     setUserId(studentInfo.user_id);
+    setSelectedPriority("Select a Program");
   }, []);
 
   const getStoredPriorities = () => {
@@ -183,15 +184,18 @@ const Challan = ({ stepper, type }) => {
     minWidth: "100%",
     margin: "0 auto",
   };
-
   return (
     <div>
       <div style={{ backgroundColor: "#FFFFFF" }} ref={contentRef}>
         <div style={tableContainerStyle}></div>
       </div>
-      <Button.Ripple color="primary" onClick={loadChallan}>
-        Load Challan(s)
-      </Button.Ripple>
+      <div>
+        {" "}
+        {/* Apply styles here */}
+        <Button.Ripple color="danger" onClick={loadChallan}>
+          View Challan(s)
+        </Button.Ripple>
+      </div>
       <h1>Challan Details:</h1>
       <div>{prioritiesButtons}</div>
       <Row>
@@ -208,6 +212,7 @@ const Challan = ({ stepper, type }) => {
               required
               invalid={programError}
             >
+              <option value="Select a Program">Select a Program</option>
               {storedPriorities.map((priority, index) => (
                 <option key={index} value={priority.label}>
                   {priority.label}
@@ -338,6 +343,7 @@ const Challan = ({ stepper, type }) => {
           id="btn-next"
           className="btn-next"
           onClick={onSubmit}
+          disabled={selectedPriority === "Select a Program"}
         >
           <span className="align-middle d-sm-inline-block d-none">
             Final Submit
