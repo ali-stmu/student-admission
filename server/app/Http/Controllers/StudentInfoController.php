@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Session;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use App\Models\Country; // Import the Country model at the top of your controller
+use App\Models\Voucher;
+
 
 
 
@@ -84,12 +86,20 @@ public function getPriority(Request $request)
                         log::debug("Obtined marks is".$obtainedMarks);
                     }
                 }
-
+        // Get the student's voucher IDs for programs they've already applied to                
+             $voucherProgramIds = Voucher::where('student_id', $studentId)
+                 ->pluck('program_id')
+                 ->toArray();
+log::debug($voucherProgramIds);
                 $percentage = ($obtainedMarks / $totalMarks) * 100;
                 log::debug($percentage);
 
                 $query = Program::select('program_name', 'program_criteria','test_criteria')
                     ->where('degree_id', $degreeId)->where('status', '1');
+                    // Modify the query to exclude programs where student and program IDs match in vouchers
+                 $programs = $query
+                 ->whereNotIn('program_id', $voucherProgramIds)
+                 ->get();
 
                 if ($nationality === 'pakistani') {
                     $query->whereIn('nationality_check', ['pakistani']);
