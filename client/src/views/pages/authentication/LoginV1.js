@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 import InputPasswordToggle from "@components/input-password-toggle";
 import FullLogo from "../../../assets/images/logo/uni_logo.png";
+import { BASE_URL } from "../../../config";
 
 import {
   Card,
@@ -18,6 +20,34 @@ import {
 import "@styles/base/pages/page-auth.scss";
 
 const LoginV1 = () => {
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  console.log("Email:", email);
+  console.log("Password:", password);
+  const handleSubmit = () => {
+    //e.preventDefault();
+
+    // Check if email and password are empty
+    if (!email || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+
+    // Create a data object with email and password
+    const data = {
+      email,
+      password,
+    };
+
+    // Continue with your form submission logic here
+    console.log("Sign in clicked");
+    console.log(data);
+
+    // Reset the error state if there was an error previously
+    setError("");
+  };
+
   return (
     <>
       <div className="auth-wrapper auth-v1 px-2">
@@ -35,10 +65,7 @@ const LoginV1 = () => {
                 Welcome to Admin Panel
               </CardTitle>
 
-              <Form
-                className="auth-login-form mt-2"
-                onSubmit={(e) => e.preventDefault()}
-              >
+              <Form className="auth-login-form mt-2">
                 <FormGroup>
                   <Label className="form-label" for="login-email">
                     Email
@@ -47,6 +74,8 @@ const LoginV1 = () => {
                     type="email"
                     id="login-email"
                     placeholder="john@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     autoFocus
                   />
                 </FormGroup>
@@ -56,13 +85,15 @@ const LoginV1 = () => {
                     <Label className="form-label" for="login-password">
                       Password
                     </Label>
-                    <Link to="/pages/forgot-password-v1">
+                    {/* <Link to="/pages/forgot-password-v1">
                       <small>Forgot Password?</small>
-                    </Link>
+                    </Link> */}
                   </div>
                   <InputPasswordToggle
                     className="input-group-merge"
                     id="login-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </FormGroup>
                 <FormGroup>
@@ -73,11 +104,11 @@ const LoginV1 = () => {
                     label="Remember Me"
                   />
                 </FormGroup>
-                <Button.Ripple color="primary" block>
+                <Button.Ripple onClick={handleSubmit} color="primary">
                   Sign in
                 </Button.Ripple>
               </Form>
-
+              {error && <div className="text-danger mt-2">{error}</div>}
               <div className="divider my-2">
                 <div className="divider-text"></div>
               </div>
