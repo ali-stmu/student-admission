@@ -34,6 +34,7 @@ const Challan = ({ stepper, type }) => {
   const [prioritiesButtons, setPrioritiesButtons] = useState([]);
   const [selectedPriority, setSelectedPriority] = useState("");
   const [apiResponse, setApiResponse] = useState(null);
+  const [showChallanButtons, setShowChallanButtons] = useState(false);
   useEffect(() => {
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     const studentInfo = JSON.parse(rolesFromStorage);
@@ -84,7 +85,10 @@ const Challan = ({ stepper, type }) => {
     ));
     setPrioritiesButtons(buttons);
   };
-
+  const toggleChallanButtons = () => {
+    loadChallan();
+    setShowChallanButtons(!showChallanButtons);
+  };
   const validateForm = () => {
     let isValid = true;
 
@@ -190,14 +194,19 @@ const Challan = ({ stepper, type }) => {
         <div style={tableContainerStyle}></div>
       </div>
       <div>
-        {" "}
-        {/* Apply styles here */}
-        <Button.Ripple color="danger" onClick={loadChallan}>
-          View Challan(s)
+        <Button.Ripple
+          color={showChallanButtons ? "success" : "danger"}
+          onClick={toggleChallanButtons}
+        >
+          {showChallanButtons ? "Hide Challan(s)" : "Load Challan(s)"}
         </Button.Ripple>
       </div>
-      <h1>Challan Details:</h1>
-      <div>{prioritiesButtons}</div>
+      {showChallanButtons && (
+        <div>
+          <h1>Challan Details:</h1>
+          <div>{prioritiesButtons}</div>
+        </div>
+      )}
       <Row>
         <Col md="6" sm="12">
           <FormGroup>
