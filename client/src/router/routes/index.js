@@ -24,6 +24,14 @@ const Routes = [
     component: lazy(() => import("../../views/MyApplications")),
   },
   {
+    path: "/admission-admin",
+    component: lazy(() => import("../../views/pages/authentication/LoginV1")),
+    layout: "BlankLayout",
+    meta: {
+      authRoute: true,
+    },
+  },
+  {
     path: "/register",
     component: lazy(() => import("../../views/Register")),
     layout: "BlankLayout",
