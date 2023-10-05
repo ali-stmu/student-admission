@@ -91,6 +91,7 @@ const Login = (props) => {
         //console.log(data.original.details)
         const session = JSON.stringify(data.original.details);
         localStorage.setItem("StudentInfo", session);
+
         history.push("/home");
       } else {
         console.log("Email or password is incorrect");

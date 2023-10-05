@@ -5,24 +5,45 @@ const TemplateTitle = "%s - Vuexy React Admin Template";
 // ** Default Route
 const DefaultRoute = "/login";
 
-// ** Merge Routes
-const Routes = [
-  {
-    path: "/home",
-    component: lazy(() => import("../../views/Home")),
-  },
-  {
-    path: "/second-page",
-    component: lazy(() => import("../../views/SecondPage")),
-  },
-  {
-    path: "/forms/wizard",
-    component: lazy(() => import("../../views/forms/wizard")),
-  },
-  {
-    path: "/myapplications",
-    component: lazy(() => import("../../views/MyApplications")),
-  },
+const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
+const userRole = studentInfo ? studentInfo.role : null;
+
+// Define routes based on the user's role
+let accessibleRoutes = [];
+if (userRole === "Student") {
+  accessibleRoutes = [
+    {
+      path: "/home",
+      component: lazy(() => import("../../views/Home")),
+    },
+    {
+      path: "/second-page",
+      component: lazy(() => import("../../views/SecondPage")),
+    },
+    {
+      path: "/forms/wizard",
+      component: lazy(() => import("../../views/forms/wizard")),
+    },
+    {
+      path: "/myapplications",
+      component: lazy(() => import("../../views/MyApplications")),
+    },
+  ];
+} else if (userRole === "Admin") {
+  accessibleRoutes = [
+    {
+      path: "/adminhome",
+      component: lazy(() => import("../../views/Admin/Home")),
+      layout: "HorizontalLayout",
+      meta: {
+        authRoute: true,
+      },
+    },
+  ];
+}
+
+// Define common routes
+const commonRoutes = [
   {
     path: "/admission-admin",
     component: lazy(() => import("../../views/pages/authentication/LoginV1")),
@@ -53,5 +74,8 @@ const Routes = [
     layout: "BlankLayout",
   },
 ];
+
+// Combine accessible routes with common routes
+const Routes = [...accessibleRoutes, ...commonRoutes];
 
 export { DefaultRoute, TemplateTitle, Routes };

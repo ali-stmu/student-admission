@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import React, { useState } from "react";
 import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 import InputPasswordToggle from "@components/input-password-toggle";
@@ -23,6 +23,8 @@ const LoginV1 = () => {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const history = useHistory();
+
   console.log("Email:", email);
   console.log("Password:", password);
   const handleSubmit = async () => {
@@ -47,18 +49,21 @@ const LoginV1 = () => {
         body: JSON.stringify(data),
       });
 
-      console.log("Response:", response);
-
       if (response.ok) {
-        // Login successful, you can redirect or handle success here
+        const responseData = await response.json(); // Parse JSON response
+        console.log("User Details:", responseData);
+        localStorage.setItem(
+          "StudentInfo",
+          JSON.stringify(responseData.original.user)
+        );
+        // Now you can access user details from responseData
+        history.push("/adminhome");
         console.log("Login successful");
       } else {
-        // Handle login failure, e.g., show an error message
         console.error("Login failed");
         setError("Login failed. Please check your credentials.");
       }
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error("An error occurred:", error);
     }
 

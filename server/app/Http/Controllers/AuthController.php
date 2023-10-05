@@ -37,9 +37,9 @@ class AuthController extends Controller
                 $data = [
                     'message' => 'Admin authenticated'
                 ];
-            log::debug("Admin login hoo gya");
-
-                return response()->json($data, 200);
+               $admin_detail = $this->getUserDetails($email);
+               log::debug($admin_detail);
+                return response()->json($admin_detail,200);
             } else {
                 // User does not have the "admin" role
                 $data = [
@@ -58,13 +58,13 @@ class AuthController extends Controller
     
 
     public function getUserDetails($email) {
-        $user = User::find($email);
+        $user = User::where('email', $email)->first();
         $details = DB::table('user')->where('email', $email)->first();
         $data = [
           'user' => $user,
           'details' => $details
         ];
-        log::debug($data);
+        //log::debug($data);
         return response()->json($data, 200);
       }
 
