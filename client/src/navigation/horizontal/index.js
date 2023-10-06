@@ -5,19 +5,19 @@ export default [
     id: "home",
     title: "Home",
     icon: <Home size={20} />,
-    navLink: "/home",
+    navLink: "/adminhome",
   },
   {
-    id: "secondPage",
-    title: "Second Page",
+    id: "applfeereceived",
+    title: "Application Fee Received",
     icon: <Mail size={20} />,
-    navLink: "/second-page",
+    navLink: "/applfeereceived",
   },
   {
-    id: "wizard",
-    title: "Admission Form",
+    id: "appfeepending",
+    title: "Application Fee Pending",
     icon: <Package size={20} />,
 
-    navLink: "/forms/wizard",
+    navLink: "/appfeepending",
   },
 ];
