@@ -123,7 +123,7 @@ const ApplicationFeeReceived = () => {
                   color="primary"
                   onClick={() => handlePaidReceiptClick(applicant.file_name)}
                 >
-                  {applicant.file_name}
+                  Download Voucher
                 </Button>
               </td>
             </tr>
