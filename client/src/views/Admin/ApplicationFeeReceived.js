@@ -12,6 +12,7 @@ import {
   Table, // Import Table from reactstrap
   // ... other imports
 } from "reactstrap";
+import axios from "axios";
 
 const ApplicationFeeReceived = () => {
   const [responseData, setResponseData] = useState(null);
@@ -33,6 +34,27 @@ const ApplicationFeeReceived = () => {
         });
     }
   }, []);
+  const handlePaidReceiptClick = (fileName) => {
+    // Make an API call with the fileName
+    axios
+      .get(`${BASE_URL}download-receipt/${fileName}`, { responseType: "blob" }) // Specify the response type as 'blob' to receive binary data
+      .then((response) => {
+        // Create a Blob object from the response data
+        const blob = new Blob([response.data], { type: "application/pdf" });
+
+        // Create a URL for the Blob
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Open the Blob URL in a new tab
+        window.open(blobUrl);
+
+        // Release the Blob URL when it's no longer needed
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   const getFeePaidApplicants = (programId) => {
     fetch(`${BASE_URL}getfeepaidapplicants/${programId}`)
@@ -54,10 +76,6 @@ const ApplicationFeeReceived = () => {
   };
 
   console.log(selectedProgram);
-  const handleDownloadVoucher = (voucherPath) => {
-    // Open the voucher attachment in a new tab/window
-    window.open(`${BASE_URL}${voucherPath}`, "_blank");
-  };
 
   return (
     <div>
@@ -103,11 +121,9 @@ const ApplicationFeeReceived = () => {
               <td>
                 <Button
                   color="primary"
-                  onClick={() =>
-                    handleDownloadVoucher(applicant.voucher_full_path)
-                  }
+                  onClick={() => handlePaidReceiptClick(applicant.file_name)}
                 >
-                  Download Voucher
+                  {applicant.file_name}
                 </Button>
               </td>
             </tr>

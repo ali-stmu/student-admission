@@ -76,3 +76,5 @@ Route::post('/adminlogin', [AuthController::class, 'AdminloginCheck']);
 Route::get('/feeapplicationreceived/{user_id}', [AdminApplicationController::class, 'feeApplicationReceived']);
 
 Route::get('/getfeepaidapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationReceived']);
+
+Route::get('/download-receipt/{filename}', [AdminApplicationController::class, 'getPdf']);

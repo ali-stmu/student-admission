@@ -79,12 +79,26 @@ foreach ($vouchers as $voucher) {
         'intermediate_percentage' => $intermediatePercentage,
         'test_score_percentage' => $testScorePercentage,
         'voucher_full_path' => $voucherFullPath, // Include the full voucher path
+        'file_name' => $voucher->voucher_file_name, // Include the full voucher path
+
     ];
     log::debug($applicantsData);
 }
 
 return response()->json(['applicantsData' => $applicantsData]);
 }
+public function getPdf($filename)
+{
+    $filePath = storage_path("app/voucher_files/{$filename}");
+
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+
+    return response()->json(['error' => 'File not found'], 404);
+}
+
+
 
 
 }
