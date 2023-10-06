@@ -1,5 +1,7 @@
 import { BASE_URL } from "../../config";
 import React, { useRef, useState, useEffect } from "react";
+import DataTable from "react-data-table-component";
+
 import {
   Button,
   FormGroup,
@@ -77,7 +79,6 @@ const ApplicationFeePending = () => {
   console.log(selectedProgram);
   return (
     <div>
-      {" "}
       <FormGroup>
         <Label for="programDropdown">Select a Program:</Label>
         <Input
@@ -95,30 +96,51 @@ const ApplicationFeePending = () => {
             ))}
         </Input>
       </FormGroup>
-      <Table>
-        <thead>
-          <tr>
-            <th>Sr#</th>
-            <th>Name</th>
-            <th>Father Name</th>
-            <th>Contact No</th>
-            <th>Intermediate %</th>
-            <th>Test %</th>
-          </tr>
-        </thead>
-        <tbody>
-          {applicants.map((applicant, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{`${applicant.student_information.first_name} ${applicant.student_information.last_name}`}</td>
-              <td>{applicant.student_information.father_name}</td>
-              <td>{applicant.student_information.phone_number}</td>
-              <td>{applicant.intermediate_percentage.percentage_criteria}%</td>
-              <td>{applicant.test_score_percentage.percentage}%</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+
+      <DataTable
+        columns={[
+          {
+            name: "Sr#",
+            selector: "sr",
+            sortable: true,
+          },
+          {
+            name: "Name",
+            selector: "name",
+            sortable: true,
+          },
+          {
+            name: "Father Name",
+            selector: "father_name",
+            sortable: true,
+          },
+          {
+            name: "Contact No",
+            selector: "contact_no",
+            sortable: true,
+          },
+          {
+            name: "Intermediate %",
+            selector: "intermediate_percentage",
+            sortable: true,
+          },
+          {
+            name: "Test %",
+            selector: "test_percentage",
+            sortable: true,
+          },
+        ]}
+        data={applicants.map((applicant, index) => ({
+          sr: index + 1,
+          name: `${applicant.student_information.first_name} ${applicant.student_information.last_name}`,
+          father_name: applicant.student_information.father_name,
+          contact_no: applicant.student_information.phone_number,
+          intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
+          test_percentage: `${applicant.test_score_percentage.percentage}%`,
+        }))}
+        pagination
+        responsive
+      />
     </div>
   );
 };
