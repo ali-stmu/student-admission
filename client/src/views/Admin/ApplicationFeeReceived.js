@@ -3,13 +3,14 @@ import React, { useRef, useState, useEffect } from "react";
 import {
   Button,
   FormGroup,
-  Input, // Import Input from reactstrap
+  Input,
   Label,
   Row,
   Col,
   CustomInput,
   FormFeedback,
-  Table,
+  Table, // Import Table from reactstrap
+  // ... other imports
 } from "reactstrap";
 
 const ApplicationFeeReceived = () => {
@@ -19,6 +20,7 @@ const ApplicationFeeReceived = () => {
   const handleProgramChange = (event) => {
     setSelectedProgram(event.target.value);
   };
+  console.log(selectedProgram);
 
   useEffect(() => {
     const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
@@ -35,13 +37,11 @@ const ApplicationFeeReceived = () => {
         });
     }
   }, []);
-  console.log(responseData);
 
   return (
     <div>
       <FormGroup>
         <Label for="programDropdown">Select a Program:</Label>
-        {/* Use Input with type="select" for the select input */}
         <Input
           type="select"
           id="programDropdown"
@@ -51,12 +51,26 @@ const ApplicationFeeReceived = () => {
           <option value="">Select a program</option>
           {responseData &&
             responseData.programs.map((program) => (
-              <option key={program.program_id} value={program.program_name}>
+              <option key={program.program_id} value={program.program_id}>
                 {program.program_name}
               </option>
             ))}
         </Input>
       </FormGroup>
+
+      <Table>
+        <thead>
+          <tr>
+            <th>Sr#</th>
+            <th>Name</th>
+            <th>Father Name</th>
+            <th>Email</th>
+            <th>Contact No</th>
+            <th>Intermediate %</th>
+            <th>Test %</th>
+          </tr>
+        </thead>
+      </Table>
     </div>
   );
 };
