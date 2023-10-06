@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\Admin;
+use App\Models\Voucher;
+use App\Models\student;
+use App\Models\education;
+use App\Models\TestScore;
 use App\Models\Program; // Import the Program model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -44,4 +48,43 @@ class AdminApplicationController extends Controller
             return response()->json(['message' => 'An error occurred'], 500);
         }
     }
+    public function ApplicantsfeeApplicationReceived(Request $request, $program_id)
+{
+    $vouchers = Voucher::where('program_id', $program_id)->get();
+
+$applicantsData = [];
+$voucherPath = storage_path('app/voucher_files/');
+
+foreach ($vouchers as $voucher) {
+    $studentId = $voucher->student_id;
+
+    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number')
+        ->where('student_id', $studentId)
+        ->first();
+
+    $intermediatePercentage = Education::select('percentage_criteria')
+        ->where('student_id', $studentId)
+        ->where('degree_id', 2)
+        ->first();
+
+    $testScorePercentage = TestScore::select('percentage')
+        ->where('student_id', $studentId)
+        ->first();
+
+    // Concatenate the voucher file name with the voucher path
+    $voucherFullPath = $voucherPath . $voucher->voucher_file_name;
+
+    $applicantsData[] = [
+        'student_information' => $studentInformation,
+        'intermediate_percentage' => $intermediatePercentage,
+        'test_score_percentage' => $testScorePercentage,
+        'voucher_full_path' => $voucherFullPath, // Include the full voucher path
+    ];
+    log::debug($applicantsData);
+}
+
+return response()->json(['applicantsData' => $applicantsData]);
+}
+
+
 }

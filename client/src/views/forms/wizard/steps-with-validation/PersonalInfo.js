@@ -93,6 +93,7 @@ const PersonalInfo = ({ stepper, type }) => {
           setPhone(AutoFillDataRecived.original.land_line);
           const genratedFullUrlForStudentPicsture =
             BASE_URL_OF_SERVER + AutoFillDataRecived.original.image;
+          console.log(genratedFullUrlForStudentPicsture);
           setSelectedImage(genratedFullUrlForStudentPicsture);
           const genratedFullUrlForStudentCnic =
             BASE_URL_OF_SERVER + AutoFillDataRecived.original.cnic_image;

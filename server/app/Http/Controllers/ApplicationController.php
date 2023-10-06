@@ -303,7 +303,8 @@ public function generatePdf(Request $request)
         Log::debug($dueDate);
         // Now you have the program names in the $programNames array
         $fullpath = storage_path('app/bank_logo/ShifaLogo.png'); 
-        $bankLogoFullPath = storage_path('app/bank_logo/'.$bankLogo); 
+        $bankLogoFullPath = storage_path('app/bank_logo/'.$bankLogo);
+        log::debug($bankLogoFullPath);
         $amountInWords = $this->amountInWords($amount);
         log::debug($amountInWords);
 
