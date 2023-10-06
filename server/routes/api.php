@@ -10,7 +10,7 @@ use App\Http\Controllers\educationAndDegreeController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\VoucherController;
-
+use App\Http\Controllers\AdminApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,3 +72,5 @@ Route::get('/voucherdetail', [VoucherController::class, 'index']);
 //Admin APIs
 
 Route::post('/adminlogin', [AuthController::class, 'AdminloginCheck']);
+
+Route::get('/feeapplicationreceived/{user_id}', [AdminApplicationController::class, 'feeApplicationReceived']);
