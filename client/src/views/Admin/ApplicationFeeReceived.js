@@ -29,11 +29,21 @@ const ApplicationFeeReceived = () => {
   const handlePaidReceiptClick = (fileName) => {
     // Make an API call with the fileName
     axios
-      .get(`${BASE_URL}download-receipt/${fileName}`, { responseType: "blob" })
+      .get(`${BASE_URL}download-receipt/${fileName}`, { responseType: "blob" }) // Specify the response type as 'blob' to receive binary data
       .then((response) => {
-        const blob = new Blob([response.data], { type: "application/pdf" });
+        // Determine the content type from the response headers
+        const contentType = response.headers["content-type"];
+
+        // Create a Blob object from the response data
+        const blob = new Blob([response.data], { type: contentType });
+
+        // Create a URL for the Blob
         const blobUrl = window.URL.createObjectURL(blob);
+
+        // Open the Blob URL in a new tab
         window.open(blobUrl);
+
+        // Release the Blob URL when it's no longer needed
         window.URL.revokeObjectURL(blobUrl);
       })
       .catch((error) => {

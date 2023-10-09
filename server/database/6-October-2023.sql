@@ -16,6 +16,62 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `Admin_Program`
+--
+
+DROP TABLE IF EXISTS `Admin_Program`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Admin_Program` (
+  `program_id` int NOT NULL AUTO_INCREMENT,
+  `admin_id` int DEFAULT NULL,
+  PRIMARY KEY (`program_id`),
+  KEY `admin_id` (`admin_id`),
+  CONSTRAINT `Admin_Program_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admin` (`admin_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Admin_Program`
+--
+
+LOCK TABLES `Admin_Program` WRITE;
+/*!40000 ALTER TABLE `Admin_Program` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Admin_Program` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `admin` (
+  `admin_id` int NOT NULL AUTO_INCREMENT,
+  `admin_name` varchar(255) NOT NULL,
+  `college_id` int DEFAULT NULL,
+  `status` enum('Active','Inactive','Suspended') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` int DEFAULT NULL,
+  PRIMARY KEY (`admin_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES (1,'Ali',2,'Active','2023-10-04 11:18:51','2023-10-06 15:43:41',77);
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `application`
 --
 
@@ -54,7 +110,7 @@ CREATE TABLE `application` (
 
 LOCK TABLES `application` WRITE;
 /*!40000 ALTER TABLE `application` DISABLE KEYS */;
-INSERT INTO `application` VALUES (2,28,9,6,10,'Pending','2023-09-28',NULL,'Some Form State','Active','2023-09-28 06:47:11','2023-09-28 09:27:57',NULL,NULL,'11',NULL,NULL,NULL,NULL);
+INSERT INTO `application` VALUES (2,28,11,10,NULL,'Pending','2023-10-06',NULL,'Some Form State','Active','2023-09-28 06:47:11','2023-10-06 15:08:13',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `application` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,6 +126,7 @@ CREATE TABLE `bank` (
   `bank_name` varchar(255) NOT NULL,
   `account_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `account_title` varchar(255) NOT NULL,
+  `logo_path` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`bank_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -80,8 +137,32 @@ CREATE TABLE `bank` (
 
 LOCK TABLES `bank` WRITE;
 /*!40000 ALTER TABLE `bank` DISABLE KEYS */;
-INSERT INTO `bank` VALUES (1,'Habib Bank Limited','50007902906303','SHIFA TAMEER-MILLAT UNIVERSITY'),(2,'ALBARAKA BANK (PAKISTAN) LTD','0158073951115','SHIFA TAMEER-MILLAT UNIVERSITY'),(3,'ALBARAKA BANK (PAKISTAN) LTD','PK52AIIN0000281073951036','SHIFA TAMEER-MILLAT UNIVERSITY');
+INSERT INTO `bank` VALUES (1,'Habib Bank Limited','50007902906303','SHIFA TAMEER-MILLAT UNIVERSITY','HBL-logo.jpg'),(2,'ALBARAKA BANK (PAKISTAN) LTD','0158073951115','SHIFA TAMEER-MILLAT UNIVERSITY','2560px-Al_Baraka_logo.png'),(3,'ALBARAKA BANK (PAKISTAN) LTD','PK52AIIN0000281073951036','SHIFA TAMEER-MILLAT UNIVERSITY','2560px-Al_Baraka_logo.png');
 /*!40000 ALTER TABLE `bank` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `board`
+--
+
+DROP TABLE IF EXISTS `board`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `board` (
+  `board_id` int NOT NULL AUTO_INCREMENT,
+  `board_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`board_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `board`
+--
+
+LOCK TABLES `board` WRITE;
+/*!40000 ALTER TABLE `board` DISABLE KEYS */;
+INSERT INTO `board` VALUES (1,'Inter Board Committee of Chairman (IBCC) Islamabad'),(2,'Federal Board of Intermediate and Secondary Education, Islamabad'),(3,'Board of Intermediate and Secondary Education, Bahawalpur'),(4,'Board of Intermediate and Secondary Education, DG Khan'),(5,'Board of Intermediate and Secondary Education, Faisalabad'),(6,'Board of Intermediate and Secondary Education, Gujranwala'),(7,'Board of Intermediate and Secondary Education, Lahore'),(8,'Board of Intermediate and Secondary Education, Multan'),(9,'Board of Intermediate and Secondary Education, Rawalpindi'),(10,'Board of Intermediate and Secondary Education, Sahiwal'),(11,'Board of Intermediate and Secondary Education, Sargodha'),(12,'Aga Khan Educational Board, Karachi'),(13,'Board of Intermediate Education, Karachi'),(14,'Board of Intermediate and Secondary Education, Hyderabad'),(15,'Board of Intermediate and Secondary Education, Larkana'),(16,'Board of Intermediate and Secondary Education, Sukkur'),(17,'Board of Secondary Education, Karachi'),(18,'Board of Intermediate and Secondary Education, Abbottabad'),(19,'Board of Intermediate and Secondary Education, Bannu'),(20,'Board of Intermediate and Secondary Education, Dera Ismail Khan'),(21,'Board of Intermediate and Secondary Education, Kohat'),(22,'Board of Intermediate and Secondary Education, Malakand'),(23,'Board of Intermediate and Secondary Education, Mardan'),(24,'Board of Intermediate and Secondary Education, Peshawar'),(25,'Board of Intermediate and Secondary Education, Swat'),(26,'Board of Intermediate and Secondary Education, Quetta'),(27,'Board of Intermediate and Secondary Education, Turbat'),(28,'Board of Intermediate and Secondary Education, Zhob'),(29,'Board of Intermediate and Secondary Education, Mirpur'),(30,'IGCSE'),(31,'Cambridge'),(32,'Edexcel'),(33,'International '),(34,'Baccalaureate');
+/*!40000 ALTER TABLE `board` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -120,7 +201,7 @@ CREATE TABLE `college` (
   `id` int NOT NULL AUTO_INCREMENT,
   `college_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +210,7 @@ CREATE TABLE `college` (
 
 LOCK TABLES `college` WRITE;
 /*!40000 ALTER TABLE `college` DISABLE KEYS */;
-INSERT INTO `college` VALUES (1,'Shifa College of Medicine'),(2,'Shifa College of Dentistry'),(3,'Shifa College of Nursing');
+INSERT INTO `college` VALUES (1,'Shifa College of Medicine'),(2,'Shifa College of Dentistry'),(3,'Shifa College of Nursing'),(4,'Park Road Campus');
 /*!40000 ALTER TABLE `college` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,7 +269,7 @@ CREATE TABLE `degree` (
 
 LOCK TABLES `degree` WRITE;
 /*!40000 ALTER TABLE `degree` DISABLE KEYS */;
-INSERT INTO `degree` VALUES (1,'Matric/SSC/Equivalent','Testing Description Matric','',NULL,'2023-09-07 06:53:12',NULL,NULL),(2,'Intermediate/HSSE/Equivalent','Description Intermediate','1',NULL,'2023-09-07 06:53:12',NULL,NULL),(3,'Bachelors','Testing Bachelors','1',NULL,NULL,NULL,NULL),(4,'Masters','Description Masters','',NULL,NULL,NULL,NULL);
+INSERT INTO `degree` VALUES (1,'Matric/O-levels/Equivalent','Testing Description Matric','',NULL,'2023-10-03 08:10:21',NULL,NULL),(2,'Intermediate/A-Levels/Equivalent','Description Intermediate','1',NULL,'2023-10-03 08:10:21',NULL,NULL),(3,'Bachelors','Testing Bachelors','1',NULL,NULL,NULL,NULL),(4,'Masters','Description Masters','',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `degree` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,7 +305,7 @@ CREATE TABLE `document` (
 
 LOCK TABLES `document` WRITE;
 /*!40000 ALTER TABLE `document` DISABLE KEYS */;
-INSERT INTO `document` VALUES (1,16,1,'degrees/SfwUJqZ1wlXOqIvcLlPRMkeixn915gT8vpGb2URl.xlsx','2023-08-23','1','2023-08-23 01:45:30','2023-08-23 01:45:30',NULL,NULL),(2,16,3,'degrees/W60oeDWB8M5VN6zq3NfupmP1Qhct0mQ2H6nzpn1Q.xlsx','2023-08-23','1','2023-08-23 01:45:30','2023-08-23 01:45:30',NULL,NULL),(5,28,1,'degrees/yZkaxQMfQtiJrcUDAAiutjPEqALI5dkOQysTNWxr.txt',NULL,'1','2023-09-07 01:35:12','2023-09-07 01:35:12',NULL,NULL),(6,28,2,'degrees/7h36gonMQhntB7lGvTMhuX3IZsERBo4dIqttqgwB.txt',NULL,'1','2023-09-07 01:35:12','2023-09-07 01:35:12',NULL,NULL),(15,30,1,'degrees/5qB8Zs0GN922sNwtlq1hLbWSa9MVFC66xXZ7epeQ.txt',NULL,'1','2023-09-14 06:35:44','2023-09-14 06:35:44',NULL,NULL),(16,30,2,'degrees/KU4izTohA5NyReyAg0h3SFIYOlZG1ZfZKa4mYLPx.txt',NULL,'1','2023-09-14 06:35:44','2023-09-14 06:35:44',NULL,NULL),(18,28,3,'0',NULL,'1','2023-09-28 03:40:59','2023-09-28 04:16:21',NULL,NULL);
+INSERT INTO `document` VALUES (1,16,1,'degrees/SfwUJqZ1wlXOqIvcLlPRMkeixn915gT8vpGb2URl.xlsx','2023-08-23','1','2023-08-23 01:45:30','2023-08-23 01:45:30',NULL,NULL),(2,16,3,'degrees/W60oeDWB8M5VN6zq3NfupmP1Qhct0mQ2H6nzpn1Q.xlsx','2023-08-23','1','2023-08-23 01:45:30','2023-08-23 01:45:30',NULL,NULL),(5,28,1,'degrees/drWtiIFUo2yqEIOJ0BHFMc3uRfxapD7jbfTdktYC.pdf',NULL,'1','2023-09-07 01:35:12','2023-10-03 02:54:08',NULL,NULL),(6,28,2,'degrees/VolxhZ1E1Ldad7Wudsb7jSOcTN4MABLna7SVYYR3.pdf',NULL,'1','2023-09-07 01:35:12','2023-10-03 02:54:08',NULL,NULL),(15,30,1,'degrees/5qB8Zs0GN922sNwtlq1hLbWSa9MVFC66xXZ7epeQ.txt',NULL,'1','2023-09-14 06:35:44','2023-09-14 06:35:44',NULL,NULL),(16,30,2,'degrees/KU4izTohA5NyReyAg0h3SFIYOlZG1ZfZKa4mYLPx.txt',NULL,'1','2023-09-14 06:35:44','2023-09-14 06:35:44',NULL,NULL),(18,28,3,'0',NULL,'1','2023-09-28 03:40:59','2023-09-28 04:16:21',NULL,NULL);
 /*!40000 ALTER TABLE `document` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -267,7 +348,7 @@ CREATE TABLE `education` (
 
 LOCK TABLES `education` WRITE;
 /*!40000 ALTER TABLE `education` DISABLE KEYS */;
-INSERT INTO `education` VALUES (1,16,1,'test university','1','2023-08-23 01:45:30','2023-08-23 01:45:30',NULL,NULL,2021,1100,564,51.27,'declared',NULL,NULL,NULL),(2,16,3,'test','1','2023-08-23 01:45:30','2023-08-23 06:01:06',NULL,NULL,2021,4,3.4,75,'awaited',NULL,NULL,NULL),(5,28,1,'test university','1','2023-09-07 01:35:12','2023-09-28 05:26:23',NULL,NULL,2011,2011,2011,100,'declared','test university','AUSTRALIA','test university'),(6,28,2,'test university','1','2023-09-07 01:35:12','2023-09-13 06:42:20',NULL,NULL,2011,232,223,96.12,'declared','test universityyyy','Angola','test universityy'),(15,30,1,'test','1','2023-09-14 06:35:44','2023-09-14 06:35:44',NULL,NULL,2011,100,100,100,'declared','test','ANDORRA','test'),(16,30,2,'test','1','2023-09-14 06:35:44','2023-09-14 06:35:44',NULL,NULL,2011,100,100,100,'declared','test',NULL,'test'),(17,28,3,'test','0','2023-09-28 03:19:27','2023-09-28 04:16:21',NULL,NULL,2011,23,23,100,'awaited','test','ALBANIA','23');
+INSERT INTO `education` VALUES (1,16,1,'test university','1','2023-08-23 01:45:30','2023-08-23 01:45:30',NULL,NULL,2021,1100,564,51.27,'declared',NULL,NULL,NULL),(2,16,3,'test','1','2023-08-23 01:45:30','2023-08-23 06:01:06',NULL,NULL,2021,4,3.4,75,'awaited',NULL,NULL,NULL),(5,28,1,'Federal Board of Intermediate and Secondary Education, Islamabad','1','2023-09-07 01:35:12','2023-10-06 09:32:15',NULL,NULL,2011,1100,880,80,'declared','test university','AFGHANISTAN','test university'),(6,28,2,'Board of Intermediate and Secondary Education, Bahawalpur','1','2023-09-07 01:35:12','2023-10-03 04:33:01',NULL,NULL,2011,1100,800,72.73,'declared','test universityyyy','ANDORRA','test universityy'),(15,30,1,'test','1','2023-09-14 06:35:44','2023-09-14 06:35:44',NULL,NULL,2011,100,100,100,'declared','test','ANDORRA','test'),(16,30,2,'test','1','2023-09-14 06:35:44','2023-09-14 06:35:44',NULL,NULL,2011,100,100,100,'declared','test',NULL,'test');
 /*!40000 ALTER TABLE `education` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,7 +387,7 @@ CREATE TABLE `program` (
 
 LOCK TABLES `program` WRITE;
 /*!40000 ALTER TABLE `program` DISABLE KEYS */;
-INSERT INTO `program` VALUES (1,'BS Computer Science','Bachelors','Test desription',2,'0','0000-00-00 00:00:00','2023-09-27 09:53:11',NULL,NULL,50,'dual',0,'0',NULL),(2,'BS Software Engineering ','Bachelors','Test Description',1,'0',NULL,'2023-09-27 09:53:11',NULL,NULL,50,'dual',0,'0',NULL),(3,'BS Data Science ','Bachelors','Test Description',2,'0',NULL,'2023-09-27 09:53:11',NULL,NULL,50,'dual',0,'0',NULL),(4,'BS Artificial Intelligence','Bachelors','Testing Description',2,'0',NULL,'2023-09-27 09:53:11',NULL,NULL,50,'dual',0,'0',NULL),(5,'Master in Computer Science','Masters','Description of MSCS',3,'0',NULL,'2023-09-27 09:53:11',NULL,NULL,50,'dual',0,'0',NULL),(6,'Bachelor of Medicine, Bachelor of Surgery (MBBS Forigen Seat)','Bachelor ','Description of MBBS',2,'1',NULL,'2023-09-28 10:42:40',NULL,NULL,60,'foreign',55,'3','1'),(7,'Bachelor of Science in Nursing (BSN Forigen Seat)','Bachelor ','Description of BSN',2,'0',NULL,'2023-09-28 10:41:41',NULL,NULL,60,'foreign',60,'0','3'),(8,'Bachelor of Science in Nursing (BSN local Seat)','Bachelor ','Description of BSN local',2,'0','2023-09-14 06:05:43','2023-09-28 10:41:41',NULL,NULL,60,'pakistani',60,'0','3'),(9,'Bachelor of Medicine, Bachelor of Surgery (MBBS local Seat)','Bachelor ','Description of MBBS local',2,'1','2023-09-14 06:05:59','2023-09-28 10:42:40',NULL,NULL,60,'pakistani',55,'1','1'),(10,'Bachelor of Dental Surgery (BDS local Seat)','Bachelor ','Description of BDS local',2,'1','2023-09-14 06:05:59','2023-09-28 10:42:40',NULL,NULL,60,'pakistani',50,'2','2'),(11,'Bachelor of Dental Surgery (BDS Forigen Seat)','Bachelor ','Description of BDS',2,'1','2023-09-14 06:05:59','2023-09-28 10:42:40',NULL,NULL,60,'foreign',50,'3','2');
+INSERT INTO `program` VALUES (1,'BS Computer Science','Bachelors','Test desription',2,'0','0000-00-00 00:00:00','2023-10-04 11:15:37',NULL,NULL,50,'dual',0,'0','4'),(2,'BS Software Engineering ','Bachelors','Test Description',1,'0',NULL,'2023-10-04 11:15:37',NULL,NULL,50,'dual',0,'0','4'),(3,'BS Data Science ','Bachelors','Test Description',2,'0',NULL,'2023-10-04 11:15:37',NULL,NULL,50,'dual',0,'0','4'),(4,'BS Artificial Intelligence','Bachelors','Testing Description',2,'0',NULL,'2023-10-04 11:15:37',NULL,NULL,50,'dual',0,'0','4'),(5,'Master in Computer Science','Masters','Description of MSCS',3,'0',NULL,'2023-10-04 11:15:37',NULL,NULL,50,'dual',0,'0','4'),(6,'Bachelor of Medicine, Bachelor of Surgery (MBBS Forigen Seat)','Bachelor ','Description of MBBS',2,'1',NULL,'2023-09-28 10:42:40',NULL,NULL,60,'foreign',55,'3','1'),(7,'Bachelor of Science in Nursing (BSN Forigen Seat)','Bachelor ','Description of BSN',2,'0',NULL,'2023-09-28 10:41:41',NULL,NULL,60,'foreign',60,'0','3'),(8,'Bachelor of Science in Nursing (BSN local Seat)','Bachelor ','Description of BSN local',2,'0','2023-09-14 06:05:43','2023-09-28 10:41:41',NULL,NULL,60,'pakistani',60,'0','3'),(9,'Bachelor of Medicine, Bachelor of Surgery (MBBS local Seat)','Bachelor ','Description of MBBS local',2,'1','2023-09-14 06:05:59','2023-09-28 10:42:40',NULL,NULL,60,'pakistani',55,'1','1'),(10,'Bachelor of Dental Surgery (BDS local Seat)','Bachelor ','Description of BDS local',2,'1','2023-09-14 06:05:59','2023-09-28 10:42:40',NULL,NULL,60,'pakistani',50,'2','2'),(11,'Bachelor of Dental Surgery (BDS Forigen Seat)','Bachelor ','Description of BDS',2,'1','2023-09-14 06:05:59','2023-09-28 10:42:40',NULL,NULL,60,'foreign',50,'3','2');
 /*!40000 ALTER TABLE `program` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -414,7 +495,7 @@ CREATE TABLE `student` (
   `user_id` int DEFAULT NULL,
   `first_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `last_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `middle_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `middle_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
   `date_of_birth` date NOT NULL,
   `gender` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `phone_number` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -458,7 +539,7 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES (16,55,'Muhammadasas','Khan','null','2023-05-02','male','03155038997','/studentsImages/1686553353.jpeg','sd','38201-8723031-7','christianity','asd','sd','sd','sd',NULL,'2023-05-29 01:37:04','2023-06-14 02:48:25',NULL,NULL,NULL,'Abdullahsasa','Muhammad','03155038994','Khan',NULL,NULL,'house 571 street 17 margalla town','03155038994','islamabad','as','44000','as',NULL,NULL),(26,71,'test','test','test','2023-06-13','male','03155038994','/studentsImages/1686825586.jpeg','house 571 street 17 margalla town','38201-8723031-7','islam','islamabad','islamabad','44000','pakistan',NULL,'2023-06-15 05:39:46','2023-06-15 05:39:52',NULL,NULL,NULL,'test','test','test','test',NULL,NULL,'house 571 street 17 margalla town','test','islamabad','islamabad','44000','pakistan',NULL,NULL),(27,72,'zxc','zxc','zxc','2023-06-08','male','03155038994','/studentsImages/1686827373.jpeg','house 571 street 17 margalla town','38201-8723031-7','islam','islamabad','islamabad','44000','Pakistan',NULL,'2023-06-15 06:09:33','2023-06-15 06:09:41',NULL,NULL,NULL,'zxc','zx','cccc','zx',NULL,NULL,'house 571 street 17 margalla town','cccc','islamabad','islamabad','44000','Pakistan',NULL,NULL),(28,73,'Muhammad','Ali','null','0099-02-10','male','939233400484411','\\studentsImages/1692788872.png','test address','5656565656565','islam','kabul','Kabul','44000','Afghanistan',NULL,'2023-08-23 06:07:52','2023-09-28 05:47:26',NULL,NULL,NULL,'Amtul Aziz','Sarfraz Ahmad','9803366598696','Retired',NULL,NULL,'test address','0555555555','kabul','Kabul','44000','Afghanistan','test@gmail.com','/studentsImagesCnic/1693978078.jpg'),(30,75,'Ali','test','null','2023-09-13','male','03340048441','/studentsImages/1694688494.jpg','test','11111-1111111-1','islam','Islamabad','Annaba Province','1213','ALGERIA',NULL,'2023-09-14 05:48:14','2023-09-14 05:51:03',NULL,NULL,NULL,'test','tet','03340048441','test',NULL,NULL,'test','12313545','Islamabad','Annaba Province','1213','ALGERIA','test@gmail.com','/studentsImagesCnic/1694688494.jpg');
+INSERT INTO `student` VALUES (16,55,'Muhammadasas','Khan','null','2023-05-02','male','03155038997','/studentsImages/1686553353.jpeg','sd','38201-8723031-7','christianity','asd','sd','sd','sd',NULL,'2023-05-29 01:37:04','2023-06-14 02:48:25',NULL,NULL,NULL,'Abdullahsasa','Muhammad','03155038994','Khan',NULL,NULL,'house 571 street 17 margalla town','03155038994','islamabad','as','44000','as',NULL,NULL),(26,71,'test','test','test','2023-06-13','male','03155038994','/studentsImages/1686825586.jpeg','house 571 street 17 margalla town','38201-8723031-7','islam','islamabad','islamabad','44000','pakistan',NULL,'2023-06-15 05:39:46','2023-06-15 05:39:52',NULL,NULL,NULL,'test','test','test','test',NULL,NULL,'house 571 street 17 margalla town','test','islamabad','islamabad','44000','pakistan',NULL,NULL),(27,72,'zxc','zxc','zxc','2023-06-08','male','03155038994','/studentsImages/1686827373.jpeg','house 571 street 17 margalla town','38201-8723031-7','islam','islamabad','islamabad','44000','Pakistan',NULL,'2023-06-15 06:09:33','2023-06-15 06:09:41',NULL,NULL,NULL,'zxc','zx','cccc','zx',NULL,NULL,'house 571 street 17 margalla town','cccc','islamabad','islamabad','44000','Pakistan',NULL,NULL),(28,73,'Muhammad','Ali','null','0099-02-10','male','939233400484411','/studentsImages/1696315704.jpg','test address','34104-8035018-1','islam','kabul','Kabul','44000','Afghanistan',NULL,'2023-08-23 06:07:52','2023-10-03 01:50:06',NULL,NULL,NULL,'test','Sarfraz Ahmad','9803366598696','Retired',NULL,NULL,'test address','0555555555','kabul','Kabul','44000','Afghanistan','test@gmail.com','/studentsImagesCnic/1696315806.jpg'),(30,75,'Ali','test','null','2023-09-13','male','03340048441','/studentsImages/1694688494.jpg','test','11111-1111111-1','islam','Islamabad','Annaba Province','1213','ALGERIA',NULL,'2023-09-14 05:48:14','2023-09-14 05:51:03',NULL,NULL,NULL,'test','tet','03340048441','test',NULL,NULL,'test','12313545','Islamabad','Annaba Province','1213','ALGERIA','test@gmail.com','/studentsImagesCnic/1694688494.jpg');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -509,7 +590,7 @@ CREATE TABLE `test_score` (
   `updated_by` int DEFAULT NULL,
   `test_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `skip_test` binary(1) DEFAULT NULL,
-  `attachment_url` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `attachment_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `test_score_total` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0',
   `percentage` double DEFAULT '0',
   `bio_total` int DEFAULT '0',
@@ -523,7 +604,7 @@ CREATE TABLE `test_score` (
   PRIMARY KEY (`test_score_id`),
   KEY `student_id` (`student_id`),
   CONSTRAINT `test_score_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -532,7 +613,7 @@ CREATE TABLE `test_score` (
 
 LOCK TABLES `test_score` WRITE;
 /*!40000 ALTER TABLE `test_score` DISABLE KEYS */;
-INSERT INTO `test_score` VALUES (15,28,NULL,80,'2023','1','2023-09-25 04:17:15','2023-09-28 05:06:04',NULL,NULL,'mdcat',_binary '1','/attachment_directory/6515500c4d90d_Voucher-1.pdf','100',80,NULL,NULL,NULL,NULL,NULL,0,'islamabad','1231');
+INSERT INTO `test_score` VALUES (19,28,NULL,100,'2023','1','2023-10-02 07:25:54','2023-10-04 00:50:40',NULL,NULL,'mdcat',_binary '1',NULL,'100',100,NULL,NULL,NULL,NULL,NULL,0,'islamabad','12345');
 /*!40000 ALTER TABLE `test_score` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -557,7 +638,7 @@ CREATE TABLE `user` (
   `nationality` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -566,7 +647,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (55,'mak@gmail.com','$2y$10$qWuBdks3iH8GXtaZcP7/neU3UecSvjuzKndTetXkbqXpMCyYk.ByW','Student','Active','2023-04-26 01:56:29','2023-04-26 01:56:29','mak@gmail.com',NULL,NULL,NULL),(71,'test@gmail.com','$2y$10$Ox5wYmdPLbbJwfzP/oeynOwTPcjzh/ExzbdWNKMPY7AjJVa8AWAei','Student','Active','2023-06-15 05:36:22','2023-06-15 05:36:22','test@gmail.com',NULL,NULL,NULL),(72,'1122@gmail.com','$2y$10$VWfnHF5aiOOJ8zkkx5YYmuqirgn.nyWW8rrNcQASc6gqnnRGCAUQK','Student','Active','2023-06-15 06:07:42','2023-06-15 06:07:42','1122@gmail.com',NULL,NULL,NULL),(73,'ali.mis@stmu.edu.pk','$2y$10$Pcmw4JYEXzo1psV3w7..q.NwArMk1PVX9Hu0.xDOB9hyrOl5XfgSe','Student','Active','2023-08-23 06:01:46','2023-09-14 06:25:18','ali.mis@stmu.edu.pk',NULL,'34104-8035018-1','dual'),(75,'mali2927@gmail.com','$2y$10$1uZtYNaLn1ielzi8UAmtFeo1k0PKF9s5Kvn.wDcZiD8/q1MlYbqQm','Student','Active','2023-09-14 05:46:51','2023-09-14 05:46:51','mali2927@gmail.com',NULL,'12345-1545402-1','pakistani');
+INSERT INTO `user` VALUES (55,'mak@gmail.com','$2y$10$qWuBdks3iH8GXtaZcP7/neU3UecSvjuzKndTetXkbqXpMCyYk.ByW','Student','Active','2023-04-26 01:56:29','2023-04-26 01:56:29','mak@gmail.com',NULL,NULL,NULL),(71,'test@gmail.com','$2y$10$Ox5wYmdPLbbJwfzP/oeynOwTPcjzh/ExzbdWNKMPY7AjJVa8AWAei','Student','Active','2023-06-15 05:36:22','2023-06-15 05:36:22','test@gmail.com',NULL,NULL,NULL),(72,'1122@gmail.com','$2y$10$VWfnHF5aiOOJ8zkkx5YYmuqirgn.nyWW8rrNcQASc6gqnnRGCAUQK','Student','Active','2023-06-15 06:07:42','2023-06-15 06:07:42','1122@gmail.com',NULL,NULL,NULL),(73,'ali.mis@stmu.edu.pk','$2y$10$Pcmw4JYEXzo1psV3w7..q.NwArMk1PVX9Hu0.xDOB9hyrOl5XfgSe','Student','Active','2023-08-23 06:01:46','2023-10-04 12:50:56','ali.mis@stmu.edu.pk',NULL,'34104-8035018-1','dual'),(75,'mali2927@gmail.com','$2y$10$1uZtYNaLn1ielzi8UAmtFeo1k0PKF9s5Kvn.wDcZiD8/q1MlYbqQm','Student','Active','2023-09-14 05:46:51','2023-09-14 05:46:51','mali2927@gmail.com',NULL,'12345-1545402-1','pakistani'),(77,'admin@stmu.edu.pk','$2y$10$Pcmw4JYEXzo1psV3w7..q.NwArMk1PVX9Hu0.xDOB9hyrOl5XfgSe','Admin','Active','2023-10-04 11:22:05','2023-10-04 12:49:35',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -583,7 +664,7 @@ CREATE TABLE `voucher` (
   `voucher_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
   `voucher_file_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `upload_date` date NOT NULL,
-  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
+  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `created_by` int DEFAULT NULL,
@@ -596,7 +677,7 @@ CREATE TABLE `voucher` (
   PRIMARY KEY (`voucher_id`),
   KEY `student_id` (`student_id`),
   CONSTRAINT `voucher_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -605,7 +686,7 @@ CREATE TABLE `voucher` (
 
 LOCK TABLES `voucher` WRITE;
 /*!40000 ALTER TABLE `voucher` DISABLE KEYS */;
-INSERT INTO `voucher` VALUES (25,28,'0','65151e4397222.pdf','2023-09-05','0','2023-09-28 01:30:25','2023-09-28 01:33:39',NULL,NULL,'ttt','ttt','ttt','ttt','9');
+INSERT INTO `voucher` VALUES (25,28,'0','65151e4397222.pdf','2023-09-05','Pending','2023-09-28 01:30:25','2023-10-04 08:25:30',NULL,NULL,'ttt','ttt','ttt','ttt','9'),(26,28,'0','651a87a5b2cc9.pdf','2023-10-02','Pending','2023-10-02 04:04:32','2023-10-04 08:26:33',NULL,NULL,'ggg','ggg','ggg','ggg','6');
 /*!40000 ALTER TABLE `voucher` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -618,4 +699,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-28 15:56:13
+-- Dump completed on 2023-10-06 21:05:34

@@ -40,8 +40,11 @@ const ApplicationFeePending = () => {
     axios
       .get(`${BASE_URL}download-receipt/${fileName}`, { responseType: "blob" }) // Specify the response type as 'blob' to receive binary data
       .then((response) => {
+        // Determine the content type from the response headers
+        const contentType = response.headers["content-type"];
+
         // Create a Blob object from the response data
-        const blob = new Blob([response.data], { type: "application/pdf" });
+        const blob = new Blob([response.data], { type: contentType });
 
         // Create a URL for the Blob
         const blobUrl = window.URL.createObjectURL(blob);
