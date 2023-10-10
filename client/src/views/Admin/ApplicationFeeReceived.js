@@ -3,6 +3,15 @@ import { FormGroup, Input, Label, Button } from "reactstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import {
+  Mail,
+  Home,
+  Package,
+  cros,
+  Check,
+  XCircle,
+  CheckCircle,
+} from "react-feather";
 
 const ApplicationFeeReceived = () => {
   const [responseData, setResponseData] = useState(null);
@@ -114,6 +123,33 @@ const ApplicationFeeReceived = () => {
         >
           Download Voucher
         </Button>
+      ),
+    },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <>
+          <Button
+            color="success"
+            onClick={() => handlePaidReceiptClick(row.file_name)}
+            style={{
+              marginRight: "10px",
+              padding: "5px 10px",
+              fontSize: "14px",
+            }}
+            title="Accept Application"
+          >
+            <CheckCircle />
+          </Button>
+          <Button
+            color="danger"
+            onClick={() => handlePaidReceiptClick(row.file_name)}
+            style={{ padding: "5px 10px", fontSize: "14px" }}
+            title="Reject Application"
+          >
+            <XCircle />
+          </Button>
+        </>
       ),
     },
   ];
