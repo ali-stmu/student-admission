@@ -17,7 +17,6 @@ const ApplicationFeeReceived = () => {
   const [responseData, setResponseData] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState("");
   const [applicants, setApplicants] = useState([]);
-  const [voucherAttachment, setVoucherAttachment] = useState(null);
 
   useEffect(() => {
     const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
@@ -34,7 +33,6 @@ const ApplicationFeeReceived = () => {
         });
     }
   }, []);
-
   const handlePaidReceiptClick = (fileName) => {
     // Make an API call with the fileName
     axios
@@ -70,7 +68,15 @@ const ApplicationFeeReceived = () => {
         console.error(error);
       });
   };
-
+  const handleVerifyApplicationClick = (studentId, programId) => {
+    console.log(studentId);
+    console.log(programId);
+  };
+  const handleRejectApplicationClick = (studentId, programId) => {
+    console.log(studentId);
+    console.log(programId);
+  };
+  console.log(applicants);
   const handleProgramChange = (event) => {
     const programId = event.target.value;
     setSelectedProgram(programId);
@@ -131,7 +137,12 @@ const ApplicationFeeReceived = () => {
         <>
           <Button
             color="success"
-            onClick={() => handlePaidReceiptClick(row.file_name)}
+            onClick={() =>
+              handleVerifyApplicationClick(
+                row.student_information.student_id,
+                selectedProgram
+              )
+            }
             style={{
               marginRight: "10px",
               padding: "5px 10px",
@@ -143,7 +154,12 @@ const ApplicationFeeReceived = () => {
           </Button>
           <Button
             color="danger"
-            onClick={() => handlePaidReceiptClick(row.file_name)}
+            onClick={() =>
+              handleRejectApplicationClick(
+                row.student_information.student_id,
+                selectedProgram
+              )
+            }
             style={{ padding: "5px 10px", fontSize: "14px" }}
             title="Reject Application"
           >
