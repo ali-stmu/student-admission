@@ -78,6 +78,8 @@ Route::get('/feeapplicationreceived/{user_id}', [AdminApplicationController::cla
 Route::get('/getfeepaidapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationReceived']);
 
 Route::get('/getfeependingapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationPending']);
+Route::post('/verify-application', [AdminApplicationController::class, 'verifyApplication']);
+
 
 
 Route::get('/download-receipt/{filename}', [AdminApplicationController::class, 'getPdf']);

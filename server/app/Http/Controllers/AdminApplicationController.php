@@ -5,12 +5,13 @@ use App\Models\Admin;
 use App\Models\Voucher;
 use App\Models\Application;
 use App\Models\student;
+use App\Models\User;
 use App\Models\education;
 use App\Models\TestScore;
 use App\Models\Program; // Import the Program model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Mail;
 
 class AdminApplicationController extends Controller
 {
@@ -100,9 +101,6 @@ return response()->json(['applicantsData' => $applicantsData]);
 
 
 //pending wala
-
-
-
 public function ApplicantsfeeApplicationPending(Request $request, $program_id)
 {
     log::debug($program_id);
@@ -140,6 +138,49 @@ foreach ($vouchers as $voucher) {
 
 
 return response()->json(['applicantsData' => $applicantsData]);
+}
+public function verifyApplication(Request $request)
+{
+    $studentId = $request->input('studentId');
+    $programId = $request->input('programId');
+    $userId = 0;
+    $email = "";
+    $programName = "";
+
+
+    // Find the voucher to verify
+    $student = Student::where('student_id', $studentId)->first();
+    if ($student) {
+        $userId = $student->user_id;
+        $user = User::where('user_id', $userId)->first();
+        $email = $user->email;
+        log::debug($email);
+    }
+    $program = Program::where('program_id', $programId)
+        ->first();
+    if($program){
+        $programName = $program->program_name;
+    }
+
+    $voucher = Voucher::where('program_id', $programId)
+        ->where('student_id', $studentId)
+        ->first();
+
+    if (!$voucher) {
+        return response()->json(['error' => 'Voucher not found'], 404);
+    }
+
+    // Update the voucher status to "verified"
+    $voucher->status = 'Verified';
+    $voucher->save();
+
+    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been verified Successfully";
+    Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
+        $message->to($email);
+        $message->subject('Verified Voucher');
+    });
+
+    return response()->json(['message' => 'Voucher verified successfully'], 200);
 }
 
 public function getPdf($filename)

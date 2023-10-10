@@ -69,9 +69,26 @@ const ApplicationFeeReceived = () => {
       });
   };
   const handleVerifyApplicationClick = (studentId, programId) => {
-    console.log(studentId);
-    console.log(programId);
+    // Define the data you want to send in the request body
+    const requestData = {
+      studentId: studentId,
+      programId: programId,
+    };
+
+    // Make a POST request to your API endpoint
+    axios
+      .post(`${BASE_URL}verify-application`, requestData)
+      .then((response) => {
+        // Handle the response from the API if needed
+        console.log("Verification API Response:", response.data);
+        // You can perform further actions here based on the response
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // Handle any errors that occur during the API request
+      });
   };
+
   const handleRejectApplicationClick = (studentId, programId) => {
     console.log(studentId);
     console.log(programId);
