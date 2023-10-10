@@ -22,8 +22,13 @@ class AdminApplicationController extends Controller
 
             if ($admin) {
                 // Retrieve all programs where admin.college_id matches program.college_id
-                $programs = Program::where('college_id', $admin->college_id)->get();
-
+                if ($admin->college_id === 0) {
+                    // If college_id is 0, gather all programs.
+                    $programs = Program::all();
+                } else {
+                    // Retrieve all programs where admin.college_id matches program.college_id.
+                    $programs = Program::where('college_id', $admin->college_id)->get();
+                }
                 if ($programs->isEmpty()) {
                     return response()->json(['message' => 'No programs found for this college'], 404);
                 }
