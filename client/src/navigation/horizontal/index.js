@@ -1,4 +1,4 @@
-import { Mail, Home, Package } from "react-feather";
+import { Mail, Home, Package, cros, Check, XSquare } from "react-feather";
 
 export default [
   {
@@ -19,5 +19,19 @@ export default [
     icon: <Package size={20} />,
 
     navLink: "/appfeepending",
+  },
+  {
+    id: "appfeeverified",
+    title: "Application Fee Verified",
+    icon: <Check size={20} />,
+
+    navLink: "/appfeeverified",
+  },
+  {
+    id: "appfeerejected",
+    title: "Application Fee Rejected",
+    icon: <XSquare size={20} />,
+
+    navLink: "/appfeerejected",
   },
 ];
