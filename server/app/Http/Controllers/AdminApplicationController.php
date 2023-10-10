@@ -63,8 +63,9 @@ $voucherPath = storage_path('app/voucher_files/');
 
 foreach ($vouchers as $voucher) {
     $studentId = $voucher->student_id;
+    $programId = $voucher->program_id;
 
-    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number')
+    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
         ->first();
 
@@ -86,6 +87,8 @@ foreach ($vouchers as $voucher) {
         'test_score_percentage' => $testScorePercentage,
         'voucher_full_path' => $voucherFullPath, // Include the full voucher path
         'file_name' => $voucher->voucher_file_name, // Include the full voucher path
+        'program_id' => $voucher->program_id, // Include the full voucher path
+
 
     ];
     log::debug($applicantsData);
