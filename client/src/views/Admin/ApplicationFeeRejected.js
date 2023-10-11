@@ -84,6 +84,7 @@ const ApplicationFeeRejected = () => {
       </FormGroup>
 
       <DataTable
+        title="Fee Rejected Applicants"
         columns={[
           {
             name: "Sr#",
@@ -121,6 +122,11 @@ const ApplicationFeeRejected = () => {
             sortable: true,
           },
           {
+            name: "Voucher ID",
+            selector: "voucherId",
+            sortable: true,
+          },
+          {
             name: "Remarks",
             selector: "remarks",
             sortable: true,
@@ -135,6 +141,7 @@ const ApplicationFeeRejected = () => {
           test_percentage: `${applicant.test_score_percentage.percentage}%`,
           remarks: `${applicant.remarks}`,
           date: `${applicant.date}`,
+          voucherId: `${applicant.voucherId}`,
         }))}
         pagination
         responsive

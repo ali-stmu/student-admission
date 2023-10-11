@@ -84,6 +84,7 @@ const ApplicationFeePending = () => {
       </FormGroup>
 
       <DataTable
+        title="Fee Pending Applicants"
         columns={[
           {
             name: "Sr#",

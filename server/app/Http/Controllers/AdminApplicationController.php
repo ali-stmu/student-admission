@@ -177,6 +177,7 @@ $applicantsData = [];
 foreach ($vouchers as $voucher) {
     $studentId = $voucher->student_id;
     $programId = $voucher->program_id;
+    $voucherID = $this->getVoucherId($studentId,$program_id);
 
     $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
@@ -198,6 +199,7 @@ foreach ($vouchers as $voucher) {
         'intermediate_percentage' => $intermediatePercentage,
         'test_score_percentage' => $testScorePercentage,
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
+        'voucherId' => $voucherID,
 
     ];
     log::debug($applicantsData);
@@ -219,6 +221,8 @@ foreach ($vouchers as $voucher) {
     $studentId = $voucher->student_id;
     $programId = $voucher->program_id;
     $remarks = $voucher->remarks;
+    $voucherID = $this->getVoucherId($studentId,$program_id);
+
 
 
     $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
@@ -242,6 +246,8 @@ foreach ($vouchers as $voucher) {
         'test_score_percentage' => $testScorePercentage,
         'remarks' => $remarks,
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
+        'voucherId' => $voucherID,
+
 
     ];
     log::debug($applicantsData);

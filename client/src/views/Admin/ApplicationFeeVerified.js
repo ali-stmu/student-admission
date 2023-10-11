@@ -84,6 +84,7 @@ const ApplicationFeeVerified = () => {
       </FormGroup>
 
       <DataTable
+        title="Fee Verified Applicants"
         columns={[
           {
             name: "Sr#",
@@ -120,6 +121,11 @@ const ApplicationFeeVerified = () => {
             selector: "date",
             sortable: true,
           },
+          {
+            name: "Voucher ID",
+            selector: "voucherId",
+            sortable: true,
+          },
         ]}
         data={filteredApplicants.map((applicant, index) => ({
           sr: index + 1,
@@ -129,6 +135,7 @@ const ApplicationFeeVerified = () => {
           intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
           test_percentage: `${applicant.test_score_percentage.percentage}%`,
           date: `${applicant.date}`,
+          voucherId: `${applicant.voucherId}`,
         }))}
         pagination
         responsive
