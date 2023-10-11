@@ -61,7 +61,7 @@ class AdminApplicationController extends Controller
     }
     public function ApplicantsfeeApplicationReceived(Request $request, $program_id)
 {
-    $vouchers = Voucher::where('program_id', $program_id)->get();
+    $vouchers = Voucher::where('program_id', $program_id)->where('status', "Pending")->get();
 
 $applicantsData = [];
 $voucherPath = storage_path('app/voucher_files/');
