@@ -229,6 +229,8 @@ public function rejectApplication(Request $request)
 {
     $studentId = $request->input('studentId');
     $programId = $request->input('programId');
+    $rejectRemarks = $request->input('rejectRemarks');
+    log::Debug($rejectRemarks);
     $userId = 0;
     $email = "";
     $programName = "";
@@ -258,9 +260,10 @@ public function rejectApplication(Request $request)
 
     // Update the voucher status to "verified"
     $voucher->status = 'Rejected';
+    $voucher->remarks = $rejectRemarks;
     $voucher->save();
 
-    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been Rejected";
+    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been Rejected due to" . " " . $rejectRemarks;
     Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
         $message->to($email);
         $message->subject('Rejected Voucher');
