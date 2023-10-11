@@ -366,7 +366,8 @@ const ApplicationFeeReceived = () => {
                           .includes(searchText) ||
                         item.student_information.phone_number.includes(
                           searchText
-                        )
+                        ) ||
+                        item.voucherId.includes(searchText)
                     )
                   );
                 }
