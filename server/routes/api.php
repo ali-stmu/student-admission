@@ -78,6 +78,8 @@ Route::get('/feeapplicationreceived/{user_id}', [AdminApplicationController::cla
 Route::get('/getfeepaidapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationReceived']);
 
 Route::get('/getfeependingapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationPending']);
+Route::get('/getfeeverifiedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationVerified']);
+
 Route::post('/verify-application', [AdminApplicationController::class, 'verifyApplication']);
 
 

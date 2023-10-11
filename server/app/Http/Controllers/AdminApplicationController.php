@@ -100,6 +100,45 @@ return response()->json(['applicantsData' => $applicantsData]);
 }
 
 
+
+public function ApplicantsfeeApplicationVerified(Request $request, $program_id)
+{
+    $vouchers = Voucher::where('program_id', $program_id)->where('status', "Verified")->get();
+    log::debug($vouchers);
+
+$applicantsData = [];
+
+foreach ($vouchers as $voucher) {
+    $studentId = $voucher->student_id;
+    $programId = $voucher->program_id;
+
+    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+        ->where('student_id', $studentId)
+        ->first();
+
+    $intermediatePercentage = Education::select('percentage_criteria')
+        ->where('student_id', $studentId)
+        ->where('degree_id', 2)
+        ->first();
+
+    $testScorePercentage = TestScore::select('percentage')
+        ->where('student_id', $studentId)
+        ->first();
+
+    // Concatenate the voucher file name with the voucher path
+
+    $applicantsData[] = [
+        'student_information' => $studentInformation,
+        'intermediate_percentage' => $intermediatePercentage,
+        'test_score_percentage' => $testScorePercentage,
+    ];
+    log::debug($applicantsData);
+}
+
+
+return response()->json(['applicantsData' => $applicantsData]);
+}
+
 //pending wala
 public function ApplicantsfeeApplicationPending(Request $request, $program_id)
 {
@@ -139,6 +178,9 @@ foreach ($vouchers as $voucher) {
 
 return response()->json(['applicantsData' => $applicantsData]);
 }
+
+
+
 public function verifyApplication(Request $request)
 {
     $studentId = $request->input('studentId');
