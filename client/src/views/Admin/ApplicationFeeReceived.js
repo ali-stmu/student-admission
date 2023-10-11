@@ -12,11 +12,18 @@ import {
   XCircle,
   CheckCircle,
 } from "react-feather";
+//import { css } from "react-emotion";
+import { ClipLoader } from "react-spinners";
+import "../Style/feereceived.css";
 
 const ApplicationFeeReceived = () => {
   const [responseData, setResponseData] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState("");
   const [applicants, setApplicants] = useState([]);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [modalContent, setModalContent] = useState(""); // Content to display in the modal
 
   useEffect(() => {
     const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
@@ -33,6 +40,7 @@ const ApplicationFeeReceived = () => {
         });
     }
   }, []);
+
   const handlePaidReceiptClick = (fileName) => {
     // Make an API call with the fileName
     axios
@@ -69,23 +77,40 @@ const ApplicationFeeReceived = () => {
       });
   };
   const handleVerifyApplicationClick = (studentId, programId) => {
-    // Define the data you want to send in the request body
+    // Set loading to true to show the loading spinner
+    setLoading(true);
+
     const requestData = {
       studentId: studentId,
       programId: programId,
     };
 
-    // Make a POST request to your API endpoint
     axios
       .post(`${BASE_URL}verify-application`, requestData)
       .then((response) => {
-        // Handle the response from the API if needed
-        console.log("Verification API Response:", response.data);
+        // Set the success message in the state
+        setSuccessMessage(response.data.message);
+        setLoading(false);
+        // Clear any previous error message
+        setErrorMessage(null);
         // You can perform further actions here based on the response
+        console.log("Verification API Response:", response.data);
+        // Clear the success message and loading state after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+          setLoading(false);
+        }, 5000);
       })
       .catch((error) => {
+        // Set the error message in the state
+        setErrorMessage("An error occurred while verifying the application.");
+        // Clear any previous success message
+        setSuccessMessage(null);
         console.error("Error:", error);
-        // Handle any errors that occur during the API request
+        // Clear the error message and loading state after 5 seconds
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
       });
   };
 
@@ -166,6 +191,7 @@ const ApplicationFeeReceived = () => {
               fontSize: "14px",
             }}
             title="Accept Application"
+            disabled={loading === true}
           >
             <CheckCircle />
           </Button>
@@ -179,6 +205,7 @@ const ApplicationFeeReceived = () => {
             }
             style={{ padding: "5px 10px", fontSize: "14px" }}
             title="Reject Application"
+            disabled={loading === true}
           >
             <XCircle />
           </Button>
@@ -206,7 +233,6 @@ const ApplicationFeeReceived = () => {
             ))}
         </Input>
       </FormGroup>
-
       <DataTable
         title="Fee Paid Applicants"
         className="react-dataTable"
@@ -215,8 +241,28 @@ const ApplicationFeeReceived = () => {
         pagination
         paginationPerPage={10}
         paginationRowsPerPageOptions={[10, 25, 50, 100]}
-        // Number of rows per page
       />
+      <div className="centered-container">
+        {/* Your existing code here */}
+
+        {/* Display the loading spinner when loading is true */}
+        {loading && (
+          <div className="loading-spinner">
+            <ClipLoader
+              //css={override}
+              size={150} // Customize the size as needed
+              color={"#123abc"} // Customize the color
+              loading={loading}
+            />
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="success-message">{successMessage}</div>
+        )}
+
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
+      </div>
     </div>
   );
 };
