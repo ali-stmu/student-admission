@@ -272,15 +272,6 @@ const ApplicationFeeReceived = () => {
             ))}
         </Input>
       </FormGroup>
-      <DataTable
-        title="Fee Paid Applicants"
-        className="react-dataTable"
-        columns={columns}
-        data={applicants}
-        pagination
-        paginationPerPage={10}
-        paginationRowsPerPageOptions={[10, 25, 50, 100]}
-      />
       <div className="centered-container">
         {/* Your existing code here */}
 
@@ -297,11 +288,22 @@ const ApplicationFeeReceived = () => {
         )}
 
         {successMessage && (
-          <div className="success-message">{successMessage}</div>
+          <b>
+            <h4 className="success-message">{successMessage}</h4>
+          </b>
         )}
 
-        {errorMessage && <div className="error-message">{errorMessage}</div>}
+        {errorMessage && <h5 className="error-message">{errorMessage}</h5>}
       </div>
+      <DataTable
+        title="Fee Paid Applicants"
+        className="react-dataTable"
+        columns={columns}
+        data={applicants}
+        pagination
+        paginationPerPage={10}
+        paginationRowsPerPageOptions={[10, 25, 50, 100]}
+      />
     </div>
   );
 };
