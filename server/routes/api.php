@@ -79,6 +79,8 @@ Route::get('/getfeepaidapplicants/{program_id}', [AdminApplicationController::cl
 
 Route::get('/getfeependingapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationPending']);
 Route::get('/getfeeverifiedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationVerified']);
+Route::get('/getfeerejectedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationRejected']);
+
 
 Route::post('/verify-application', [AdminApplicationController::class, 'verifyApplication']);
 Route::post('/reject-application', [AdminApplicationController::class, 'rejectApplication']);
