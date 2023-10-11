@@ -217,6 +217,11 @@ const ApplicationFeeReceived = () => {
       sortable: true,
     },
     {
+      name: "Voucher ID",
+      selector: "voucherId",
+      sortable: true,
+    },
+    {
       name: "Paid Receipt",
       cell: (row) => (
         <Button

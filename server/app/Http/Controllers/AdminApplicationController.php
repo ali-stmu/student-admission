@@ -8,6 +8,10 @@ use App\Models\student;
 use App\Models\User;
 use App\Models\education;
 use App\Models\TestScore;
+use App\Models\Session;
+use App\Models\Term;
+use App\Models\Bank;
+use App\Models\College;
 use App\Models\Program; // Import the Program model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -65,6 +69,7 @@ $voucherPath = storage_path('app/voucher_files/');
 foreach ($vouchers as $voucher) {
     $studentId = $voucher->student_id;
     $programId = $voucher->program_id;
+    $voucherID = $this->getVoucherId($studentId,$program_id);
 
     $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
@@ -90,7 +95,7 @@ foreach ($vouchers as $voucher) {
         'file_name' => $voucher->voucher_file_name, // Include the full voucher path
         'program_id' => $voucher->program_id, // Include the full voucher path
         'date' => date('d/m/Y', strtotime($voucher->created_at)),
-
+        'voucherId' => $voucherID,
     ];
     log::debug($applicantsData);
 }
@@ -98,6 +103,67 @@ foreach ($vouchers as $voucher) {
 
 return response()->json(['applicantsData' => $applicantsData]);
 }
+
+
+// Voucher ID
+
+public function getVoucherId($studentId,$programId)
+{
+    try {
+        $bankIds = "";
+        $program_ID = "";
+        $session_id = "";
+        $term_id = "";
+        $application = Application::where('student_id', $studentId)->first();
+
+        if ($application) {
+            $programIds = [
+                $application->program_id_1,
+                $application->program_id_2,
+                $application->program_id_3,
+                $application->program_id_4,
+            ];
+
+                if ($programIds) {
+                    $program = Program::where('program_id', $programId)
+                        ->where('status', '1')
+                        ->first();
+                    if ($program) {
+                        $bankIds = $program->bank_id;                        
+                        
+                        $collegeID = $program->college_id;
+                        if($collegeID){
+                            $college = College::where('id',$collegeID)->first();
+                            if($college){
+                                $collegeName = $college->college_name;
+                            }
+                        }
+                        $program_ID = $program->program_id;
+                        $session = Session::where('program_id', $programId)
+                            ->where('status', '1')
+                            ->first();
+                        if ($session) {
+                            $session_id = $session->session_id;
+                            $term_id = $session->term_id;
+                        }
+                    }
+                }
+            
+        }
+
+        $voucherID = $term_id . $session_id . $bankIds . $studentId . $program_ID;
+
+        return $voucherID;
+    } catch (\Exception $e) {
+        // Handle any exceptions here
+        Log::error('An error occurred: ' . $e->getMessage());
+        return response()->json(['error' => 'An error occurred'], 500);
+    }
+}
+
+
+
+
 
 
 
