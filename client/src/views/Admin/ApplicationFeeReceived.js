@@ -24,8 +24,6 @@ const ApplicationFeeReceived = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [originalApplicants, setOriginalApplicants] = useState([]);
-  const [showRejectDialog, setShowRejectDialog] = useState(false);
-  const [searchText, setSearchText] = useState("");
   const [filteredApplicants, setFilteredApplicants] = useState([]);
 
   useEffect(() => {
