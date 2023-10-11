@@ -212,13 +212,23 @@ const ApplicationFeeReceived = () => {
       sortable: true,
     },
     {
+      name: "Date",
+      selector: "date",
+      sortable: true,
+    },
+    {
       name: "Paid Receipt",
       cell: (row) => (
         <Button
           color="primary"
           onClick={() => handlePaidReceiptClick(row.file_name)}
+          style={{
+            marginRight: "10px",
+            padding: "5px 10px",
+            fontSize: "14px",
+          }}
         >
-          Download Voucher
+          Download
         </Button>
       ),
     },

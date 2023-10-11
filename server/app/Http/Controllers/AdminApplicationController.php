@@ -89,7 +89,7 @@ foreach ($vouchers as $voucher) {
         'voucher_full_path' => $voucherFullPath, // Include the full voucher path
         'file_name' => $voucher->voucher_file_name, // Include the full voucher path
         'program_id' => $voucher->program_id, // Include the full voucher path
-
+        'date' => date('d/m/Y', strtotime($voucher->created_at)),
 
     ];
     log::debug($applicantsData);
@@ -131,6 +131,8 @@ foreach ($vouchers as $voucher) {
         'student_information' => $studentInformation,
         'intermediate_percentage' => $intermediatePercentage,
         'test_score_percentage' => $testScorePercentage,
+        'date' => date('d/m/Y', strtotime($voucher->updated_at)),
+
     ];
     log::debug($applicantsData);
 }
@@ -173,6 +175,8 @@ foreach ($vouchers as $voucher) {
         'intermediate_percentage' => $intermediatePercentage,
         'test_score_percentage' => $testScorePercentage,
         'remarks' => $remarks,
+        'date' => date('d/m/Y', strtotime($voucher->updated_at)),
+
     ];
     log::debug($applicantsData);
 }

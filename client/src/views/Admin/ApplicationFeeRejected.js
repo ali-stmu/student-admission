@@ -116,6 +116,11 @@ const ApplicationFeeRejected = () => {
             sortable: true,
           },
           {
+            name: "Date",
+            selector: "date",
+            sortable: true,
+          },
+          {
             name: "Remarks",
             selector: "remarks",
             sortable: true,
@@ -129,6 +134,7 @@ const ApplicationFeeRejected = () => {
           intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
           test_percentage: `${applicant.test_score_percentage.percentage}%`,
           remarks: `${applicant.remarks}`,
+          date: `${applicant.date}`,
         }))}
         pagination
         responsive

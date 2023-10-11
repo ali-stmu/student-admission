@@ -115,6 +115,11 @@ const ApplicationFeeVerified = () => {
             selector: "test_percentage",
             sortable: true,
           },
+          {
+            name: "Date",
+            selector: "date",
+            sortable: true,
+          },
         ]}
         data={filteredApplicants.map((applicant, index) => ({
           sr: index + 1,
@@ -123,6 +128,7 @@ const ApplicationFeeVerified = () => {
           contact_no: applicant.student_information.phone_number,
           intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
           test_percentage: `${applicant.test_score_percentage.percentage}%`,
+          date: `${applicant.date}`,
         }))}
         pagination
         responsive
