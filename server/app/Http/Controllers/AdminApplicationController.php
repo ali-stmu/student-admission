@@ -225,6 +225,50 @@ public function verifyApplication(Request $request)
     return response()->json(['message' => 'Voucher verified successfully'], 200);
 }
 
+public function rejectApplication(Request $request)
+{
+    $studentId = $request->input('studentId');
+    $programId = $request->input('programId');
+    $userId = 0;
+    $email = "";
+    $programName = "";
+
+
+    // Find the voucher to verify
+    $student = Student::where('student_id', $studentId)->first();
+    if ($student) {
+        $userId = $student->user_id;
+        $user = User::where('user_id', $userId)->first();
+        $email = $user->email;
+        log::debug($email);
+    }
+    $program = Program::where('program_id', $programId)
+        ->first();
+    if($program){
+        $programName = $program->program_name;
+    }
+
+    $voucher = Voucher::where('program_id', $programId)
+        ->where('student_id', $studentId)
+        ->first();
+
+    if (!$voucher) {
+        return response()->json(['error' => 'Voucher not found'], 404);
+    }
+
+    // Update the voucher status to "verified"
+    $voucher->status = 'Rejected';
+    $voucher->save();
+
+    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been Rejected";
+    Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
+        $message->to($email);
+        $message->subject('Rejected Voucher');
+    });
+
+    return response()->json(['message' => 'Voucher Rejected successfully'], 200);
+}
+
 public function getPdf($filename)
 {
     $filePath = storage_path("app/voucher_files/{$filename}");

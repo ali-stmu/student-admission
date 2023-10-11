@@ -23,8 +23,6 @@ const ApplicationFeeReceived = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [modalContent, setModalContent] = useState(""); // Content to display in the modal
-
   useEffect(() => {
     const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
     const userId = studentInfo ? studentInfo.user_id : null;
@@ -115,8 +113,40 @@ const ApplicationFeeReceived = () => {
   };
 
   const handleRejectApplicationClick = (studentId, programId) => {
-    console.log(studentId);
-    console.log(programId);
+    setLoading(true);
+
+    const requestData = {
+      studentId: studentId,
+      programId: programId,
+    };
+
+    axios
+      .post(`${BASE_URL}reject-application`, requestData)
+      .then((response) => {
+        // Set the success message in the state
+        setSuccessMessage(response.data.message);
+        setLoading(false);
+        // Clear any previous error message
+        setErrorMessage(null);
+        // You can perform further actions here based on the response
+        console.log("Verification API Response:", response.data);
+        // Clear the success message and loading state after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+          setLoading(false);
+        }, 5000);
+      })
+      .catch((error) => {
+        // Set the error message in the state
+        setErrorMessage("An error occurred while verifying the application.");
+        // Clear any previous success message
+        setSuccessMessage(null);
+        console.error("Error:", error);
+        // Clear the error message and loading state after 5 seconds
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      });
   };
   console.log(applicants);
   const handleProgramChange = (event) => {
