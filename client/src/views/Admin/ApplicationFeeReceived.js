@@ -23,7 +23,10 @@ const ApplicationFeeReceived = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [originalApplicants, setOriginalApplicants] = useState([]);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [filteredApplicants, setFilteredApplicants] = useState([]);
 
   useEffect(() => {
     const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
@@ -71,6 +74,7 @@ const ApplicationFeeReceived = () => {
       .then((response) => response.json())
       .then((data) => {
         setApplicants(data.applicantsData);
+        setFilteredApplicants(data.applicantsData);
       })
       .catch((error) => {
         console.error(error);
@@ -180,16 +184,24 @@ const ApplicationFeeReceived = () => {
       selector: (row) =>
         `${row.student_information.first_name} ${row.student_information.last_name}`,
       sortable: true,
+      cell: (row) => (
+        <div>
+          {row.student_information.first_name}{" "}
+          {row.student_information.last_name}
+        </div>
+      ),
     },
     {
       name: "Father Name",
       selector: "student_information.father_name",
       sortable: true,
+      cell: (row) => <div>{row.student_information.father_name}</div>,
     },
     {
       name: "Contact No",
       selector: "student_information.phone_number",
       sortable: true,
+      cell: (row) => <div>{row.student_information.phone_number}</div>,
     },
     {
       name: "Intermediate %",
@@ -252,7 +264,11 @@ const ApplicationFeeReceived = () => {
       ),
     },
   ];
-
+  useEffect(() => {
+    // Initialize the original applicants list when the component mounts
+    setOriginalApplicants(applicants);
+  }, [applicants]);
+  console.log(applicants);
   return (
     <div>
       <FormGroup>
@@ -299,10 +315,52 @@ const ApplicationFeeReceived = () => {
         title="Fee Paid Applicants"
         className="react-dataTable"
         columns={columns}
-        data={applicants}
+        data={filteredApplicants}
         pagination
         paginationPerPage={10}
         paginationRowsPerPageOptions={[10, 25, 50, 100]}
+        subHeader
+        subHeaderComponent={
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Input
+              type="text"
+              placeholder="Search..."
+              onChange={(e) => {
+                const searchText = e.target.value.toLowerCase();
+
+                // Check if search input is empty
+                if (searchText === "12345") {
+                  console.log("if chal gya");
+                  console.log(searchText);
+                  // Display all original applicants when the search box is empty
+                  setApplicants(originalApplicants);
+                } else {
+                  console.log("else chal gya");
+                  console.log(searchText);
+
+                  // Filter the applicants based on the search input
+                  setFilteredApplicants(
+                    originalApplicants.filter(
+                      (item) =>
+                        item.student_information.first_name
+                          .toLowerCase()
+                          .includes(searchText) ||
+                        item.student_information.last_name
+                          .toLowerCase()
+                          .includes(searchText) ||
+                        item.student_information.father_name
+                          .toLowerCase()
+                          .includes(searchText) ||
+                        item.student_information.phone_number.includes(
+                          searchText
+                        )
+                    )
+                  );
+                }
+              }}
+            />
+          </div>
+        }
       />
     </div>
   );
