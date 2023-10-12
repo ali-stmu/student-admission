@@ -84,7 +84,10 @@ class EducationAndDegreeController extends Controller
         $test_date = $record['test_date'];
         $test_city = $record['test_city'];
         $test_reg_no = $record['test_reg_no'];
-        $attachment_url =  null;
+        $test_type = $record['test_type'];
+        $attachment_url = null;
+
+
         if (isset($record['attachment'])) {
             // Get the uploaded file from the request
             $attachmentFile = $record['attachment'];
@@ -121,12 +124,14 @@ class EducationAndDegreeController extends Controller
 
         // Check if a record with the same test_name and test_date exists
         $existingTestInfo = TestScore::where('student_id', $studentId)
+            ->where('test_type', $test_type)
+            // ->where('test_name', $test_name)
             ->first();
 
         if ($existingTestInfo) {
             // Update existing test record
             $existingTestInfo->update([
-                'test_name' => $test_name,
+                'test_name' =>  $test_name,
                 'test_score_total' => $test_score_total,
                 'test_score' => $test_score_obtained,
                 'attachment_url' => $attachment_url,
@@ -139,6 +144,7 @@ class EducationAndDegreeController extends Controller
                 'bio_obtained' => $bio_obtained,
                 'chem_obtained' => $chem_obtained,
                 'phy_obtained' => $phy_obtained,
+                'test_type' => $test_type,
                 // Add other fields as needed
             ]);
         } else {
@@ -160,6 +166,7 @@ class EducationAndDegreeController extends Controller
                 'bio_obtained' => $bio_obtained,
                 'chem_obtained' => $chem_obtained,
                 'phy_obtained' => $phy_obtained,
+                'test_type' => $test_type,
                 // Add other fields as needed
             ]);
 
@@ -198,6 +205,25 @@ public function skip_test(Request $request, $user_id)
     // Return a response
     return response()->json(['message' => 'Test score skipped or inserted successfully']);
 }
+
+public function testInformation(Request $request, $user_id)
+{
+    // Find the student ID based on the user ID
+    $student_id_json = $this->findStudentId($user_id);
+    $studentId = $student_id_json->getData()->student_id;
+
+    // Check if a record exists for the student
+    $existingTestInfo = TestScore::where('student_id', $studentId)->first(); // Use first() instead of get()
+
+    if ($existingTestInfo) {
+        // If a record exists, return its data
+        return response()->json($existingTestInfo);
+    } else {
+        // If no record exists, return an empty array
+        return response()->json([]);
+    }
+}
+
 public function modifyEducationStatus(Request $request)
 {
     log::debug($request->all());

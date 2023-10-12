@@ -46,6 +46,8 @@ Route::post('/educationAndDegreeController', [educationAndDegreeController::clas
 Route::post('/deleteRecordEndpoint', [educationAndDegreeController::class, 'modifyEducationStatus']);
 
 Route::post('/skip/{user_id}', [educationAndDegreeController::class, 'skip_test']);
+Route::get('/testInformation/{user_id}', [educationAndDegreeController::class, 'testInformation']);
+
 
 Route::post('/getPriority', [StudentInfoController::class, 'getPriority']);
 

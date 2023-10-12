@@ -15,6 +15,7 @@ import {
   Form,
   Input,
   CustomInput,
+  Table,
 } from "reactstrap";
 
 const TestScore = ({ stepper, type }) => {
@@ -23,9 +24,14 @@ const TestScore = ({ stepper, type }) => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [TempUserid, setTempUserid] = useState(null);
   const [name, setname] = useState(null);
-  const [attachmentUrl, setAttachmentUrl] = useState(null);
+  const [name1, setname1] = useState(null);
 
+  const [attachmentUrl, setAttachmentUrl] = useState(null);
+  const [testType, setTestType] = useState(null);
+  const [studentInfo, setStudentInfo] = useState({ nationality: "" }); // Declare studentInfo in the component state
   const [testScoreData, setTestScoreData] = useState([]);
+  const [testData, setTestData] = useState([]);
+
   const [records, setRecords] = useState([
     {
       testName: "",
@@ -54,6 +60,10 @@ const TestScore = ({ stepper, type }) => {
     { value: "ucat", label: "UCAT" },
     // Add more options as needed
   ];
+  const testTypeOptions = [
+    { value: "local", label: "Local" },
+    { value: "foreign", label: "Foreign" },
+  ];
 
   const skipToNextStepWithApiCall = async () => {
     try {
@@ -69,7 +79,6 @@ const TestScore = ({ stepper, type }) => {
       console.error("An error occurred:", error);
     }
   };
-
   const previous = () => {
     stepper.previous();
   };
@@ -78,10 +87,23 @@ const TestScore = ({ stepper, type }) => {
   };
 
   useEffect(() => {
+    // Check the nationality of the student and set the testType based on it
     const rolesFromStorage = localStorage.getItem("StudentInfo");
     const studentInfo = JSON.parse(rolesFromStorage);
+    console.log(studentInfo.nationality);
     setTempUserid(studentInfo.user_id);
     setCurrentYear(new Date().getFullYear());
+
+    // Set the initial testType based on the nationality
+    if (studentInfo.nationality === "pakistani") {
+      setTestType("local");
+      setStudentInfo(studentInfo.nationality);
+    } else if (studentInfo.nationality === "foreign") {
+      setTestType("foreign");
+      setStudentInfo(studentInfo.nationality);
+    } else {
+      setTestType(""); // Set to an empty string or any default value if needed
+    }
   }, []);
 
   useEffect(() => {
@@ -175,6 +197,8 @@ const TestScore = ({ stepper, type }) => {
       // Iterate through the records and add them to the FormData object
       records.forEach((record, index) => {
         formData.append(`records[${index}][test_name]`, name.value);
+        formData.append(`records[${index}][test_type]`, name1.value);
+
         formData.append(
           `records[${index}][test_date]`,
           data[`testYear-${index}`]
@@ -315,31 +339,131 @@ const TestScore = ({ stepper, type }) => {
       {records.map((record, index) => (
         <Form key={index} onSubmit={handleSubmit(onSubmit)}>
           <h5 className="mb-0">Please Provide Test Information</h5>
-          <FormGroup>
-            <Label className="test-name-label" for={`testName-${index}`}>
-              Test Name
-            </Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              name={`testName-${index}`}
-              id={`testName-${index}`}
-              defaultValue={testNameOptions.find(
-                (option) => option.value === record.testName
-              )}
-              options={testNameOptions}
-              onChange={(value) => {
-                setValue(`testName-${index}`, value);
-                setname(value);
-                setSelectedTestNames((prevNames) => {
-                  const newNames = [...prevNames];
-                  newNames[index] = value.value;
-                  return newNames;
-                });
-              }}
-            />
-          </FormGroup>
+          <Row>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label className="test-name-label" for={`testType-${index}`}>
+                  Select Test Type
+                </Label>
+                {studentInfo === "pakistani" ? (
+                  <Select
+                    theme={selectThemeColors}
+                    className="react-select"
+                    classNamePrefix="select"
+                    name={`testType-${index}`}
+                    id={`testType-${index}`}
+                    defaultValue={testTypeOptions.find(
+                      (option) => option.value === "local"
+                    )}
+                    options={[
+                      testTypeOptions.find(
+                        (option) => option.value === "local"
+                      ),
+                    ]}
+                    onChange={(value) => {
+                      setValue(`testType-${index}`, value);
+                      setname1(value);
+                      setTestType(value.value);
+                    }}
+                  />
+                ) : studentInfo === "foreign" ? (
+                  <Select
+                    theme={selectThemeColors}
+                    className="react-select"
+                    classNamePrefix="select"
+                    name={`testType-${index}`}
+                    id={`testType-${index}`}
+                    defaultValue={testTypeOptions.find(
+                      (option) => option.value === "foreign"
+                    )}
+                    options={[
+                      testTypeOptions.find(
+                        (option) => option.value === "foreign"
+                      ),
+                    ]}
+                    onChange={(value) => {
+                      setValue(`testType-${index}`, value);
+                      setname1(value);
+                      setTestType(value.value);
+                    }}
+                  />
+                ) : (
+                  <Select
+                    theme={selectThemeColors}
+                    className="react-select"
+                    classNamePrefix="select"
+                    name={`testType-${index}`}
+                    id={`testType-${index}`}
+                    defaultValue={testTypeOptions.find(
+                      (option) => option.value === testType
+                    )}
+                    options={testTypeOptions}
+                    onChange={(value) => {
+                      setValue(`testType-${index}`, value);
+                      setname1(value);
+                      setTestType(value.value);
+                    }}
+                  />
+                )}
+              </FormGroup>
+            </Col>
+            <Col md="6" sm="12">
+              <FormGroup>
+                <Label className="test-name-label" for={`testName-${index}`}>
+                  Test Name
+                </Label>
+
+                {studentInfo === "pakistani" ? (
+                  <Select
+                    theme={selectThemeColors}
+                    className="react-select"
+                    classNamePrefix="select"
+                    name={`testType-${index}`}
+                    id={`testType-${index}`}
+                    defaultValue={testTypeOptions.find(
+                      (option) => option.value === "mdcat"
+                    )}
+                    options={[
+                      testNameOptions.find(
+                        (option) => option.value === "mdcat"
+                      ),
+                    ]}
+                    onChange={(value) => {
+                      setValue(`testName-${index}`, value);
+                      setname(value);
+                      setSelectedTestNames((prevNames) => {
+                        const newNames = [...prevNames];
+                        newNames[index] = value.value;
+                        return newNames;
+                      });
+                    }}
+                  />
+                ) : (
+                  <Select
+                    theme={selectThemeColors}
+                    className="react-select"
+                    classNamePrefix="select"
+                    name={`testName-${index}`}
+                    id={`testName-${index}`}
+                    defaultValue={testNameOptions.find(
+                      (option) => option.value === record.testName
+                    )}
+                    options={testNameOptions}
+                    onChange={(value) => {
+                      setValue(`testName-${index}`, value);
+                      setname(value);
+                      setSelectedTestNames((prevNames) => {
+                        const newNames = [...prevNames];
+                        newNames[index] = value.value;
+                        return newNames;
+                      });
+                    }}
+                  />
+                )}
+              </FormGroup>
+            </Col>
+          </Row>
+
           {/* Show a message based on the selected test name */}
           {selectedTestNames[index] === "mdcat" ||
           selectedTestNames[index] === null ? (
