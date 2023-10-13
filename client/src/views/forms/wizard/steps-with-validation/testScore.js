@@ -4,7 +4,8 @@ import axios from "axios";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { BASE_URL } from "../../../../config";
-import { ArrowRight, ArrowLeft, X, Plus } from "react-feather";
+import { ArrowRight, ArrowLeft, X, Plus, Trash2 } from "react-feather";
+import "../../../Style/disable.css";
 
 import {
   Label,
@@ -25,12 +26,12 @@ const TestScore = ({ stepper, type }) => {
   const [TempUserid, setTempUserid] = useState(null);
   const [name, setname] = useState(null);
   const [name1, setname1] = useState(null);
-
-  const [attachmentUrl, setAttachmentUrl] = useState(null);
   const [testType, setTestType] = useState(null);
   const [studentInfo, setStudentInfo] = useState({ nationality: "" }); // Declare studentInfo in the component state
   const [testScoreData, setTestScoreData] = useState([]);
-  const [testData, setTestData] = useState([]);
+  const [deletFlag, setDelteFlag] = useState();
+  const [disabledRows, setDisabledRows] = useState([]);
+  const [deleteResponse, setDeleteResponse] = useState(null);
 
   const [records, setRecords] = useState([
     {
@@ -129,48 +130,54 @@ const TestScore = ({ stepper, type }) => {
     };
 
     fetchData();
-  }, [TempUserid]);
+  }, [TempUserid, deletFlag]);
 
-  useEffect(() => {
-    if (testScoreData && testScoreData.length > 0) {
-      // Assuming there's only one object in the array
-      const firstTestData = testScoreData[0];
-      const matchingOption = testNameOptions.find(
-        (option) => option.value === firstTestData.test_name
-      );
+  // useEffect(() => {
+  //   if (testScoreData && testScoreData.length > 0) {
+  //     // Assuming there's only one object in the array
+  //     const firstTestData = testScoreData[0];
+  //     console.log(firstTestData);
+  //     const matchingOption = testNameOptions.find(
+  //       (option) => option.value === firstTestData.test_name
+  //     );
+  //     const matchingOption1 = testNameOptions.find(
+  //       (option) => option.value === firstTestData.test_type
+  //     );
 
-      if (matchingOption) {
-        setValue(`testName-0`, matchingOption);
-        setname(matchingOption);
-        setSelectedTestNames((prevNames) => {
-          const newNames = [...prevNames];
-          newNames[0] = matchingOption.value;
-          return newNames;
-        });
-      }
-      setValue(`totalMarks-0`, firstTestData.test_score_total);
-      setValue(`obtainedMarks-0`, firstTestData.test_score);
-      setValue(`testYear-0`, firstTestData.test_date);
-      setValue(`testCity-0`, firstTestData.test_city);
-      setValue(`testYear-0`, firstTestData.test_date);
-      setValue(`testRegNo-0`, firstTestData.test_reg_no);
+  //     if (matchingOption) {
+  //       setValue(`testName-0`, matchingOption);
+  //       setValue(`testType-0`, matchingOption1);
+  //       setname(matchingOption);
+  //       setname1(matchingOption1);
+  //       setSelectedTestNames((prevNames) => {
+  //         const newNames = [...prevNames];
+  //         newNames[0] = matchingOption.value;
+  //         return newNames;
+  //       });
+  //     }
+  //     setValue(`totalMarks-0`, firstTestData.test_score_total);
+  //     setValue(`obtainedMarks-0`, firstTestData.test_score);
+  //     setValue(`testYear-0`, firstTestData.test_date);
+  //     setValue(`testCity-0`, firstTestData.test_city);
+  //     setValue(`testYear-0`, firstTestData.test_date);
+  //     setValue(`testRegNo-0`, firstTestData.test_reg_no);
 
-      // Set the attachment URL for the first record
-      setAttachmentUrls({
-        ...attachmentUrls,
-        [0]: firstTestData.attachment_url,
-      });
+  //     // Set the attachment URL for the first record
+  //     setAttachmentUrls({
+  //       ...attachmentUrls,
+  //       [0]: firstTestData.attachment_url,
+  //     });
 
-      // Set attachment URLs for subsequent records if available
-      for (let i = 1; i < testScoreData.length; i++) {
-        const testData = testScoreData[i];
-        setAttachmentUrls((prevUrls) => ({
-          ...prevUrls,
-          [i]: testData.attachment_url,
-        }));
-      }
-    }
-  }, [testScoreData, setValue]);
+  //     // Set attachment URLs for subsequent records if available
+  //     for (let i = 1; i < testScoreData.length; i++) {
+  //       const testData = testScoreData[i];
+  //       setAttachmentUrls((prevUrls) => ({
+  //         ...prevUrls,
+  //         [i]: testData.attachment_url,
+  //       }));
+  //     }
+  //   }
+  // }, [testScoreData, setValue]);
   useEffect(() => {
     if (testScoreData && testScoreData.length > 0) {
       const updatedRecords = [...records];
@@ -182,7 +189,7 @@ const TestScore = ({ stepper, type }) => {
         };
       });
 
-      setRecords(updatedRecords);
+      //setRecords(updatedRecords);
     }
   }, [testScoreData]);
 
@@ -286,52 +293,29 @@ const TestScore = ({ stepper, type }) => {
       console.error("An error occurred:", error);
     }
   };
-
-  const deleteRecord = (indexToDelete) => {
-    // Create a copy of the records array without the record to delete
-    const updatedRecords = records.filter(
-      (record, index) => index !== indexToDelete
-    );
-
-    // Update the records state with the updated array
-    setRecords(updatedRecords);
+  const handleDeleteTest = (id, studentId, rowIndex) => {
+    console.log(deletFlag);
+    console.log(id, studentId);
+    axios
+      .delete(`${BASE_URL}deleteTest/${id}/${studentId}`)
+      .then((response) => {
+        if (response.status === 200) {
+          setDeleteResponse(response);
+          setDisabledRows([...disabledRows, rowIndex]);
+        }
+        console.log(
+          `Successfully deleted test with ID ${id} for student ID ${studentId}`
+        );
+      })
+      .catch((error) => {
+        console.error(`Error deleting test: ${error}`);
+        setDeleteResponse(error);
+      });
   };
-  const addRecord = () => {
-    setRecords([
-      ...records,
-      {
-        testName: "",
-        totalMarks: 0,
-        obtainedMarks: 0,
-        biototalMarks: 0,
-        bioobtainedMarks: 0,
-        chemtotalMarks: 0,
-        chemobtainedMarks: 0,
-        phytotalMarks: 0,
-        phyobtainedMarks: 0,
-        testYear: "",
-        attachment: null,
-      },
-    ]);
-  };
+
   const validateObtainedMarks = (value, index) => {
     const totalMarks = watch(`totalMarks-${index}`);
     return parseFloat(value) <= parseFloat(totalMarks);
-  };
-
-  const validateBioObtainedMarks = (value, index) => {
-    const bioTotalMarks = watch(`biototalMarks-${index}`);
-    return parseFloat(value) <= parseFloat(bioTotalMarks);
-  };
-
-  const validateChemObtainedMarks = (value, index) => {
-    const chemTotalMarks = watch(`chemtotalMarks-${index}`);
-    return parseFloat(value) <= parseFloat(chemTotalMarks);
-  };
-
-  const validatePhyObtainedMarks = (value, index) => {
-    const phyTotalMarks = watch(`phytotalMarks-${index}`);
-    return parseFloat(value) <= parseFloat(phyTotalMarks);
   };
 
   return (
@@ -787,6 +771,59 @@ const TestScore = ({ stepper, type }) => {
           <br></br>
         </Form>
       ))}
+      <div>
+        <h5 className="mb-3">Test Score Data</h5>
+        <Table responsive>
+          <thead>
+            <tr>
+              <th>Test Name</th>
+              <th>Test Type</th>
+              <th>Test Year</th>
+              <th>Test City</th>
+              <th>Test Reg/Roll No#</th>
+              <th>Total Marks</th>
+              <th>Obtained Marks</th>
+              <th>%Age</th>
+              <th>Actions</th>
+
+              {/* Add more table headers as needed */}
+            </tr>
+          </thead>
+          <tbody>
+            {testScoreData.map((data, index) => (
+              <tr
+                key={index}
+                className={disabledRows.includes(index) ? "disabled" : ""}
+              >
+                <td>{data.test_name}</td>
+                <td>{data.test_type}</td>
+                <td>{data.test_date}</td>
+                <td>{data.test_city}</td>
+                <td>{data.test_reg_no}</td>
+                <td>{data.test_score_total}</td>
+                <td>{data.test_score}</td>
+                <td>{data.percentage}</td>
+                <td>
+                  <Button
+                    color="danger"
+                    style={{ padding: "5px 10px", fontSize: "14px" }}
+                    onClick={() =>
+                      handleDeleteTest(
+                        data.test_score_id,
+                        data.student_id,
+                        index
+                      )
+                    }
+                  >
+                    <Trash2></Trash2>
+                  </Button>
+                </td>
+                {/* Add more table cells as needed */}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 };

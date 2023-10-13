@@ -7,7 +7,7 @@ use App\Models\document;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Database\QueryException; // Import QueryException if not already imported
 use App\Models\student;
 use App\Models\TestScore;
 
@@ -86,7 +86,10 @@ class EducationAndDegreeController extends Controller
         $test_reg_no = $record['test_reg_no'];
         $test_type = $record['test_type'];
         $attachment_url = null;
-
+        $existingTestInfo = TestScore::where('student_id', $studentId)
+        ->where('test_type', $test_type)
+        ->where('test_name', $test_name)
+        ->first();
 
         if (isset($record['attachment'])) {
             // Get the uploaded file from the request
@@ -101,6 +104,9 @@ class EducationAndDegreeController extends Controller
             // Construct the attachment URL
             $attachment_url = '/attachment_directory/' . $attachmentFileName;
             log::debug($attachment_url);
+        }
+        elseif ($existingTestInfo){
+            $attachment_url = $existingTestInfo->attachment_url;
         }
         $bio_total = $record['test_score_bio'] ?? null;
         $chem_total = $record['test_score_chem'] ?? null;
@@ -123,10 +129,7 @@ class EducationAndDegreeController extends Controller
         }
 
         // Check if a record with the same test_name and test_date exists
-        $existingTestInfo = TestScore::where('student_id', $studentId)
-            ->where('test_type', $test_type)
-            // ->where('test_name', $test_name)
-            ->first();
+      
 
         if ($existingTestInfo) {
             // Update existing test record
@@ -180,6 +183,23 @@ class EducationAndDegreeController extends Controller
 }
 
 
+public function deleteTest($id, $studentId)
+{
+    try {
+        // Attempt to delete the test based on the $id and $studentId parameters.
+        // You can use Eloquent or query builder to perform the database operation.
+        TestScore::where('test_score_id', $id)->where('student_id', $studentId)->delete();
+
+        // Return a success response.
+        return response()->json(['message' => 'Test deleted successfully'], 200);
+    } catch (QueryException $e) {
+        // Handle the database-related exception (e.g., constraint violations) and return an error response.
+        return response()->json(['message' => 'Unable to delete the test. Database error: ' . $e->getMessage()], 500);
+    } catch (\Exception $e) {
+        // Handle other general exceptions and return an error response.
+        return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 500);
+    }
+}
 
 
 public function skip_test(Request $request, $user_id)

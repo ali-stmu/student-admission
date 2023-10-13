@@ -1,0 +1,4 @@
+tr.disabled {
+    opacity: 0; /* You can adjust the styling as needed */
+    pointer-events: none; /* This prevents interaction with disabled rows */
+  }

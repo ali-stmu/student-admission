@@ -70,6 +70,9 @@ Route::get('/boards', [BoardController::class, 'index']);
 
 Route::get('/voucherdetail', [VoucherController::class, 'index']);
 
+//Delete Test
+Route::delete('/deleteTest/{id}/{studentId}', [educationAndDegreeController::class, 'deleteTest']);
+
 
 //Admin APIs
 
