@@ -32,6 +32,7 @@ const TestScore = ({ stepper, type }) => {
   const [deletFlag, setDelteFlag] = useState();
   const [disabledRows, setDisabledRows] = useState([]);
   const [deleteResponse, setDeleteResponse] = useState(null);
+  const [tablePopulateFlag, setTablePopulateFlag] = useState("");
 
   const [records, setRecords] = useState([
     {
@@ -130,7 +131,7 @@ const TestScore = ({ stepper, type }) => {
     };
 
     fetchData();
-  }, [TempUserid, deletFlag]);
+  }, [TempUserid, tablePopulateFlag]);
 
   // useEffect(() => {
   //   if (testScoreData && testScoreData.length > 0) {
@@ -192,7 +193,7 @@ const TestScore = ({ stepper, type }) => {
       //setRecords(updatedRecords);
     }
   }, [testScoreData]);
-
+  console.log(testScoreData);
   const onSubmit = async (data) => {
     try {
       // Create a new FormData object
@@ -285,7 +286,8 @@ const TestScore = ({ stepper, type }) => {
       );
 
       if (response.status === 200) {
-        stepper.next(); // Move to the next step on a successful API response
+        setTablePopulateFlag(1);
+        //stepper.next(); // Move to the next step on a successful API response
       } else {
         console.error("API call failed:", response.status, response.statusText);
       }
@@ -294,13 +296,11 @@ const TestScore = ({ stepper, type }) => {
     }
   };
   const handleDeleteTest = (id, studentId, rowIndex) => {
-    console.log(deletFlag);
     console.log(id, studentId);
     axios
       .delete(`${BASE_URL}deleteTest/${id}/${studentId}`)
       .then((response) => {
         if (response.status === 200) {
-          setDeleteResponse(response);
           setDisabledRows([...disabledRows, rowIndex]);
         }
         console.log(
@@ -309,7 +309,6 @@ const TestScore = ({ stepper, type }) => {
       })
       .catch((error) => {
         console.error(`Error deleting test: ${error}`);
-        setDeleteResponse(error);
       });
   };
 
@@ -317,7 +316,10 @@ const TestScore = ({ stepper, type }) => {
     const totalMarks = watch(`totalMarks-${index}`);
     return parseFloat(value) <= parseFloat(totalMarks);
   };
-
+  const JustNext = () => {
+    console.log("Next Clicked");
+    stepper.next();
+  };
   return (
     <div>
       {records.map((record, index) => (
@@ -745,17 +747,32 @@ const TestScore = ({ stepper, type }) => {
               <Plus size={14} />
               <span className="align-middle ml-25">Add More Records</span>
             </Button.Ripple> */}
-            <Button.Ripple
-              color="secondary"
-              className="btn-skip"
-              onClick={skipToNextStep}
-            >
-              Skip
+            {testScoreData.length === 0 && (
+              <Button.Ripple
+                color="secondary"
+                className="btn-skip"
+                onClick={skipToNextStep}
+              >
+                Skip
+              </Button.Ripple>
+            )}
+
+            <Button.Ripple type="submit" color="info">
+              Save
             </Button.Ripple>
-            <Button.Ripple type="submit" color="primary">
-              Save & Next
-              <ArrowRight size={14} className="align-middle ml-sm-25 ml-0" />
-            </Button.Ripple>
+            {testScoreData.length !== 0 && (
+              <Button.Ripple
+                color="primary"
+                className="btn-skip"
+                onClick={JustNext}
+              >
+                Next
+                <ArrowRight
+                  size={14}
+                  className="align-middle mr-sm-25 mr-0"
+                ></ArrowRight>
+              </Button.Ripple>
+            )}
 
             {/* <Button.Ripple
               color="danger"

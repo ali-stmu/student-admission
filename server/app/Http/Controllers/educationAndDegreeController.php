@@ -270,11 +270,11 @@ public function modifyEducationStatus(Request $request)
 
 public function getScoresByUserId($user_id)
     {
-        log::debug("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh".$user_id);
+        log::debug("44".$user_id);
         // Fetch test scores for the specified user_id
         $student_id_json = $this->findStudentId($user_id);
         $studentId = $student_id_json->getData()->student_id;
-        $testScores = TestScore::where('student_id', $studentId)->get();
+        $testScores = TestScore::where('student_id', $studentId)->where('skip_test', '!=', 1)->get();
         log::debug($testScores);
         // Return the data as a JSON response
         return response()->json($testScores);
