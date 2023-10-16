@@ -48,6 +48,8 @@ public function getPriority(Request $request)
     try {
         $totalMarks = 0;
         $obtainedMarks = 0;
+        $testScores = 0;
+        $testName = "";
 
         $student = new Student;
         $studentId = Student::where('user_id', $request->user_id)->value('student_id');
@@ -59,11 +61,19 @@ public function getPriority(Request $request)
         $studentInfoToCalculatePercentage = Education::select('total_marks', 'degree_id', 'result_status', 'obtained_marks')
             ->where('student_id', $studentId)
             ->get();
-        Log::debug("StudentInfo to calculate percentage:".$studentInfoToCalculatePercentage);
+        //Log::debug("StudentInfo to calculate percentage:".$studentInfoToCalculatePercentage);
 
         $intermediateDegrees = Degree::where('degree_name', 'Intermediate/A-Levels/Equivalent')->pluck('degree_name', 'degree_id');
-        $testScores = TestScore::where('student_id', $studentId)->pluck('percentage');
-        Log::debug($testScores[0]);        
+        $TestInformation = TestScore::where('student_id', $studentId)->first();
+        log::debug($TestInformation);
+        if ($TestInformation) {
+            $testScores = $TestInformation->percentage;
+            $testName = $TestInformation->test_name; 
+
+        } else {
+          
+        }
+
 
         $programs = [];
 
@@ -74,8 +84,8 @@ public function getPriority(Request $request)
             $degree_id = $education->degree_id;
 
 
-            log::debug("Degree Id".$degreeId);
-            log::debug($intermediateDegrees);
+            //log::debug("Degree Id".$degreeId);
+            //log::debug($intermediateDegrees);
             //This condition checking if result sttaus is declared and its general status is 1 means active and degree id is 2 which means of intermediate
             if ($intermediateDegrees->has($degreeId) && $resultStatus == "declared" && $status = '1' && $degree_id == '2' ) {
                 foreach ($studentInfoToCalculatePercentage as $edu) {
@@ -86,13 +96,13 @@ public function getPriority(Request $request)
                         log::debug("Obtined marks is".$obtainedMarks);
                     }
                 }
-        // Get the student's voucher IDs for programs they've already applied to                
+            // Get the student's voucher IDs for programs they've already applied to                
              $voucherProgramIds = Voucher::where('student_id', $studentId)
                  ->pluck('program_id')
                  ->toArray();
-log::debug($voucherProgramIds);
+                //log::debug($voucherProgramIds);
                 $percentage = ($obtainedMarks / $totalMarks) * 100;
-                log::debug($percentage);
+                //log::debug($percentage);
 
                 $query = Program::select('program_name', 'program_criteria','test_criteria')
                     ->where('degree_id', $degreeId)->where('status', '1');
@@ -100,7 +110,11 @@ log::debug($voucherProgramIds);
                  $programs = $query
                  ->whereNotIn('program_id', $voucherProgramIds)
                  ->get();
-
+                 if($testName !== 'mdcat'){
+                    $nationality === 'foreign';
+                    $query->whereIn('nationality_check', ['foreign']);
+                 }
+                 
                 if ($nationality === 'pakistani') {
                     $query->whereIn('nationality_check', ['pakistani']);
                 } else if ($nationality === 'foreign') {

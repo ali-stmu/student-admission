@@ -196,6 +196,12 @@ const ApplicationFeeReceived = () => {
       cell: (row) => <div>{row.student_information.father_name}</div>,
     },
     {
+      name: "CNIC",
+      selector: "cnic",
+      sortable: true,
+      cell: (row) => <div>{row.cnic}</div>,
+    },
+    {
       name: "Contact No",
       selector: "student_information.phone_number",
       sortable: true,

@@ -93,6 +93,7 @@ const ProgramPriority = ({ stepper, type }) => {
       });
   }, [isDisabled]);
 
+  console.log(priority1, priority2, priority3, priority4);
   const handleSubmit = () => {
     // Prepare the data to send to the API
     const priorities = [priority1, priority2, priority3, priority4].filter(
@@ -101,9 +102,11 @@ const ProgramPriority = ({ stepper, type }) => {
 
     const dataToSend = {
       user_id: user_id,
-      priorities: priorities.map((priority) => priority.value), // Assuming you want to send the value property
+      priorities: priorities.map((priority) => priority.value),
     };
+
     console.log(dataToSend);
+
     // Make an HTTP POST request to save the priorities
     fetch(`${BASE_URL}savePriorities`, {
       method: "POST",

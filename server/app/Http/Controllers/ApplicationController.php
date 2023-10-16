@@ -121,6 +121,7 @@ public function autofilPriority(Request $request)
             }
         }
     }
+    log::debug(response()->json(['priority_names' => $priorityNames], 200));
     // Return the array of priority names
     return response()->json(['priority_names' => $priorityNames], 200);
 }

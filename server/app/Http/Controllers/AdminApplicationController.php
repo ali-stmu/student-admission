@@ -71,6 +71,16 @@ foreach ($vouchers as $voucher) {
     $programId = $voucher->program_id;
     $voucherID = $this->getVoucherId($studentId,$program_id);
 
+    $userId = Student::select('user_id')
+        ->where('student_id', $studentId)
+        ->first();
+
+        $userId = json_decode($userId, true);
+
+        // Now you can access the 'user_id' key
+        $user_id = $userId['user_id'];
+        $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+
     $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
         ->first();
@@ -96,8 +106,10 @@ foreach ($vouchers as $voucher) {
         'program_id' => $voucher->program_id, // Include the full voucher path
         'date' => date('d/m/Y', strtotime($voucher->created_at)),
         'voucherId' => $voucherID,
+        'cnic' => $cnic,
+
     ];
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 }
 
 
