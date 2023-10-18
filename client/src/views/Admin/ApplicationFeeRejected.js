@@ -102,6 +102,11 @@ const ApplicationFeeRejected = () => {
             sortable: true,
           },
           {
+            name: "CNIC",
+            selector: "cnic",
+            sortable: true,
+          },
+          {
             name: "Contact No",
             selector: "contact_no",
             sortable: true,
@@ -142,6 +147,7 @@ const ApplicationFeeRejected = () => {
           remarks: `${applicant.remarks}`,
           date: `${applicant.date}`,
           voucherId: `${applicant.voucherId}`,
+          cnic: `${applicant.cnic.cnic}`,
         }))}
         pagination
         responsive
@@ -180,7 +186,8 @@ const ApplicationFeeRejected = () => {
                         item.student_information.phone_number.includes(
                           searchText
                         ) ||
-                        item.voucherId.includes(searchText)
+                        item.voucherId.includes(searchText) ||
+                        item.cnic.includes(searchText)
                     )
                   );
                 }

@@ -102,6 +102,11 @@ const ApplicationFeeVerified = () => {
             sortable: true,
           },
           {
+            name: "CNIC",
+            selector: "cnic",
+            sortable: true,
+          },
+          {
             name: "Contact No",
             selector: "contact_no",
             sortable: true,
@@ -136,6 +141,7 @@ const ApplicationFeeVerified = () => {
           test_percentage: `${applicant.test_score_percentage.percentage}%`,
           date: `${applicant.date}`,
           voucherId: `${applicant.voucherId}`,
+          cnic: `${applicant.cnic.cnic}`,
         }))}
         pagination
         responsive
@@ -174,7 +180,8 @@ const ApplicationFeeVerified = () => {
                         item.student_information.phone_number.includes(
                           searchText
                         ) ||
-                        item.voucherId.includes(searchText)
+                        item.voucherId.includes(searchText) ||
+                        item.cnic.includes(searchText)
                     )
                   );
                 }

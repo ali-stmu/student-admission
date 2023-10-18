@@ -107,6 +107,11 @@ const ApplicationFeePending = () => {
             sortable: true,
           },
           {
+            name: "CNIC",
+            selector: "cnic",
+            sortable: true,
+          },
+          {
             name: "Intermediate %",
             selector: "intermediate_percentage",
             sortable: true,
@@ -124,6 +129,7 @@ const ApplicationFeePending = () => {
           contact_no: applicant.student_information.phone_number,
           intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
           test_percentage: `${applicant.test_score_percentage.percentage}%`,
+          cnic: `${applicant.cnic.cnic}`,
         }))}
         pagination
         responsive
@@ -161,7 +167,8 @@ const ApplicationFeePending = () => {
                           .includes(searchText) ||
                         item.student_information.phone_number.includes(
                           searchText
-                        )
+                        ) ||
+                        item.cnic.includes(searchText)
                     )
                   );
                 }
