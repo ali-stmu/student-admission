@@ -16,6 +16,8 @@ use App\Models\Program; // Import the Program model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 
 class AdminApplicationController extends Controller
 {
@@ -173,6 +175,48 @@ public function getVoucherId($studentId,$programId)
     }
 }
 
+
+public function fetchAllStudentData($studentId)
+{
+    try {
+        // Attempt to fetch the student data
+        $student = Student::select('*')
+            ->where('student_id', $studentId)
+            ->first();
+
+        if (!$student) {
+            // If the student is not found, return an appropriate response
+            return response()->json(['message' => 'Student not found'], 404);
+        }
+
+        // Attempt to fetch education data
+        $education = Education::where('student_id', $studentId)->get();
+
+        // Attempt to fetch test scores data
+        $testScores = TestScore::where('student_id', $studentId)->get();
+
+        // Check if any of the data is missing
+        if (!$education || !$testScores) {
+            // Return an appropriate response for missing data
+            return response()->json(['message' => 'Some data is missing'], 404);
+        }
+
+        // If all data is available, you can proceed to use it
+        $studentData = $student;
+        $educationData = $education;
+        $testScoresData = $testScores;
+
+        // Return a success response with the data
+        return response()->json([
+            'studentData' => $studentData,
+            'educationData' => $educationData,
+            'testScoresData' => $testScoresData,
+        ], 200);
+    } catch (\Exception $e) {
+        // Handle any unexpected exceptions and return an error response
+        return response()->json(['message' => 'An error occurred'], 500);
+    }
+}
 
 
 
