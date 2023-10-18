@@ -64,14 +64,25 @@ public function getPriority(Request $request)
         //Log::debug("StudentInfo to calculate percentage:".$studentInfoToCalculatePercentage);
 
         $intermediateDegrees = Degree::where('degree_name', 'Intermediate/A-Levels/Equivalent')->pluck('degree_name', 'degree_id');
-        $TestInformation = TestScore::where('student_id', $studentId)->first();
-        log::debug($TestInformation);
-        if ($TestInformation) {
-            $testScores = $TestInformation->percentage;
-            $testName = $TestInformation->test_name; 
-
+        $TestInformation = TestScore::where('student_id', $studentId)->get(); // Use get() to retrieve multiple records
+        $testScores = [];
+        $testNames = [];
+        
+        foreach ($TestInformation as $record) {
+            $testScores[] = $record->percentage;
+            $testNames[] = $record->test_name;
+        }
+        
+        if (count($testScores) > 0) {
+            // You can now work with the arrays $testScores and $testNames
+            // For example, you can loop through them to process the values
+            for ($i = 0; $i < count($testScores); $i++) {
+                $testScore = $testScores[$i];
+                $testName = $testNames[$i];
+                // Perform actions with $testScore and $testName
+            }
         } else {
-          
+            // Handle the case where there are no records
         }
 
 
@@ -110,11 +121,12 @@ public function getPriority(Request $request)
                  $programs = $query
                  ->whereNotIn('program_id', $voucherProgramIds)
                  ->get();
-                 if($testName !== 'mdcat'){
-                    $nationality === 'foreign';
-                    $query->whereIn('nationality_check', ['foreign']);
-                 }
                  
+                 if (!in_array('mdcat', $testNames)) {
+                    $nationality = 'foreign';
+                    $query->whereIn('nationality_check', ['foreign']);
+                }
+
                 if ($nationality === 'pakistani') {
                     $query->whereIn('nationality_check', ['pakistani']);
                 } else if ($nationality === 'foreign') {
