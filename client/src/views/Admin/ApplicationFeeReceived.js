@@ -197,9 +197,9 @@ const ApplicationFeeReceived = () => {
     },
     {
       name: "CNIC",
-      selector: "cnic",
+      selector: "cnic.cnic",
       sortable: true,
-      cell: (row) => <div>{row.cnic}</div>,
+      cell: (row) => <div>{row.cnic.cnic}</div>,
     },
     {
       name: "Contact No",
