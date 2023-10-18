@@ -181,7 +181,7 @@ const ApplicationFeeVerified = () => {
                           searchText
                         ) ||
                         item.voucherId.includes(searchText) ||
-                        item.cnic.includes(searchText)
+                        item.cnic.cnic.includes(searchText)
                     )
                   );
                 }

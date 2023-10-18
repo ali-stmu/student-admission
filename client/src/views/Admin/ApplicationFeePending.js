@@ -168,7 +168,7 @@ const ApplicationFeePending = () => {
                         item.student_information.phone_number.includes(
                           searchText
                         ) ||
-                        item.cnic.includes(searchText)
+                        item.cnic.cnic.includes(searchText)
                     )
                   );
                 }
