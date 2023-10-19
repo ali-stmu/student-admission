@@ -115,6 +115,14 @@ const ApplicationFeeReceived = () => {
         }, 5000);
       });
   };
+  const handleNameClick = (row) => {
+    console.log(row.program_id);
+
+    const studentId = row.student_information.student_id;
+    const programId = row.program_id;
+
+    window.open(`/StudentInformation/${studentId}/${programId}`, "_blank");
+  };
 
   const handleRejectApplicationClick = (studentId, programId) => {
     const rejectRemarks = window.prompt("Enter remarks:");
@@ -184,8 +192,18 @@ const ApplicationFeeReceived = () => {
       sortable: true,
       cell: (row) => (
         <div>
-          {row.student_information.first_name}{" "}
-          {row.student_information.last_name}
+          <Button
+            style={{
+              marginRight: "10px",
+              padding: "5px 10px",
+              fontSize: "14px",
+            }}
+            color="info"
+            onClick={() => handleNameClick(row)}
+          >
+            {row.student_information.first_name}{" "}
+            {row.student_information.last_name}
+          </Button>
         </div>
       ),
     },

@@ -176,7 +176,7 @@ public function getVoucherId($studentId,$programId)
 }
 
 
-public function fetchAllStudentData($studentId)
+public function fetchAllStudentData($studentId, $programId)
 {
     try {
         // Attempt to fetch the student data
@@ -195,6 +195,9 @@ public function fetchAllStudentData($studentId)
         // Attempt to fetch test scores data
         $testScores = TestScore::where('student_id', $studentId)->get();
 
+        $voucher = Voucher::where('student_id', $studentId)->where('program_id' , $programId)->first();
+
+
         // Check if any of the data is missing
         if (!$education || !$testScores) {
             // Return an appropriate response for missing data
@@ -205,21 +208,22 @@ public function fetchAllStudentData($studentId)
         $studentData = $student;
         $educationData = $education;
         $testScoresData = $testScores;
+        $voucherData = $voucher;
+
 
         // Return a success response with the data
         return response()->json([
             'studentData' => $studentData,
             'educationData' => $educationData,
             'testScoresData' => $testScoresData,
+            'voucher' => $voucherData,
+
         ], 200);
     } catch (\Exception $e) {
         // Handle any unexpected exceptions and return an error response
         return response()->json(['message' => 'An error occurred'], 500);
     }
 }
-
-
-
 
 
 

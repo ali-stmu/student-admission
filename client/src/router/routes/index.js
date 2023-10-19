@@ -48,6 +48,14 @@ if (userRole === "Student") {
       },
     },
     {
+      path: "/studentInformation/:studentId/:programId",
+      component: lazy(() => import("../../views/Admin/StudentInformation")),
+      layout: "HorizontalLayout",
+      meta: {
+        authRoute: true,
+      },
+    },
+    {
       path: "/appfeepending",
       component: lazy(() => import("../../views/Admin/ApplicationFeePending")),
       layout: "HorizontalLayout",
@@ -58,7 +66,7 @@ if (userRole === "Student") {
     {
       path: "/appfeeverified",
       component: lazy(() => import("../../views/Admin/ApplicationFeeVerified")),
-      layout: "HorizontalLayout",
+      layout: "",
       meta: {
         authRoute: true,
       },
