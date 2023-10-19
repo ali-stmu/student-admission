@@ -11,6 +11,7 @@ import {
   CustomInput,
   Table,
 } from "reactstrap";
+import axios from "axios";
 
 const StudentInformation = (props) => {
   const { match } = props;
@@ -32,13 +33,70 @@ const StudentInformation = (props) => {
       });
   }, [studentId]);
   console.log(studentDetails);
+  const handleImageClick = (image) => {
+    console.log("Image clicked:", image);
+    const parts = image.split("/");
+    const filenameWithExtension = parts[parts.length - 1];
+    axios
+      .get(`${BASE_URL}download-studentImage/${filenameWithExtension}`, {
+        responseType: "blob",
+      }) // Specify the response type as 'blob' to receive binary data
+      .then((response) => {
+        // Determine the content type from the response headers
+        const contentType = response.headers["content-type"];
+
+        // Create a Blob object from the response data
+        const blob = new Blob([response.data], { type: contentType });
+
+        // Create a URL for the Blob
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Open the Blob URL in a new tab
+        window.open(blobUrl);
+
+        // Release the Blob URL when it's no longer needed
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const handleCnicImageClick = (cnicImage) => {
+    console.log("CNIC image clicked:", cnicImage);
+    const parts = cnicImage.split("/");
+    const filenameWithExtension = parts[parts.length - 1];
+    axios
+      .get(`${BASE_URL}download-studentImageCnic/${filenameWithExtension}`, {
+        responseType: "blob",
+      }) // Specify the response type as 'blob' to receive binary data
+      .then((response) => {
+        // Determine the content type from the response headers
+        const contentType = response.headers["content-type"];
+
+        // Create a Blob object from the response data
+        const blob = new Blob([response.data], { type: contentType });
+
+        // Create a URL for the Blob
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Open the Blob URL in a new tab
+        window.open(blobUrl);
+
+        // Release the Blob URL when it's no longer needed
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   return (
     <div>
-      <h1>Student Information</h1>
       {studentDetails && (
         <>
           <div>
-            <h2>Student Details</h2>
+            <h2>Student Personal Details</h2>
             <Table>
               <tbody>
                 <tr>
@@ -53,8 +111,20 @@ const StudentInformation = (props) => {
                   <td>{studentDetails.studentData.phone_number}</td>
                 </tr>
                 <tr>
-                  <td>CNIC/Passport#:</td>
-                  <td>{studentDetails.studentData.cnic}</td>
+                  <td>Student CNIC/Passport Image</td>
+                  <td>
+                    <Button
+                      outline
+                      color="info"
+                      onClick={() =>
+                        handleCnicImageClick(
+                          studentDetails.studentData.cnic_image
+                        )
+                      }
+                    >
+                      {studentDetails.studentData.cnic}
+                    </Button>
+                  </td>
                 </tr>
                 <tr>
                   <td>Date of Birth:</td>
@@ -76,6 +146,21 @@ const StudentInformation = (props) => {
                   <td>Father/Guardian Occupation:</td>
                   <td>{studentDetails.studentData.father_occupation}</td>
                 </tr>
+                <tr>
+                  <td>Student Image</td>
+                  <td>
+                    <Button
+                      outline
+                      color="info"
+                      onClick={() =>
+                        handleImageClick(studentDetails.studentData.image)
+                      }
+                    >
+                      View/Download
+                    </Button>
+                  </td>
+                </tr>
+
                 {/* Add more fields as needed */}
               </tbody>
             </Table>

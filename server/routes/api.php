@@ -96,3 +96,11 @@ Route::post('/reject-application', [AdminApplicationController::class, 'rejectAp
 
 
 Route::get('/download-receipt/{filename}', [AdminApplicationController::class, 'getPdf']);
+
+
+Route::get('/download-studentImage/{filename}', [AdminApplicationController::class, 'getPdfStudent']);
+
+Route::get('/download-studentImageCnic/{filename}', [AdminApplicationController::class, 'getPdfStudentCnic']);
+
+
+

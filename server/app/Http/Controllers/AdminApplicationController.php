@@ -490,7 +490,27 @@ public function getPdf($filename)
 
     return response()->json(['error' => 'File not found'], 404);
 }
+public function getPdfStudent($filename)
+{
+    $filePath = public_path("studentsImages/{$filename}");
 
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+
+    return response()->json(['error' => 'File not found'], 404);
+}
+
+public function getPdfStudentCnic($filename)
+{
+    $filePath = public_path("studentsImagesCnic/{$filename}");
+
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+
+    return response()->json(['error' => 'File not found'], 404);
+}
 
 
 
