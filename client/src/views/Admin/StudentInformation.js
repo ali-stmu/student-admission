@@ -118,6 +118,34 @@ const StudentInformation = (props) => {
         console.error("Error:", error);
       });
   };
+  const handleTestAttachmentClick = (documentPath) => {
+    console.log("Document clicked:", documentPath);
+    const parts = documentPath.split("/");
+    const filenameWithExtension = parts[parts.length - 1];
+    axios
+      .get(`${BASE_URL}download-studentTest/${filenameWithExtension}`, {
+        responseType: "blob",
+      }) // Specify the response type as 'blob' to receive binary data
+      .then((response) => {
+        // Determine the content type from the response headers
+        const contentType = response.headers["content-type"];
+
+        // Create a Blob object from the response data
+        const blob = new Blob([response.data], { type: contentType });
+
+        // Create a URL for the Blob
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Open the Blob URL in a new tab
+        window.open(blobUrl);
+
+        // Release the Blob URL when it's no longer needed
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   return (
     <div>
@@ -314,6 +342,7 @@ const StudentInformation = (props) => {
                   <th>Percentage</th>
                   <th>Test City</th>
                   <th>Test Reg/Roll#</th>
+                  <th>Test Attachment</th>
                 </tr>
               </thead>
               <tbody>
@@ -327,6 +356,18 @@ const StudentInformation = (props) => {
                     <td>{testRecord.percentage}%</td>
                     <td>{testRecord.test_city}</td>
                     <td>{testRecord.test_reg_no}</td>
+                    <td>
+                      <Button
+                        outline
+                        color="info"
+                        onClick={() =>
+                          handleTestAttachmentClick(testRecord.attachment_url)
+                        }
+                      >
+                        View/Download
+                      </Button>
+                    </td>
+
                     {/* Add more fields related to education here */}
                   </tr>
                 ))}
