@@ -203,6 +203,7 @@ public function fetchAllStudentData($studentId, $programId)
                 ->first();
             $document = document::select('document_file_path')
                 ->where('degree_id', $eduRecord->degree_id)
+                ->where('student_id', $studentId)
                 ->first();
             
             if ($degree) {
