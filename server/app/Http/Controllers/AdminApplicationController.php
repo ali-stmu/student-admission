@@ -301,6 +301,58 @@ foreach ($vouchers as $voucher) {
     log::debug($applicantsData);
 }
 
+return response()->json(['applicantsData' => $applicantsData]);
+}
+
+
+
+public function ApplicantsApplicationVerified(Request $request, $program_id)
+{
+    $vouchers = Voucher::where('program_id', $program_id)->where('application_status', "Verified")->get();
+    log::debug($vouchers);
+
+$applicantsData = [];
+
+foreach ($vouchers as $voucher) {
+    $studentId = $voucher->student_id;
+    $programId = $voucher->program_id;
+    $voucherID = $this->getVoucherId($studentId,$program_id);
+    $userId = Student::select('user_id')
+    ->where('student_id', $studentId)
+    ->first();
+
+    $userId = json_decode($userId, true);
+
+    // Now you can access the 'user_id' key
+    $user_id = $userId['user_id'];
+    $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+
+    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+        ->where('student_id', $studentId)
+        ->first();
+
+    $intermediatePercentage = Education::select('percentage_criteria')
+        ->where('student_id', $studentId)
+        ->where('degree_id', 2)
+        ->first();
+
+    $testScorePercentage = TestScore::select('percentage')
+        ->where('student_id', $studentId)
+        ->first();
+
+    // Concatenate the voucher file name with the voucher path
+
+    $applicantsData[] = [
+        'student_information' => $studentInformation,
+        'intermediate_percentage' => $intermediatePercentage,
+        'test_score_percentage' => $testScorePercentage,
+        'date' => date('d/m/Y', strtotime($voucher->updated_at)),
+        'voucherId' => $voucherID,
+        'cnic' => $cnic,
+
+    ];
+    log::debug($applicantsData);
+}
 
 return response()->json(['applicantsData' => $applicantsData]);
 }
@@ -360,8 +412,73 @@ foreach ($vouchers as $voucher) {
 }
 
 
+
+
 return response()->json(['applicantsData' => $applicantsData]);
 }
+
+
+public function ApplicantsApplicationRejected(Request $request, $program_id)
+{
+    $vouchers = Voucher::where('program_id', $program_id)->where('application_status', "Rejected")->get();
+    log::debug($vouchers);
+
+$applicantsData = [];
+
+foreach ($vouchers as $voucher) {
+    $studentId = $voucher->student_id;
+    $programId = $voucher->program_id;
+    $remarks = $voucher->remarks;
+    $voucherID = $this->getVoucherId($studentId,$program_id);
+    $userId = Student::select('user_id')
+    ->where('student_id', $studentId)
+    ->first();
+
+    $userId = json_decode($userId, true);
+
+    // Now you can access the 'user_id' key
+    $user_id = $userId['user_id'];
+    $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+
+
+
+    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+        ->where('student_id', $studentId)
+        ->first();
+
+    $intermediatePercentage = Education::select('percentage_criteria')
+        ->where('student_id', $studentId)
+        ->where('degree_id', 2)
+        ->first();
+
+    $testScorePercentage = TestScore::select('percentage')
+        ->where('student_id', $studentId)
+        ->first();
+
+    // Concatenate the voucher file name with the voucher path
+
+    $applicantsData[] = [
+        'student_information' => $studentInformation,
+        'intermediate_percentage' => $intermediatePercentage,
+        'test_score_percentage' => $testScorePercentage,
+        'remarks' => $remarks,
+        'date' => date('d/m/Y', strtotime($voucher->updated_at)),
+        'voucherId' => $voucherID,
+        'cnic'=> $cnic,
+
+
+    ];
+    log::debug($applicantsData);
+}
+
+
+
+
+return response()->json(['applicantsData' => $applicantsData]);
+}
+
+
+
 
 //pending wala
 public function ApplicantsfeeApplicationPending(Request $request, $program_id)

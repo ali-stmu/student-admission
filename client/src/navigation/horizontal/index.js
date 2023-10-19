@@ -9,29 +9,43 @@ export default [
   },
   {
     id: "applfeereceived",
-    title: "Application Fee Received",
+    title: "Fee Received",
     icon: <Mail size={20} />,
     navLink: "/applfeereceived",
   },
   {
     id: "appfeepending",
-    title: "Application Fee Pending",
+    title: "Fee Pending",
     icon: <Package size={20} />,
 
     navLink: "/appfeepending",
   },
   {
     id: "appfeeverified",
-    title: "Application Fee Verified",
+    title: "Fee Verified",
     icon: <Check size={20} />,
 
     navLink: "/appfeeverified",
   },
   {
     id: "appfeerejected",
-    title: "Application Fee Rejected",
+    title: "Fee Rejected",
     icon: <XSquare size={20} />,
 
     navLink: "/appfeerejected",
+  },
+  {
+    id: "appverified",
+    title: "Application Verified",
+    icon: <XSquare size={20} />,
+
+    navLink: "/appverified",
+  },
+  {
+    id: "apprejected",
+    title: "Application Rejected",
+    icon: <XSquare size={20} />,
+
+    navLink: "/apprejected",
   },
 ];

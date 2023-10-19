@@ -84,7 +84,12 @@ Route::get('/getfeepaidapplicants/{program_id}', [AdminApplicationController::cl
 
 Route::get('/getfeependingapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationPending']);
 Route::get('/getfeeverifiedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationVerified']);
+Route::get('/getverifiedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsApplicationVerified']);
+
 Route::get('/getfeerejectedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationRejected']);
+
+Route::get('/getrejectedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsApplicationRejected']);
+
 Route::get('/getStudentDetail/{student_id}/{program_id}', [AdminApplicationController::class, 'fetchAllStudentData']);
 
 
