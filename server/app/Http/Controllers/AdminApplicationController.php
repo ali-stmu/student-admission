@@ -536,6 +536,7 @@ public function verifyApplication(Request $request)
 {
     $studentId = $request->input('studentId');
     $programId = $request->input('programId');
+    $voucherId = $this->getVoucherId($studentId,$programId);
     $userId = 0;
     $email = "";
     $programName = "";
@@ -567,10 +568,10 @@ public function verifyApplication(Request $request)
     $voucher->status = 'Verified';
     $voucher->save();
 
-    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been verified Successfully";
+    $VerificatonWithMessage = 'Dear Applicant,' . "\n\n" . 'Your Application No' . " " .$voucherId . " " .'  for program' . " " . $programName . " " . "fee has been Received. You will a receive a confirmation E-mail once your application is verified. In case of any deficiency and/or incorrect Details Your Application will be rejected". "\n\n" ."Regards," . "\n\n" . "Admission Office" ;
     Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
         $message->to($email);
-        $message->subject('Verified Voucher');
+        $message->subject('STMU-Admission Update');
     });
 
     return response()->json(['message' => 'Voucher verified successfully'], 200);
@@ -583,6 +584,8 @@ public function acceptApplication(Request $request)
 {
     $studentId = $request->input('studentId');
     $programId = $request->input('programId');
+    $voucherId = $this->getVoucherId($studentId,$programId);
+
     $userId = 0;
     $email = "";
     $programName = "";
@@ -614,10 +617,10 @@ public function acceptApplication(Request $request)
     $voucher->application_status = 'Verified';
     $voucher->save();
 
-    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been verified Successfully";
+    $VerificatonWithMessage = 'Dear Applicant,' . "\n\n" . 'Your Application No' . " " .$voucherId . " " .'  for program' . " " . $programName . " " . "has been verified Successfully by the Admission Office". "\n\n" ."Regards," . "\n\n" . "Admission Office" ;
     Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
         $message->to($email);
-        $message->subject('Verified Voucher');
+        $message->subject('STMU-Admission Update');
     });
 
     return response()->json(['message' => 'Application verified successfully'], 200);
@@ -631,6 +634,8 @@ public function rejectApplication(Request $request)
     $studentId = $request->input('studentId');
     $programId = $request->input('programId');
     $rejectRemarks = $request->input('rejectRemarks');
+    $voucherId = $this->getVoucherId($studentId,$programId);
+
     log::Debug($rejectRemarks);
     $userId = 0;
     $email = "";
@@ -664,10 +669,10 @@ public function rejectApplication(Request $request)
     $voucher->remarks = $rejectRemarks;
     $voucher->save();
 
-    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been Rejected due to" . " " . $rejectRemarks;
+    $VerificatonWithMessage = 'Dear Applicant,' . "\n\n" . 'Your Application No' . " " .$voucherId . " " .'  for program' . " " . $programName . " " . "fee has been Rejected. due to ". $rejectRemarks . "\n\n" ."Regards," . "\n\n" . "Admission Office" ;
     Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
         $message->to($email);
-        $message->subject('Rejected Voucher');
+        $message->subject('STMU-Admission Update');
     });
 
     return response()->json(['message' => 'Voucher Rejected successfully'], 200);
@@ -679,6 +684,7 @@ public function rejecttApplication(Request $request)
     $studentId = $request->input('studentId');
     $programId = $request->input('programId');
     $rejectRemarks = $request->input('rejectRemarks');
+    $voucherId = $this->getVoucherId($studentId,$programId);
     log::Debug($rejectRemarks);
     $userId = 0;
     $email = "";
@@ -712,10 +718,10 @@ public function rejecttApplication(Request $request)
     $voucher->remarks = $rejectRemarks;
     $voucher->save();
 
-    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been Rejected due to" . " " . $rejectRemarks;
+    $VerificatonWithMessage = 'Dear Applicant,' . "\n\n" . 'Your Application No' . " " .$voucherId . " " .'  for program' . " " . $programName . " " . "has been Rejected due to "." ".$rejectRemarks." "."by the Admission Office". "\n\n" ."Regards," . "\n\n" . "Admission Office" ;
     Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
         $message->to($email);
-        $message->subject('Rejected Voucher');
+        $message->subject('STMU-Admission Update');
     });
 
     return response()->json(['message' => 'Voucher Rejected successfully'], 200);

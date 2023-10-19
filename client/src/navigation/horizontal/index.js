@@ -37,7 +37,7 @@ export default [
   {
     id: "appverified",
     title: "Application Verified",
-    icon: <XSquare size={20} />,
+    icon: <Check size={20} />,
 
     navLink: "/appverified",
   },
