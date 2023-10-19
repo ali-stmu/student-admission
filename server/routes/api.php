@@ -101,6 +101,8 @@ Route::get('/download-receipt/{filename}', [AdminApplicationController::class, '
 Route::get('/download-studentImage/{filename}', [AdminApplicationController::class, 'getPdfStudent']);
 
 Route::get('/download-studentImageCnic/{filename}', [AdminApplicationController::class, 'getPdfStudentCnic']);
+Route::get('/download-studentDegree/{filename}', [AdminApplicationController::class, 'getPdfStudentDegree']);
+
 
 
 

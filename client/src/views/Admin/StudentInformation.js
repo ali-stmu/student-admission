@@ -90,6 +90,34 @@ const StudentInformation = (props) => {
         console.error("Error:", error);
       });
   };
+  const handleDegreeClick = (documentPath) => {
+    console.log("Document clicked:", documentPath);
+    const parts = documentPath.split("/");
+    const filenameWithExtension = parts[parts.length - 1];
+    axios
+      .get(`${BASE_URL}download-studentDegree/${filenameWithExtension}`, {
+        responseType: "blob",
+      }) // Specify the response type as 'blob' to receive binary data
+      .then((response) => {
+        // Determine the content type from the response headers
+        const contentType = response.headers["content-type"];
+
+        // Create a Blob object from the response data
+        const blob = new Blob([response.data], { type: contentType });
+
+        // Create a URL for the Blob
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // Open the Blob URL in a new tab
+        window.open(blobUrl);
+
+        // Release the Blob URL when it's no longer needed
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   return (
     <div>
@@ -233,31 +261,41 @@ const StudentInformation = (props) => {
             <Table>
               <thead>
                 <tr>
+                  <th>Degree Title</th>
                   <th>Passing Year</th>
                   <th>Total Marks</th>
                   <th>Obtained Marks</th>
                   <th>Percentage</th>
                   <th>Board</th>
-
-                  <th>Status</th>
                   <th>School Name</th>
                   <th>School Country</th>
                   <th>School City</th>
+                  <th>Degree</th>
                 </tr>
               </thead>
               <tbody>
                 {studentDetails.educationData.map((educationRecord, index) => (
                   <tr key={index}>
+                    <td>{educationRecord.degree_name}</td>
                     <td>{educationRecord.passing_year}</td>
                     <td>{educationRecord.total_marks}</td>
                     <td>{educationRecord.obtained_marks}</td>
                     <td>{educationRecord.percentage_criteria}%</td>
                     <td>{educationRecord.institution_name}</td>
-                    <td>{educationRecord.result_status}</td>
                     <td>{educationRecord.school_name}</td>
                     <td>{educationRecord.school_country}</td>
                     <td>{educationRecord.school_city}</td>
-                    {/* Add more fields related to education here */}
+                    <td>
+                      <Button
+                        outline
+                        color="info"
+                        onClick={() =>
+                          handleDegreeClick(educationRecord.document_path)
+                        }
+                      >
+                        View/Download
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

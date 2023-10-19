@@ -11,6 +11,8 @@ use App\Models\TestScore;
 use App\Models\Session;
 use App\Models\Term;
 use App\Models\Bank;
+use App\Models\Degree;
+use App\Models\document;
 use App\Models\College;
 use App\Models\Program; // Import the Program model
 use Illuminate\Http\Request;
@@ -189,27 +191,51 @@ public function fetchAllStudentData($studentId, $programId)
             return response()->json(['message' => 'Student not found'], 404);
         }
 
-        // Attempt to fetch education data
-        $education = Education::where('student_id', $studentId)->get();
+        // Attempt to fetch education data with the related degree information
+        $education = Education::where('student_id', $studentId)
+            ->get();
+
+        $educationData = [];
+
+        foreach ($education as $eduRecord) {
+            $degree = Degree::select('degree_name')
+                ->where('degree_id', $eduRecord->degree_id)
+                ->first();
+            $document = document::select('document_file_path')
+                ->where('degree_id', $eduRecord->degree_id)
+                ->first();
+            
+            if ($degree) {
+                $eduRecord->degree_name = $degree->degree_name;
+            } else {
+                $eduRecord->degree_name = 'Unknown'; // Or another default value
+            }
+            if ($document) {
+                $eduRecord->document_path = $document->document_file_path;
+            } else {
+                $eduRecord->degree_name = 'Unknown'; // Or another default value
+            }
+
+            $educationData[] = $eduRecord;
+        }
 
         // Attempt to fetch test scores data
         $testScores = TestScore::where('student_id', $studentId)->get();
 
-        $voucher = Voucher::where('student_id', $studentId)->where('program_id' , $programId)->first();
-
+        $voucher = Voucher::where('student_id', $studentId)
+            ->where('program_id', $programId)
+            ->first();
 
         // Check if any of the data is missing
-        if (!$education || !$testScores) {
+        if (empty($educationData) || !$testScores) {
             // Return an appropriate response for missing data
             return response()->json(['message' => 'Some data is missing'], 404);
         }
 
         // If all data is available, you can proceed to use it
         $studentData = $student;
-        $educationData = $education;
         $testScoresData = $testScores;
         $voucherData = $voucher;
-
 
         // Return a success response with the data
         return response()->json([
@@ -217,13 +243,13 @@ public function fetchAllStudentData($studentId, $programId)
             'educationData' => $educationData,
             'testScoresData' => $testScoresData,
             'voucher' => $voucherData,
-
         ], 200);
     } catch (\Exception $e) {
         // Handle any unexpected exceptions and return an error response
         return response()->json(['message' => 'An error occurred'], 500);
     }
 }
+
 
 
 
@@ -504,6 +530,16 @@ public function getPdfStudent($filename)
 public function getPdfStudentCnic($filename)
 {
     $filePath = public_path("studentsImagesCnic/{$filename}");
+
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+
+    return response()->json(['error' => 'File not found'], 404);
+}
+public function getPdfStudentDegree($filename)
+{
+    $filePath = public_path("degrees/{$filename}");
 
     if (file_exists($filePath)) {
         return response()->file($filePath);
