@@ -92,6 +92,10 @@ Route::get('/getStudentDetail/{student_id}/{program_id}', [AdminApplicationContr
 Route::post('/verify-application', [AdminApplicationController::class, 'verifyApplication']);
 Route::post('/reject-application', [AdminApplicationController::class, 'rejectApplication']);
 
+Route::post('/rejectt-application', [AdminApplicationController::class, 'rejecttApplication']);
+
+
+Route::post('/accept-application', [AdminApplicationController::class, 'acceptApplication']);
 
 
 

@@ -459,6 +459,56 @@ public function verifyApplication(Request $request)
     return response()->json(['message' => 'Voucher verified successfully'], 200);
 }
 
+
+
+
+public function acceptApplication(Request $request)
+{
+    $studentId = $request->input('studentId');
+    $programId = $request->input('programId');
+    $userId = 0;
+    $email = "";
+    $programName = "";
+
+
+    // Find the voucher to verify
+    $student = Student::where('student_id', $studentId)->first();
+    if ($student) {
+        $userId = $student->user_id;
+        $user = User::where('user_id', $userId)->first();
+        $email = $user->email;
+        log::debug($email);
+    }
+    $program = Program::where('program_id', $programId)
+        ->first();
+    if($program){
+        $programName = $program->program_name;
+    }
+
+    $voucher = Voucher::where('program_id', $programId)
+        ->where('student_id', $studentId)
+        ->first();
+
+    if (!$voucher) {
+        return response()->json(['error' => 'Application not found'], 404);
+    }
+
+    // Update the voucher status to "verified"
+    $voucher->application_status = 'Verified';
+    $voucher->save();
+
+    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been verified Successfully";
+    Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
+        $message->to($email);
+        $message->subject('Verified Voucher');
+    });
+
+    return response()->json(['message' => 'Application verified successfully'], 200);
+}
+
+
+
+
 public function rejectApplication(Request $request)
 {
     $studentId = $request->input('studentId');
@@ -494,6 +544,54 @@ public function rejectApplication(Request $request)
 
     // Update the voucher status to "verified"
     $voucher->status = 'Rejected';
+    $voucher->remarks = $rejectRemarks;
+    $voucher->save();
+
+    $VerificatonWithMessage = 'Dear Candidate,' . "\n\n" . 'Your Application for program' . " " . $programName . " " . "has been Rejected due to" . " " . $rejectRemarks;
+    Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
+        $message->to($email);
+        $message->subject('Rejected Voucher');
+    });
+
+    return response()->json(['message' => 'Voucher Rejected successfully'], 200);
+}
+
+
+public function rejecttApplication(Request $request)
+{
+    $studentId = $request->input('studentId');
+    $programId = $request->input('programId');
+    $rejectRemarks = $request->input('rejectRemarks');
+    log::Debug($rejectRemarks);
+    $userId = 0;
+    $email = "";
+    $programName = "";
+
+
+    // Find the voucher to verify
+    $student = Student::where('student_id', $studentId)->first();
+    if ($student) {
+        $userId = $student->user_id;
+        $user = User::where('user_id', $userId)->first();
+        $email = $user->email;
+        log::debug($email);
+    }
+    $program = Program::where('program_id', $programId)
+        ->first();
+    if($program){
+        $programName = $program->program_name;
+    }
+
+    $voucher = Voucher::where('program_id', $programId)
+        ->where('student_id', $studentId)
+        ->first();
+
+    if (!$voucher) {
+        return response()->json(['error' => 'Voucher not found'], 404);
+    }
+
+    // Update the voucher status to "verified"
+    $voucher->application_status = 'Rejected';
     $voucher->remarks = $rejectRemarks;
     $voucher->save();
 

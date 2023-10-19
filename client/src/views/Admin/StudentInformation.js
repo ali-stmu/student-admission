@@ -12,13 +12,20 @@ import {
   Table,
 } from "reactstrap";
 import axios from "axios";
-
+import { XCircle, CheckCircle } from "react-feather";
+import { ClipLoader } from "react-spinners";
+import "../Style/feereceived.css";
 const StudentInformation = (props) => {
   const { match } = props;
   const { studentId } = match.params;
   const { programId } = match.params;
 
   const [studentDetails, setStudentDetails] = useState(null);
+  const [feeStatus, setFeeStatus] = useState(null);
+  const [applicationStatus, setAppliationStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const apiUrl = `${BASE_URL}getStudentDetail/${studentId}/${programId}`;
@@ -27,11 +34,13 @@ const StudentInformation = (props) => {
       .then((response) => response.json())
       .then((data) => {
         setStudentDetails(data);
+        setFeeStatus(data.voucher.status);
+        setAppliationStatus(data.voucher.application_status);
       })
       .catch((error) => {
         console.error("Error fetching student details:", error);
       });
-  }, [studentId]);
+  }, [studentId, successMessage, errorMessage]);
   console.log(studentDetails);
   const handleImageClick = (image) => {
     console.log("Image clicked:", image);
@@ -145,6 +154,87 @@ const StudentInformation = (props) => {
       .catch((error) => {
         console.error("Error:", error);
       });
+  };
+  const handleAcceptApplication = () => {
+    setLoading(true);
+
+    console.log(studentId);
+    console.log(programId);
+    const requestData = {
+      studentId: studentId,
+      programId: programId,
+    };
+
+    axios
+      .post(`${BASE_URL}accept-application`, requestData)
+      .then((response) => {
+        // Set the success message in the state
+        setSuccessMessage(response.data.message);
+        setLoading(false);
+        // Clear any previous error message
+        setErrorMessage(null);
+        // You can perform further actions here based on the response
+        console.log("Verification API Response:", response.data);
+        // Clear the success message and loading state after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+          setLoading(false);
+        }, 5000);
+      })
+      .catch((error) => {
+        // Set the error message in the state
+        setErrorMessage("An error occurred while verifying the application.");
+        // Clear any previous success message
+        setSuccessMessage(null);
+        console.error("Error:", error);
+        // Clear the error message and loading state after 5 seconds
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      });
+  };
+
+  const handleRejectApplication = () => {
+    const rejectRemarks = window.prompt("Enter remarks:");
+
+    if (rejectRemarks !== null) {
+      // Only proceed if the user entered remarks (not canceled)
+      setLoading(true);
+
+      const requestData = {
+        studentId: studentId,
+        programId: programId,
+        rejectRemarks: rejectRemarks,
+      };
+
+      axios
+        .post(`${BASE_URL}rejectt-application`, requestData)
+        .then((response) => {
+          // Set the success message in the state
+          setSuccessMessage(response.data.message);
+          setLoading(false);
+          // Clear any previous error message
+          setErrorMessage(null);
+          // You can perform further actions here based on the response
+          console.log("Rejection API Response:", response.data);
+          // Clear the success message and loading state after 5 seconds
+          setTimeout(() => {
+            setSuccessMessage(null);
+            setLoading(false);
+          }, 5000);
+        })
+        .catch((error) => {
+          // Set the error message in the state
+          setErrorMessage("An error occurred while rejecting the application.");
+          // Clear any previous success message
+          setSuccessMessage(null);
+          console.error("Error:", error);
+          // Clear the error message and loading state after 5 seconds
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
+    }
   };
 
   return (
@@ -398,6 +488,56 @@ const StudentInformation = (props) => {
                 {/* Add more fields as needed */}
               </tbody>
             </Table>
+          </div>
+          {feeStatus === "Verified" && applicationStatus === "Pending" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Button
+                onClick={handleAcceptApplication}
+                title="Accept Application"
+                outline
+                color="success"
+              >
+                <CheckCircle></CheckCircle>
+              </Button>
+              <div style={{ margin: "0 10px" }}></div> {/* Add space here */}
+              <Button
+                onClick={handleRejectApplication}
+                title="Reject Application"
+                outline
+                color="danger"
+              >
+                <XCircle></XCircle>
+              </Button>
+            </div>
+          )}
+          <div className="centered-container">
+            {/* Your existing code here */}
+
+            {/* Display the loading spinner when loading is true */}
+            {loading && (
+              <div className="loading-spinner">
+                <ClipLoader
+                  //css={override}
+                  size={150} // Customize the size as needed
+                  color={"#123abc"} // Customize the color
+                  loading={loading}
+                />
+              </div>
+            )}
+
+            {successMessage && (
+              <b>
+                <h4 className="success-message">{successMessage}</h4>
+              </b>
+            )}
+
+            {errorMessage && <h5 className="error-message">{errorMessage}</h5>}
           </div>
         </>
       )}
