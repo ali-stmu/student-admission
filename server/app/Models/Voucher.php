@@ -19,7 +19,7 @@ class Voucher extends Model
         'transaction_id',
         'mode_of_payment',
         'program_id',
-
+        'application_status',
     ];
 
     // Rest of your model code...

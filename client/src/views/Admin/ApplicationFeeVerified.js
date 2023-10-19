@@ -49,6 +49,7 @@ const ApplicationFeeVerified = () => {
         console.error(error);
       });
   };
+  console.log(filteredApplicants);
 
   const handleProgramChange = (event) => {
     const programId = event.target.value;
@@ -56,6 +57,13 @@ const ApplicationFeeVerified = () => {
     if (programId) {
       getFeeVerifiedApplicants(programId);
     }
+  };
+  const handleNameClick = (row) => {
+    console.log(row);
+    const studentId = row.studentId;
+    const programId = selectedProgram;
+
+    window.open(`/StudentInformation/${studentId}/${programId}`, "_blank");
   };
 
   useEffect(() => {
@@ -95,6 +103,21 @@ const ApplicationFeeVerified = () => {
             name: "Name",
             selector: "name",
             sortable: true,
+            cell: (row) => (
+              <div>
+                <Button
+                  style={{
+                    marginRight: "10px",
+                    padding: "5px 10px",
+                    fontSize: "14px",
+                  }}
+                  color="info"
+                  onClick={() => handleNameClick(row)}
+                >
+                  {row.name}
+                </Button>
+              </div>
+            ),
           },
           {
             name: "Father Name",
@@ -142,6 +165,8 @@ const ApplicationFeeVerified = () => {
           date: `${applicant.date}`,
           voucherId: `${applicant.voucherId}`,
           cnic: `${applicant.cnic.cnic}`,
+          studentId: `${applicant.student_information.student_id}`,
+          programId: `${applicant.student_information.student_id}`,
         }))}
         pagination
         responsive
