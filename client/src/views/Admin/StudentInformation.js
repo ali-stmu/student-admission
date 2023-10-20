@@ -30,11 +30,16 @@ const StudentInformation = (props) => {
   const [refreshFlag, setRefreshFlag] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingTest, setIsEditingTest] = useState(false);
 
   const [editedMarks, setEditedMarks] = useState({
     totalMarks: 0,
     obtainedMarks: 0,
     passingYear: 0,
+  });
+  const [editedMarksTest, setEditedMarksTest] = useState({
+    totalMarks: 0,
+    obtainedMarks: 0,
   });
   const toggleEdit = (index) => {
     if (isEditing === index) {
@@ -79,6 +84,50 @@ const StudentInformation = (props) => {
         totalMarks: studentDetails.educationData[index].total_marks,
         obtainedMarks: studentDetails.educationData[index].obtained_marks,
         passingYear: studentDetails.educationData[index].passing_year,
+      });
+    }
+  };
+
+  const toggleEditTest = (index) => {
+    if (isEditingTest === index) {
+      const testScoreId = studentDetails.testScoresData[index].test_score_id;
+      const StudentId = studentDetails.studentData.student_id;
+      console.log(testScoreId);
+      console.log(StudentId);
+      console.log(editedMarksTest);
+
+      // Save the changes here
+      // For example, you can send a request to update the data
+      // using the editedMarks state and degreeId
+
+      const requestData = {
+        studentId: StudentId,
+        testScoreId: testScoreId,
+        totalMarks: editedMarksTest.totalMarks,
+        obtainedMarks: editedMarksTest.obtainedMarks,
+      };
+
+      axios
+        .post(`${BASE_URL}updateTestData`, requestData)
+        .then((response) => {
+          // Handle the response as needed
+          console.log("Update Test Data API Response:", response.data);
+          setRefreshFlag(true);
+        })
+        .catch((error) => {
+          console.error("Error updating Test data:", error);
+        });
+      setRefreshFlag(false);
+
+      // After saving, reset the state
+      setIsEditingTest(false);
+      setEditedMarksTest({ totalMarks: 0, obtainedMarks: 0 });
+    } else {
+      // Enter edit mode
+      setIsEditingTest(index);
+      setEditedMarksTest({
+        totalMarks: studentDetails.testScoresData[index].test_score_total,
+        obtainedMarks: studentDetails.testScoresData[index].test_score,
       });
     }
   };
@@ -557,6 +606,7 @@ const StudentInformation = (props) => {
                   <th>Test City</th>
                   <th>Test Reg/Roll#</th>
                   <th>Test Attachment</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -565,8 +615,38 @@ const StudentInformation = (props) => {
                     <td>{testRecord.test_name}</td>
                     <td>{testRecord.test_type}</td>
                     <td>{testRecord.test_date}</td>
-                    <td>{testRecord.test_score_total}</td>
-                    <td>{testRecord.test_score}</td>
+                    <td>
+                      {isEditingTest === index ? (
+                        <Input
+                          type="text"
+                          value={editedMarksTest.totalMarks}
+                          onChange={(e) =>
+                            setEditedMarksTest({
+                              ...editedMarksTest,
+                              totalMarks: e.target.value,
+                            })
+                          }
+                        />
+                      ) : (
+                        testRecord.test_score_total
+                      )}
+                    </td>
+                    <td>
+                      {isEditingTest === index ? (
+                        <Input
+                          type="text"
+                          value={editedMarksTest.obtainedMarks}
+                          onChange={(e) =>
+                            setEditedMarksTest({
+                              ...editedMarksTest,
+                              obtainedMarks: e.target.value,
+                            })
+                          }
+                        />
+                      ) : (
+                        testRecord.test_score
+                      )}
+                    </td>
                     <td>{testRecord.percentage}%</td>
                     <td>{testRecord.test_city}</td>
                     <td>{testRecord.test_reg_no}</td>
@@ -580,6 +660,27 @@ const StudentInformation = (props) => {
                       >
                         View/Download
                       </Button>
+                    </td>
+                    <td>
+                      {isEditingTest === index ? (
+                        <Button
+                          title="Save"
+                          outline
+                          color="success"
+                          onClick={() => toggleEditTest(index)}
+                        >
+                          <Save></Save>
+                        </Button>
+                      ) : (
+                        <Button
+                          title="Edit"
+                          outline
+                          color="primary"
+                          onClick={() => toggleEditTest(index)}
+                        >
+                          <Edit3></Edit3>
+                        </Button>
+                      )}
                     </td>
 
                     {/* Add more fields related to education here */}

@@ -819,4 +819,39 @@ public function updateEducationData(Request $request)
     }
 
 
+    public function updateTestData(Request $request)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'studentId' => 'required|integer',
+            'testScoreId' => 'required|integer',
+            'totalMarks' => 'required|integer',
+            'obtainedMarks' => 'required|integer',
+        ]);
+
+        $studentId = $validatedData['studentId'];
+        $testScoreId = $validatedData['testScoreId'];
+
+        // Find the education record by degree ID
+        $education = TestScore::where('test_score_id', $testScoreId)
+        ->where('student_id', $studentId)
+        ->first();
+
+        if (!$education) {
+            return response()->json(['message' => 'Test record not found'], 404);
+        }
+           // Calculate the percentage
+        $totalMarks = $validatedData['totalMarks'];
+        $obtainedMarks = $validatedData['obtainedMarks'];
+        $percentage = number_format(($obtainedMarks / $totalMarks) * 100, 2);
+        // Update the education record with the new data
+        $education->test_score_total = $totalMarks;
+        $education->test_score = $obtainedMarks;
+        $education->percentage = $percentage; // Update the percentage field
+        $education->save();
+
+        return response()->json(['message' => 'Test data updated successfully']);
+    }
+
+
 }
