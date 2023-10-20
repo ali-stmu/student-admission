@@ -27,7 +27,7 @@ const StudentInformation = (props) => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [refreshFlag, setRefreshFlag] = useState(null);
+  const [refreshFlag, setRefreshFlag] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -62,14 +62,15 @@ const StudentInformation = (props) => {
         .then((response) => {
           // Handle the response as needed
           console.log("Update Education Data API Response:", response.data);
+          setRefreshFlag(true);
         })
         .catch((error) => {
           console.error("Error updating education data:", error);
         });
+      setRefreshFlag(false);
 
       // After saving, reset the state
       setIsEditing(false);
-      setRefreshFlag(1);
       setEditedMarks({ totalMarks: 0, obtainedMarks: 0, passingYear: 0 });
     } else {
       // Enter edit mode
@@ -95,7 +96,7 @@ const StudentInformation = (props) => {
       .catch((error) => {
         console.error("Error fetching student details:", error);
       });
-  }, [studentId, successMessage, errorMessage, refreshFlag]);
+  }, [studentId, successMessage, errorMessage, refreshFlag === true]);
   console.log(studentDetails);
   const handleImageClick = (image) => {
     console.log("Image clicked:", image);
