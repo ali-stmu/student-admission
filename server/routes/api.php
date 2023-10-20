@@ -99,6 +99,9 @@ Route::post('/reject-application', [AdminApplicationController::class, 'rejectAp
 
 Route::post('/rejectt-application', [AdminApplicationController::class, 'rejecttApplication']);
 
+Route::post('/updateEducationData', [AdminApplicationController::class, 'updateEducationData']);
+
+
 
 Route::post('/accept-application', [AdminApplicationController::class, 'acceptApplication']);
 

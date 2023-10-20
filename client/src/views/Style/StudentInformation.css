@@ -1,0 +1,17 @@
+/* StudentInformation.css */
+
+/* Media query for screens with a maximum width of 768px (typical for mobile devices) */
+@media (max-width: 768px) {
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .spacer {
+      margin: 10px 0; /* Add space here */
+    }
+  
+    /* Add additional CSS rules as needed for responsive design */
+  }
+  

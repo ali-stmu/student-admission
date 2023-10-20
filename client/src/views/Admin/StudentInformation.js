@@ -12,9 +12,10 @@ import {
   Table,
 } from "reactstrap";
 import axios from "axios";
-import { XCircle, CheckCircle } from "react-feather";
+import { XCircle, CheckCircle, Edit3, Save } from "react-feather";
 import { ClipLoader } from "react-spinners";
 import "../Style/feereceived.css";
+import "../Style/StudentInformation.css";
 const StudentInformation = (props) => {
   const { match } = props;
   const { studentId } = match.params;
@@ -26,6 +27,60 @@ const StudentInformation = (props) => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [refreshFlag, setRefreshFlag] = useState(null);
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [editedMarks, setEditedMarks] = useState({
+    totalMarks: 0,
+    obtainedMarks: 0,
+    passingYear: 0,
+  });
+  const toggleEdit = (index) => {
+    if (isEditing === index) {
+      const degreeId = studentDetails.educationData[index].degree_id;
+      const StudentId = studentDetails.studentData.student_id;
+
+      console.log(editedMarks);
+      console.log(StudentId);
+      console.log(degreeId);
+
+      // Save the changes here
+      // For example, you can send a request to update the data
+      // using the editedMarks state and degreeId
+
+      const requestData = {
+        studentId: StudentId,
+        degreeId: degreeId,
+        totalMarks: editedMarks.totalMarks,
+        obtainedMarks: editedMarks.obtainedMarks,
+        passingYear: editedMarks.passingYear,
+      };
+
+      axios
+        .post(`${BASE_URL}updateEducationData`, requestData)
+        .then((response) => {
+          // Handle the response as needed
+          console.log("Update Education Data API Response:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error updating education data:", error);
+        });
+
+      // After saving, reset the state
+      setIsEditing(false);
+      setRefreshFlag(1);
+      setEditedMarks({ totalMarks: 0, obtainedMarks: 0, passingYear: 0 });
+    } else {
+      // Enter edit mode
+      setIsEditing(index);
+      setEditedMarks({
+        totalMarks: studentDetails.educationData[index].total_marks,
+        obtainedMarks: studentDetails.educationData[index].obtained_marks,
+        passingYear: studentDetails.educationData[index].passing_year,
+      });
+    }
+  };
 
   useEffect(() => {
     const apiUrl = `${BASE_URL}getStudentDetail/${studentId}/${programId}`;
@@ -40,7 +95,7 @@ const StudentInformation = (props) => {
       .catch((error) => {
         console.error("Error fetching student details:", error);
       });
-  }, [studentId, successMessage, errorMessage]);
+  }, [studentId, successMessage, errorMessage, refreshFlag]);
   console.log(studentDetails);
   const handleImageClick = (image) => {
     console.log("Image clicked:", image);
@@ -389,15 +444,62 @@ const StudentInformation = (props) => {
                   <th>School Country</th>
                   <th>School City</th>
                   <th>Degree</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {studentDetails.educationData.map((educationRecord, index) => (
                   <tr key={index}>
                     <td>{educationRecord.degree_name}</td>
-                    <td>{educationRecord.passing_year}</td>
-                    <td>{educationRecord.total_marks}</td>
-                    <td>{educationRecord.obtained_marks}</td>
+                    <td>
+                      {isEditing === index ? (
+                        <Input
+                          type="text"
+                          value={editedMarks.passingYear}
+                          onChange={(e) =>
+                            setEditedMarks({
+                              ...editedMarks,
+                              passingYear: e.target.value,
+                            })
+                          }
+                        />
+                      ) : (
+                        educationRecord.passing_year
+                      )}
+                    </td>
+                    <td>
+                      {isEditing === index ? (
+                        <Input
+                          type="text"
+                          value={editedMarks.totalMarks}
+                          onChange={(e) =>
+                            setEditedMarks({
+                              ...editedMarks,
+                              totalMarks: e.target.value,
+                            })
+                          }
+                        />
+                      ) : (
+                        educationRecord.total_marks
+                      )}
+                    </td>
+                    <td>
+                      {isEditing === index ? (
+                        <Input
+                          type="text"
+                          value={editedMarks.obtainedMarks}
+                          onChange={(e) =>
+                            setEditedMarks({
+                              ...editedMarks,
+                              obtainedMarks: e.target.value,
+                            })
+                          }
+                        />
+                      ) : (
+                        educationRecord.obtained_marks
+                      )}
+                    </td>
+
                     <td>{educationRecord.percentage_criteria}%</td>
                     <td>{educationRecord.institution_name}</td>
                     <td>{educationRecord.school_name}</td>
@@ -413,6 +515,27 @@ const StudentInformation = (props) => {
                       >
                         View/Download
                       </Button>
+                    </td>
+                    <td>
+                      {isEditing === index ? (
+                        <Button
+                          title="Save"
+                          outline
+                          color="success"
+                          onClick={() => toggleEdit(index)}
+                        >
+                          <Save></Save>
+                        </Button>
+                      ) : (
+                        <Button
+                          title="Edit"
+                          outline
+                          color="primary"
+                          onClick={() => toggleEdit(index)}
+                        >
+                          <Edit3></Edit3>
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -781,4 +781,42 @@ public function getPdfStudentTest($filename)
 }
 
 
+public function updateEducationData(Request $request)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'studentId' => 'required|integer',
+            'degreeId' => 'required|integer',
+            'totalMarks' => 'required|integer',
+            'obtainedMarks' => 'required|integer',
+            'passingYear' => 'required|integer',
+        ]);
+
+        $degreeId = $validatedData['degreeId'];
+        $studentId = $validatedData['studentId'];
+
+
+        // Find the education record by degree ID
+        $education = education::where('degree_id', $degreeId)
+        ->where('student_id', $studentId)
+        ->first();
+
+        if (!$education) {
+            return response()->json(['message' => 'Education record not found'], 404);
+        }
+           // Calculate the percentage
+        $totalMarks = $validatedData['totalMarks'];
+        $obtainedMarks = $validatedData['obtainedMarks'];
+        $percentage = number_format(($obtainedMarks / $totalMarks) * 100, 2);
+        // Update the education record with the new data
+        $education->total_marks = $totalMarks;
+        $education->obtained_marks = $obtainedMarks;
+        $education->passing_year = $validatedData['passingYear'];
+        $education->percentage_criteria = $percentage; // Update the percentage field
+        $education->save();
+
+        return response()->json(['message' => 'Education data updated successfully']);
+    }
+
+
 }
