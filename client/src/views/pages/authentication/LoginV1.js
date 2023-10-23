@@ -56,8 +56,14 @@ const LoginV1 = () => {
           "StudentInfo",
           JSON.stringify(responseData.original.user)
         );
+
+        setTimeout(() => {
+          if (localStorage.getItem("StudentInfo")) {
+            history.push("/adminhome");
+          }
+        }, 5000);
         // Now you can access user details from responseData
-        history.push("/adminhome");
+
         console.log("Login successful");
       } else {
         console.error("Login failed");

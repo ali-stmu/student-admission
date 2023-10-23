@@ -87,12 +87,17 @@ const Login = (props) => {
       });
       const data = await response.json();
       if (response.status === 200) {
-        console.log("login sucessfull");
-        //console.log(data.original.details)
+        console.log("login successful");
+        // console.log(data.original.details)
         const session = JSON.stringify(data.original.details);
         localStorage.setItem("StudentInfo", session);
 
-        history.push("/home");
+        // Introduce a delay before navigating
+        setTimeout(() => {
+          if (localStorage.getItem("StudentInfo")) {
+            history.push("/home");
+          }
+        }, 5000); // 2000 milliseconds (2 seconds) delay
       } else {
         console.log("Email or password is incorrect");
         setEmailError("Email or password is incorrect");
