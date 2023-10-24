@@ -49,6 +49,19 @@ const ApplicationRejected = () => {
         console.error(error);
       });
   };
+  const handleRemarksCell = (remarks) => {
+    return (
+      <div
+        style={{
+          whiteSpace: "normal",
+          overflow: "visible",
+          textOverflow: "clip",
+        }}
+      >
+        {remarks}
+      </div>
+    );
+  };
 
   const handleProgramChange = (event) => {
     const programId = event.target.value;
@@ -135,6 +148,7 @@ const ApplicationRejected = () => {
             name: "Remarks",
             selector: "remarks",
             sortable: true,
+            cell: (row) => handleRemarksCell(row.remarks),
           },
         ]}
         data={filteredApplicants.map((applicant, index) => ({
