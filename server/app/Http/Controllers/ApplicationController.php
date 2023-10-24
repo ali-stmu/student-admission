@@ -366,8 +366,8 @@ public function store(Request $request)
             'upload_date' => $request->input('challanPaidDate'),
             'status' => 'Pending',
             'bank_name' => $request->input('bankName'),
-            'branch_code' => $request->input('bankName'),
-            'transaction_id' => $request->input('bankName'),
+            'branch_code' => $request->input('branchCode'),
+            'transaction_id' => $request->input('transactionID'),
             'mode_of_payment' => $request->input('modeOfPayment'),
         ]
     );
