@@ -96,6 +96,7 @@ const Login = (props) => {
         setTimeout(() => {
           if (localStorage.getItem("StudentInfo")) {
             history.push("/home");
+            window.location.reload();
           }
         }, 5000); // 2000 milliseconds (2 seconds) delay
       } else {

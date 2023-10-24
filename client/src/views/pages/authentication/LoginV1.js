@@ -60,6 +60,7 @@ const LoginV1 = () => {
         setTimeout(() => {
           if (localStorage.getItem("StudentInfo")) {
             history.push("/adminhome");
+            window.location.reload();
           }
         }, 5000);
         // Now you can access user details from responseData
