@@ -97,7 +97,7 @@ const ApplicationRejected = () => {
       </FormGroup>
 
       <DataTable
-        title="Fee Rejected Applicants"
+        title="Rejected Applicants"
         columns={[
           {
             name: "Sr#",

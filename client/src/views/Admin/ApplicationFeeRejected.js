@@ -106,7 +106,7 @@ const ApplicationFeeRejected = () => {
     return (
       <div>
         <Button outline color="info" onClick={downloadReceipt}>
-          Download Receipt
+          Download
         </Button>
       </div>
     );
