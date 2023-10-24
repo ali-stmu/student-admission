@@ -188,7 +188,9 @@ const ApplicationFeeReceived = () => {
     {
       name: "Name",
       selector: (row) =>
-        `${row.student_information.first_name} ${row.student_information.last_name}`,
+        `${row.student_information.first_name ?? ""} ${
+          row.student_information.last_name ?? ""
+        }`,
       sortable: true,
       cell: (row) => (
         <div>
@@ -201,8 +203,8 @@ const ApplicationFeeReceived = () => {
             color="info"
             onClick={() => handleNameClick(row)}
           >
-            {row.student_information.first_name}{" "}
-            {row.student_information.last_name}
+            {row.student_information.first_name ?? ""}{" "}
+            {row.student_information.last_name ?? ""}
           </Button>
         </div>
       ),
@@ -211,30 +213,35 @@ const ApplicationFeeReceived = () => {
       name: "Father Name",
       selector: "student_information.father_name",
       sortable: true,
-      cell: (row) => <div>{row.student_information.father_name}</div>,
+      cell: (row) => <div>{row.student_information.father_name ?? ""}</div>,
     },
     {
       name: "CNIC",
       selector: "cnic.cnic",
       sortable: true,
-      cell: (row) => <div>{row.cnic.cnic}</div>,
+      cell: (row) => <div>{row.cnic.cnic ?? ""}</div>,
     },
     {
       name: "Contact No",
       selector: "student_information.phone_number",
       sortable: true,
-      cell: (row) => <div>{row.student_information.phone_number}</div>,
+      cell: (row) => <div>{row.student_information.phone_number ?? ""}</div>,
     },
     {
       name: "Intermediate %",
       selector: "intermediate_percentage.percentage_criteria",
       sortable: true,
+      cell: (row) => (
+        <div>{row.intermediate_percentage.percentage_criteria ?? ""}</div>
+      ),
     },
     {
       name: "Test %",
       selector: "test_score_percentage.percentage",
       sortable: true,
+      cell: (row) => <div>{row.test_score_percentage?.percentage ?? ""}</div>,
     },
+
     {
       name: "Date",
       selector: "date",
@@ -244,6 +251,7 @@ const ApplicationFeeReceived = () => {
       name: "Voucher ID",
       selector: "voucherId",
       sortable: true,
+      cell: (row) => <div>{row.voucherId ?? ""}</div>,
     },
     {
       name: "Paid Receipt",
