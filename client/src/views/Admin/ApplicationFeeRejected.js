@@ -139,15 +139,21 @@ const ApplicationFeeRejected = () => {
         ]}
         data={filteredApplicants.map((applicant, index) => ({
           sr: index + 1,
-          name: `${applicant.student_information.first_name} ${applicant.student_information.last_name}`,
-          father_name: applicant.student_information.father_name,
-          contact_no: applicant.student_information.phone_number,
-          intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
-          test_percentage: `${applicant.test_score_percentage.percentage}%`,
-          remarks: `${applicant.remarks}`,
-          date: `${applicant.date}`,
-          voucherId: `${applicant.voucherId}`,
-          cnic: `${applicant.cnic.cnic}`,
+          name: `${applicant.student_information?.first_name ?? ""} ${
+            applicant.student_information?.last_name ?? ""
+          }`,
+          father_name: applicant.student_information?.father_name ?? "",
+          contact_no: applicant.student_information?.phone_number ?? "",
+          intermediate_percentage: `${
+            applicant.intermediate_percentage?.percentage_criteria ?? ""
+          }%`,
+          test_percentage: `${
+            applicant.test_score_percentage?.percentage ?? ""
+          }%`,
+          remarks: `${applicant.remarks ?? ""}`,
+          date: `${applicant.date ?? ""}`,
+          voucherId: `${applicant.voucherId ?? ""}`,
+          cnic: `${applicant.cnic?.cnic ?? ""}`,
         }))}
         pagination
         responsive
