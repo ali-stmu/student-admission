@@ -403,6 +403,7 @@ foreach ($vouchers as $voucher) {
         'intermediate_percentage' => $intermediatePercentage,
         'test_score_percentage' => $testScorePercentage,
         'remarks' => $remarks,
+        'file_name' => $voucher->voucher_file_name,
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
         'voucherId' => $voucherID,
         'cnic'=> $cnic,

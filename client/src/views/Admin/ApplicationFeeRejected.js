@@ -49,6 +49,7 @@ const ApplicationFeeRejected = () => {
         console.error(error);
       });
   };
+  console.log(filteredApplicants);
   const handleRemarksCell = (remarks) => {
     return (
       <div
@@ -75,7 +76,41 @@ const ApplicationFeeRejected = () => {
     setOriginalApplicants(applicants);
   }, [applicants]);
   console.log(selectedProgram);
-  console.log(selectedProgram);
+  const handleReceiptCell = (fileName) => {
+    const downloadReceipt = () => {
+      axios
+        .get(`${BASE_URL}download-receipt/${fileName}`, {
+          responseType: "blob",
+        }) // Specify the response type as 'blob' to receive binary data
+        .then((response) => {
+          // Determine the content type from the response headers
+          const contentType = response.headers["content-type"];
+
+          // Create a Blob object from the response data
+          const blob = new Blob([response.data], { type: contentType });
+
+          // Create a URL for the Blob
+          const blobUrl = window.URL.createObjectURL(blob);
+
+          // Open the Blob URL in a new tab
+          window.open(blobUrl);
+
+          // Release the Blob URL when it's no longer needed
+          window.URL.revokeObjectURL(blobUrl);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    };
+
+    return (
+      <div>
+        <Button outline color="info" onClick={downloadReceipt}>
+          Download Receipt
+        </Button>
+      </div>
+    );
+  };
   return (
     <div>
       <FormGroup>
@@ -145,6 +180,12 @@ const ApplicationFeeRejected = () => {
             sortable: true,
           },
           {
+            name: "Paid Receipt",
+            selector: "file_name", // Adjust the data selector as needed
+            sortable: true,
+            cell: (row) => handleReceiptCell(row.file_name),
+          },
+          {
             name: "Remarks",
             selector: "remarks",
             sortable: true,
@@ -168,6 +209,7 @@ const ApplicationFeeRejected = () => {
           date: `${applicant.date ?? ""}`,
           voucherId: `${applicant.voucherId ?? ""}`,
           cnic: `${applicant.cnic?.cnic ?? ""}`,
+          file_name: `${applicant.file_name ?? ""}`,
         }))}
         pagination
         responsive
