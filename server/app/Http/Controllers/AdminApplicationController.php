@@ -190,6 +190,9 @@ public function fetchAllStudentData($studentId, $programId)
             // If the student is not found, return an appropriate response
             return response()->json(['message' => 'Student not found'], 404);
         }
+        $email = User::select('email')
+            ->where('user_id' , $student->user_id)
+            ->first();
 
         // Attempt to fetch education data with the related degree information
         $education = Education::where('student_id', $studentId)
@@ -237,6 +240,7 @@ public function fetchAllStudentData($studentId, $programId)
         $studentData = $student;
         $testScoresData = $testScores;
         $voucherData = $voucher;
+        
 
         // Return a success response with the data
         return response()->json([
@@ -244,6 +248,7 @@ public function fetchAllStudentData($studentId, $programId)
             'educationData' => $educationData,
             'testScoresData' => $testScoresData,
             'voucher' => $voucherData,
+            'email' => $email,
         ], 200);
     } catch (\Exception $e) {
         // Handle any unexpected exceptions and return an error response

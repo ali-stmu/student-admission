@@ -378,6 +378,10 @@ const StudentInformation = (props) => {
                   </td>
                 </tr>
                 <tr>
+                  <td>Email:</td>
+                  <td>{studentDetails.email.email}</td>
+                </tr>
+                <tr>
                   <td>Date of Birth:</td>
                   <td>{studentDetails.studentData.date_of_birth}</td>
                 </tr>
