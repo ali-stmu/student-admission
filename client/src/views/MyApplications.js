@@ -36,6 +36,7 @@ const MyApplications = () => {
         console.error("Error fetching voucher details:", error);
       });
   }, []);
+  console.log(voucherDetails);
 
   return (
     <div>
@@ -48,6 +49,7 @@ const MyApplications = () => {
               <tr>
                 <th>Sr.#</th>
                 <th>Program Name</th>
+                <th>Fee Status</th>
                 <th>Application Status</th>
               </tr>
             </thead>
@@ -57,6 +59,7 @@ const MyApplications = () => {
                   <td>{serialNumber++}</td>
                   <td>{program.program_name}</td>
                   <td>{program.status}</td>
+                  <td>{program.application_status}</td>
                 </tr>
               ))}
             </tbody>

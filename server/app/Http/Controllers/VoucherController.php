@@ -40,6 +40,8 @@ class VoucherController extends Controller
             foreach ($vouchers as $voucher) {
                 $programId = $voucher->program_id;
                 $status = $voucher->status;
+                $application_status = $voucher->application_status;
+
 
                 // Query the Program model to get program details by program_id
                 $program = Program::where('Program_id', $programId)->first();
@@ -50,6 +52,8 @@ class VoucherController extends Controller
                         'program_id' => $programId,
                         'program_name' => $program->program_name, // Assuming 'program_name' is the field you want
                         'status' => $status,
+                        'application_status' => $application_status,
+
                     ]; // Assuming 'program_name' is the field you want
                 }
             }

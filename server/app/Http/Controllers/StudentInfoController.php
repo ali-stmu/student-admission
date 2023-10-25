@@ -109,6 +109,8 @@ public function getPriority(Request $request)
                 }
             // Get the student's voucher IDs for programs they've already applied to                
              $voucherProgramIds = Voucher::where('student_id', $studentId)
+                ->whereIn('status', ['Pending', 'Verified'])
+                ->whereIn('application_status', ['Pending', 'Verified'])
                  ->pluck('program_id')
                  ->toArray();
                 //log::debug($voucherProgramIds);
