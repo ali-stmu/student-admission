@@ -500,50 +500,57 @@ return response()->json(['applicantsData' => $applicantsData]);
 public function ApplicantsfeeApplicationPending(Request $request, $program_id)
 {
     log::debug($program_id);
-    $vouchers = Application::where('program_id_4', $program_id)
+$applications = Application::where('program_id_4', $program_id)
     ->orWhere('program_id_1', $program_id)
     ->orWhere('program_id_2', $program_id)
     ->orWhere('program_id_3', $program_id)
     ->get();
+
 $applicantsData = [];
-log::debug($vouchers);
+log::debug($applications);
 
-foreach ($vouchers as $voucher) {
-    $studentId = $voucher->student_id;
-    $userId = Student::select('user_id')
-    ->where('student_id', $studentId)
-    ->first();
+foreach ($applications as $application) {
+    $studentId = $application->student_id;
 
-    $userId = json_decode($userId, true);
+    // Check if the student_id exists in voucher.student_id
+    $voucherExists = Voucher::where('student_id', $studentId)->exists();
 
-    // Now you can access the 'user_id' key
-    $user_id = $userId['user_id'];
-    $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+    if (!$voucherExists) {
+        $userId = Student::select('user_id')
+            ->where('student_id', $studentId)
+            ->first();
 
-    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number')
-        ->where('student_id', $studentId)
-        ->first();
+        $userId = json_decode($userId, true);
 
-    $intermediatePercentage = Education::select('percentage_criteria')
-        ->where('student_id', $studentId)
-        ->where('degree_id', 2)
-        ->first();
+        // Now you can access the 'user_id' key
+        $user_id = $userId['user_id'];
+        $cnic = User::select('cnic')->where('user_id', $user_id)->first();
 
-    $testScorePercentage = TestScore::select('percentage')
-        ->where('student_id', $studentId)
-        ->first();
+        $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number')
+            ->where('student_id', $studentId)
+            ->first();
 
-    $applicantsData[] = [
-        'student_information' => $studentInformation,
-        'intermediate_percentage' => $intermediatePercentage,
-        'test_score_percentage' => $testScorePercentage,
-        'cnic' => $cnic,
-    ];
+        $intermediatePercentage = Education::select('percentage_criteria')
+            ->where('student_id', $studentId)
+            ->where('degree_id', 2)
+            ->first();
+
+        $testScorePercentage = TestScore::select('percentage')
+            ->where('student_id', $studentId)
+            ->first();
+
+        $applicantsData[] = [
+            'student_information' => $studentInformation,
+            'intermediate_percentage' => $intermediatePercentage,
+            'test_score_percentage' => $testScorePercentage,
+            'cnic' => $cnic,
+        ];
+    }
     log::debug($applicantsData);
 }
 
-
 return response()->json(['applicantsData' => $applicantsData]);
+
 }
 
 
