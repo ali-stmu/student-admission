@@ -261,7 +261,10 @@ public function fetchAllStudentData($studentId, $programId)
 
 public function ApplicantsfeeApplicationVerified(Request $request, $program_id)
 {
-    $vouchers = Voucher::where('program_id', $program_id)->where('status', "Verified")->get();
+    $vouchers = Voucher::where('program_id', $program_id)
+    ->where('status', "Verified")
+    ->where('application_status', "Pending")
+    ->get();
     log::debug($vouchers);
 
 $applicantsData = [];
@@ -314,7 +317,10 @@ return response()->json(['applicantsData' => $applicantsData]);
 
 public function ApplicantsApplicationVerified(Request $request, $program_id)
 {
-    $vouchers = Voucher::where('program_id', $program_id)->where('application_status', "Verified")->get();
+    $vouchers = Voucher::where('program_id', $program_id)
+    ->where('application_status', "Verified")
+    ->where('status', "Verified")
+    ->get();
     log::debug($vouchers);
 
 $applicantsData = [];
@@ -366,7 +372,10 @@ return response()->json(['applicantsData' => $applicantsData]);
 
 public function ApplicantsfeeApplicationRejected(Request $request, $program_id)
 {
-    $vouchers = Voucher::where('program_id', $program_id)->where('status', "Rejected")->get();
+    $vouchers = Voucher::where('program_id', $program_id)
+    ->where('status', "Rejected")
+    ->where('application_status', "Pending")
+    ->get();
     log::debug($vouchers);
 
 $applicantsData = [];
