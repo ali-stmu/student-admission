@@ -201,6 +201,7 @@ const ApplicationFeeReceived = () => {
               fontSize: "14px",
             }}
             color="info"
+            outline
             onClick={() => handleNameClick(row)}
           >
             {row.student_information.first_name ?? ""}{" "}
@@ -258,6 +259,7 @@ const ApplicationFeeReceived = () => {
       cell: (row) => (
         <Button
           color="primary"
+          outline
           onClick={() => handlePaidReceiptClick(row.file_name)}
           style={{
             marginRight: "10px",
@@ -275,6 +277,7 @@ const ApplicationFeeReceived = () => {
         <>
           <Button
             color="success"
+            outline
             onClick={() =>
               handleVerifyApplicationClick(
                 row.student_information.student_id,
@@ -293,6 +296,7 @@ const ApplicationFeeReceived = () => {
           </Button>
           <Button
             color="danger"
+            outline
             onClick={() =>
               handleRejectApplicationClick(
                 row.student_information.student_id,
@@ -313,6 +317,10 @@ const ApplicationFeeReceived = () => {
     // Initialize the original applicants list when the component mounts
     setOriginalApplicants(applicants);
   }, [applicants]);
+  useEffect(() => {
+    // Initialize the original applicants list when the component mounts
+    getFeePaidApplicants(selectedProgram);
+  }, [successMessage, errorMessage]);
   console.log(applicants);
   return (
     <div>
