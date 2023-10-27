@@ -692,7 +692,7 @@ public function rejectApplication(Request $request)
     $voucher->remarks = $rejectRemarks;
     $voucher->save();
 
-    $VerificatonWithMessage = 'Dear Applicant,' . "\n\n" . 'Your Application No' . " " .$voucherId . " " .'  for program' . " " . $programName . " " . "fee has been Rejected. due to ". $rejectRemarks . "\n\n" ."Regards," . "\n\n" . "Admission Office" ;
+    $VerificatonWithMessage = 'Dear Applicant,' . "\n\n" . 'Your Application No' . " " .$voucherId . " " .'  for program' . " " . $programName . " " . "fee has been Rejected. due to ". $rejectRemarks . "\n". "You are advised to login to admission portal and complete/correct the information and resubmit the application". "\n\n" ."Regards," . "\n\n" . "Admission Office" ;
     Mail::raw(($VerificatonWithMessage), function ($message) use ($email) {
         $message->to($email);
         $message->subject('STMU-Admission Update');
