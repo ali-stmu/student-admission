@@ -81,6 +81,10 @@ Route::post('/adminlogin', [AuthController::class, 'AdminloginCheck']);
 Route::get('/feeapplicationreceived/{user_id}', [AdminApplicationController::class, 'feeApplicationReceived']);
 
 Route::get('/getfeepaidapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationReceived']);
+Route::get('/getfeepaidapplicantsexcel/{program_id}', [AdminApplicationController::class, 'feeReceivedExcel']);
+Route::get('/getfeepaidapplicantpdf/{program_id}', [AdminApplicationController::class, 'feeReceivedPdf']);
+
+
 
 Route::get('/getfeependingapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationPending']);
 Route::get('/getfeeverifiedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationVerified']);

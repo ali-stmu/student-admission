@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use PDF; // Assuming you have Dompdf or any other PDF generation library installed
 
 class AdminApplicationController extends Controller
 {
@@ -63,17 +67,17 @@ class AdminApplicationController extends Controller
             return response()->json(['message' => 'An error occurred'], 500);
         }
     }
-    public function ApplicantsfeeApplicationReceived(Request $request, $program_id)
+public function ApplicantsfeeApplicationReceived(Request $request, $program_id)
 {
     $vouchers = Voucher::where('program_id', $program_id)->where('status', "Pending")->get();
 
-$applicantsData = [];
-$voucherPath = storage_path('app/voucher_files/');
+    $applicantsData = [];
+    $voucherPath = storage_path('app/voucher_files/');
 
-foreach ($vouchers as $voucher) {
-    $studentId = $voucher->student_id;
-    $programId = $voucher->program_id;
-    $voucherID = $this->getVoucherId($studentId,$program_id);
+    foreach ($vouchers as $voucher) {
+        $studentId = $voucher->student_id;
+        $programId = $voucher->program_id;
+        $voucherID = $this->getVoucherId($studentId,$program_id);
 
     $userId = Student::select('user_id')
         ->where('student_id', $studentId)
@@ -114,12 +118,91 @@ foreach ($vouchers as $voucher) {
 
     ];
     //log::debug($applicantsData);
+  }
+ 
+  return response()->json(['applicantsData' => $applicantsData]);
+}
+public function feeReceivedExcel(Request $request, $program_id)
+{
+    // Retrieve applicant data using the ApplicantsfeeApplicationReceived function.
+    $response = $this->ApplicantsfeeApplicationReceived($request, $program_id);
+    $applicantsData = json_decode($response->getContent(), true);
+
+    log::debug($applicantsData);
+
+    // Create a new spreadsheet
+    $spreadsheet = new Spreadsheet();
+
+    // Create a new worksheet
+    $worksheet = $spreadsheet->getActiveSheet();
+
+    // Define the column headers
+    $headers = [
+        'Full Name',
+        'Father Name',
+        'Phone Number',
+        'Student ID',
+        'Intermediate Percentage',
+        'Test Score Percentage',
+        'CNIC',
+        'Voucher Id',
+        'Date',
+        // Add more headers as needed
+    ];
+
+    // Set the column headers
+    $worksheet->fromArray([$headers], null, 'A1');
+
+    // Extract and format the data from $applicantsData
+    $data = [];
+    foreach ($applicantsData['applicantsData'] as $applicant) {
+        $data[] = [
+            $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'],
+            $applicant['student_information']['father_name'],
+            $applicant['student_information']['phone_number'],
+            $applicant['student_information']['student_id'],
+            $applicant['intermediate_percentage']['percentage_criteria'],
+            $applicant['test_score_percentage']['percentage'],
+            $applicant['cnic']['cnic'],
+            $applicant['voucherId'],
+            $applicant['date'],
+            // Add more data fields as needed
+        ];
+    }
+
+    // Set the data rows
+    $worksheet->fromArray($data, null, 'A2');
+
+    // Create a temporary file to save the spreadsheet
+    $tempFilePath = tempnam(sys_get_temp_dir(), 'applicants_');
+    $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+    $writer->save($tempFilePath);
+
+    // Return the Excel file as a response
+    return response()->download($tempFilePath, 'applicants_Fee_Recieved.xlsx')->deleteFileAfterSend(true);
 }
 
 
-return response()->json(['applicantsData' => $applicantsData]);
-}
+public function feeReceivedPdf(Request $request, $program_id)
+{
+    // Retrieve applicant data using the ApplicantsfeeApplicationReceived function.
+    $response = $this->ApplicantsfeeApplicationReceived($request, $program_id);
+    $applicantsData = json_decode($response->getContent(), true);
 
+    log::debug($applicantsData);
+    // Create a new PDF instance
+    $pdf = PDF::loadView('pdf.applicantsFeeReceived', ['applicantsData' => $applicantsData]);
+
+    // Generate the PDF content
+    $pdfContent = $pdf->output();
+
+    // Save the PDF to a temporary file
+    $pdfFilePath = public_path('temp/applicants.pdf');
+    file_put_contents($pdfFilePath, $pdfContent);
+
+    // Return the PDF file path or you can return the PDF as a download
+    return response()->file($pdfFilePath);
+}
 
 // Voucher ID
 

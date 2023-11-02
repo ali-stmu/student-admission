@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { FormGroup, Input, Label, Button } from "reactstrap";
+import { FormGroup, Input, Label, Button, Row, Col } from "reactstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { BASE_URL } from "../../config";
@@ -11,6 +11,8 @@ import {
   Check,
   XCircle,
   CheckCircle,
+  Save,
+  Download,
 } from "react-feather";
 //import { css } from "react-emotion";
 import { ClipLoader } from "react-spinners";
@@ -78,6 +80,47 @@ const ApplicationFeeReceived = () => {
         console.error(error);
       });
   };
+  const getFeePaidApplicantExcel = () => {
+    fetch(`${BASE_URL}getfeepaidapplicantsexcel/${selectedProgram}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary <a> element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feereceivedapplicants.xlsx"; // You can specify the file name here
+        document.body.appendChild(a);
+
+        // Trigger the download
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+      });
+  };
+  const getFeePaidApplicantPdf = () => {
+    fetch(`${BASE_URL}getfeepaidapplicantpdf/${selectedProgram}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary <a> element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feereceivedapplicants.pdf"; // Change the file extension if it's a PDF
+        document.body.appendChild(a);
+
+        // Trigger the download
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+      });
+  };
+
   const handleVerifyApplicationClick = (studentId, programId) => {
     // Set loading to true to show the loading spinner
     setLoading(true);
@@ -343,6 +386,22 @@ const ApplicationFeeReceived = () => {
       </FormGroup>
       <div className="centered-container">
         {/* Your existing code here */}
+        <Row>
+          <Button
+            title="Save Excel"
+            outline
+            color="info"
+            onClick={getFeePaidApplicantExcel}
+            style={{ marginRight: "10px" }} // Add this style for spacing
+          >
+            Excel<br></br>
+            <Download></Download>
+          </Button>
+          <Button outline color="secondary" onClick={getFeePaidApplicantPdf}>
+            PDF<br></br>
+            <Download></Download>
+          </Button>
+        </Row>
 
         {/* Display the loading spinner when loading is true */}
         {loading && (
