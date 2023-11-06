@@ -42,6 +42,9 @@ const StudentInformation = (props) => {
     obtainedMarks: 0,
   });
   const toggleEdit = (index) => {
+    const rolesFromStorage = localStorage.getItem("StudentInfo");
+    const studentInfo = JSON.parse(rolesFromStorage);
+    const Tempemail = studentInfo.email;
     if (isEditing === index) {
       const degreeId = studentDetails.educationData[index].degree_id;
       const StudentId = studentDetails.studentData.student_id;
@@ -55,6 +58,7 @@ const StudentInformation = (props) => {
       // using the editedMarks state and degreeId
 
       const requestData = {
+        userEmail: Tempemail,
         studentId: StudentId,
         degreeId: degreeId,
         totalMarks: editedMarks.totalMarks,
@@ -90,6 +94,9 @@ const StudentInformation = (props) => {
 
   const toggleEditTest = (index) => {
     if (isEditingTest === index) {
+      const rolesFromStorage = localStorage.getItem("StudentInfo");
+      const studentInfo = JSON.parse(rolesFromStorage);
+      const Tempemail = studentInfo.email;
       const testScoreId = studentDetails.testScoresData[index].test_score_id;
       const StudentId = studentDetails.studentData.student_id;
       console.log(testScoreId);
@@ -101,6 +108,7 @@ const StudentInformation = (props) => {
       // using the editedMarks state and degreeId
 
       const requestData = {
+        userEmail: Tempemail,
         studentId: StudentId,
         testScoreId: testScoreId,
         totalMarks: editedMarksTest.totalMarks,

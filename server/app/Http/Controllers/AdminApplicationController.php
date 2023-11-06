@@ -1195,41 +1195,57 @@ public function getPdfStudentTest($filename)
 
 
 public function updateEducationData(Request $request)
-    {
-        // Validate the request data
-        $validatedData = $request->validate([
-            'studentId' => 'required|integer',
-            'degreeId' => 'required|integer',
-            'totalMarks' => 'required|integer',
-            'obtainedMarks' => 'required|integer',
-            'passingYear' => 'required|integer',
-        ]);
+{
+    // Validate the request data
+    $validatedData = $request->validate([
+        'studentId' => 'required|integer',
+        'degreeId' => 'required|integer',
+        'totalMarks' => 'required|integer',
+        'obtainedMarks' => 'required|integer',
+        'passingYear' => 'required|integer',
+    ]);
 
-        $degreeId = $validatedData['degreeId'];
-        $studentId = $validatedData['studentId'];
+    $degreeId = $validatedData['degreeId'];
+    $studentId = $validatedData['studentId'];
 
-
-        // Find the education record by degree ID
-        $education = education::where('degree_id', $degreeId)
+    // Find the education record by degree ID
+    $education = Education::where('degree_id', $degreeId)
         ->where('student_id', $studentId)
         ->first();
 
-        if (!$education) {
-            return response()->json(['message' => 'Education record not found'], 404);
-        }
-           // Calculate the percentage
-        $totalMarks = $validatedData['totalMarks'];
-        $obtainedMarks = $validatedData['obtainedMarks'];
-        $percentage = number_format(($obtainedMarks / $totalMarks) * 100, 2);
-        // Update the education record with the new data
-        $education->total_marks = $totalMarks;
-        $education->obtained_marks = $obtainedMarks;
-        $education->passing_year = $validatedData['passingYear'];
-        $education->percentage_criteria = $percentage; // Update the percentage field
-        $education->save();
-
-        return response()->json(['message' => 'Education data updated successfully']);
+    if (!$education) {
+        return response()->json(['message' => 'Education record not found'], 404);
     }
+
+    // Calculate the percentage
+    $totalMarks = $validatedData['totalMarks'];
+    $obtainedMarks = $validatedData['obtainedMarks'];
+    $percentage = number_format(($obtainedMarks / $totalMarks) * 100, 2);
+
+    // Fetch student data
+    $student = Student::where('student_id', $studentId)->first();
+
+    // Update the education record with the new data
+    $education->total_marks = $totalMarks;
+    $education->obtained_marks = $obtainedMarks;
+    $education->passing_year = $validatedData['passingYear'];
+    $education->percentage_criteria = $percentage;
+    $education->save();
+
+    // Prepare the message content
+    $messageContent = "Student ID: $studentId\nFirst Name: {$student->first_name}\nLast Name: {$student->last_name}\n";
+    $messageContent .= "Existing Total Marks: {$education->total_marks}\nExisting Obtained Marks: {$education->obtained_marks}\nExisting Passing Year: {$education->passing_year}\nExisting Percentage: {$education->percentage_criteria}\n";
+    $messageContent .= "Modified Total Marks: $totalMarks\nModified Obtained Marks: $obtainedMarks\nModified Passing Year: {$validatedData['passingYear']}\nModified Percentage: $percentage\n";
+    $messageContent .= "By Admin {$request->userEmail}";
+    // Send the email using Mail::raw
+    Mail::raw($messageContent, function ($message) use ($studentId, $student, $education, $totalMarks, $obtainedMarks, $percentage) {
+        $message->to('khubaib.mis@stmu.edu.pk');
+        $message->subject('Education Data Updated');
+    });
+
+    return response()->json(['message' => 'Education data updated successfully']);
+}
+
 
 
     public function updateTestData(Request $request)
@@ -1241,30 +1257,54 @@ public function updateEducationData(Request $request)
             'totalMarks' => 'required|integer',
             'obtainedMarks' => 'required|integer',
         ]);
-
+    
         $studentId = $validatedData['studentId'];
         $testScoreId = $validatedData['testScoreId'];
-
+    
         // Find the education record by degree ID
         $education = TestScore::where('test_score_id', $testScoreId)
-        ->where('student_id', $studentId)
-        ->first();
-
+            ->where('student_id', $studentId)
+            ->first();
+    
         if (!$education) {
             return response()->json(['message' => 'Test record not found'], 404);
         }
-           // Calculate the percentage
+    
+        // Calculate the percentage
         $totalMarks = $validatedData['totalMarks'];
         $obtainedMarks = $validatedData['obtainedMarks'];
         $percentage = number_format(($obtainedMarks / $totalMarks) * 100, 2);
+    
+        // Fetch student data
+        $student = Student::where('student_id', $studentId)->first();
+    
+        // Store existing test scores
+        $existingTotalMarks = $education->test_score_total;
+        $existingObtainedMarks = $education->test_score;
+        $existingPercentage = $education->percentage;
+    
         // Update the education record with the new data
         $education->test_score_total = $totalMarks;
         $education->test_score = $obtainedMarks;
-        $education->percentage = $percentage; // Update the percentage field
+        $education->percentage = $percentage;
         $education->save();
+    
+        // Prepare the message content
+        $messageContent = "Student ID: $studentId\nFirst Name: {$student->first_name}\nLast Name: {$student->last_name}\n";
+        $messageContent .= "Existing Total Marks: $existingTotalMarks\nExisting Obtained Marks: $existingObtainedMarks\nExisting Percentage: $existingPercentage\n";
+        $messageContent .= "Modified Total Marks: $totalMarks\nModified Obtained Marks: $obtainedMarks\nModified Percentage: $percentage\n";
+        $messageContent .= "By Admin {$request->userEmail}";
 
+    
+        // Send the email using Mail::raw
+        Mail::raw($messageContent, function ($message) use ($studentId, $student, $existingTotalMarks, $existingObtainedMarks, $existingPercentage, $totalMarks, $obtainedMarks, $percentage) {
+            $message->to('khubaib.mis@stmu.edu.pk');
+            $message->subject('Test Scores Updated');
+        });
+    
         return response()->json(['message' => 'Test data updated successfully']);
     }
+    
 
 
 }
