@@ -1,6 +1,7 @@
 import { BASE_URL } from "../../config";
 import React, { useRef, useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
+import "../Style/feereceived.css";
 
 import {
   Button,
@@ -12,8 +13,20 @@ import {
   CustomInput,
   FormFeedback,
   Table, // Import Table from reactstrap
+
   // ... other imports
 } from "reactstrap";
+import {
+  Mail,
+  Home,
+  Package,
+  cros,
+  Check,
+  XCircle,
+  CheckCircle,
+  Save,
+  Download,
+} from "react-feather";
 import axios from "axios";
 
 const ApplicationFeePending = () => {
@@ -49,6 +62,7 @@ const ApplicationFeePending = () => {
         console.error(error);
       });
   };
+  console.log(filteredApplicants);
 
   const handleProgramChange = (event) => {
     const programId = event.target.value;
@@ -56,6 +70,26 @@ const ApplicationFeePending = () => {
     if (programId) {
       getFeeUnPaidApplicants(programId);
     }
+  };
+  const getFeePendingApplicantExcel = () => {
+    fetch(`${BASE_URL}getfeependingapplicantsexcel/${selectedProgram}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary <a> element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feereceivedapplicants.xlsx"; // You can specify the file name here
+        document.body.appendChild(a);
+
+        // Trigger the download
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+      });
   };
 
   console.log(selectedProgram);
@@ -65,6 +99,24 @@ const ApplicationFeePending = () => {
   }, [applicants]);
   return (
     <div>
+      <div className="centered-container">
+        <Row>
+          <Button
+            title="Save Excel"
+            outline
+            color="info"
+            onClick={getFeePendingApplicantExcel}
+            style={{ marginRight: "10px" }} // Add this style for spacing
+          >
+            Excel<br></br>
+            <Download></Download>
+          </Button>
+          {/* <Button outline color="secondary" onClick={getFeePaidApplicantPdf}>
+            PDF<br></br>
+            <Download></Download>
+          </Button> */}
+        </Row>
+      </div>
       <FormGroup>
         <Label for="programDropdown">Select a Program:</Label>
         <Input

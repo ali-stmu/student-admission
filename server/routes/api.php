@@ -85,6 +85,9 @@ Route::get('/getfeepaidapplicantsexcel/{program_id}', [AdminApplicationControlle
 Route::get('/getfeepaidapplicantpdf/{program_id}', [AdminApplicationController::class, 'feeReceivedPdf']);
 
 
+Route::get('/getfeependingapplicantsexcel/{program_id}', [AdminApplicationController::class, 'feePendingExcel']);
+
+
 
 Route::get('/getfeependingapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationPending']);
 Route::get('/getfeeverifiedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationVerified']);

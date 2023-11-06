@@ -397,10 +397,10 @@ const ApplicationFeeReceived = () => {
             Excel<br></br>
             <Download></Download>
           </Button>
-          <Button outline color="secondary" onClick={getFeePaidApplicantPdf}>
+          {/* <Button outline color="secondary" onClick={getFeePaidApplicantPdf}>
             PDF<br></br>
             <Download></Download>
-          </Button>
+          </Button> */}
         </Row>
 
         {/* Display the loading spinner when loading is true */}

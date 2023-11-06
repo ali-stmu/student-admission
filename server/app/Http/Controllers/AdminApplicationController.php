@@ -183,26 +183,26 @@ public function feeReceivedExcel(Request $request, $program_id)
 }
 
 
-public function feeReceivedPdf(Request $request, $program_id)
-{
-    // Retrieve applicant data using the ApplicantsfeeApplicationReceived function.
-    $response = $this->ApplicantsfeeApplicationReceived($request, $program_id);
-    $applicantsData = json_decode($response->getContent(), true);
+// public function feeReceivedPdf(Request $request, $program_id)
+// {
+//     // Retrieve applicant data using the ApplicantsfeeApplicationReceived function.
+//     $response = $this->ApplicantsfeeApplicationReceived($request, $program_id);
+//     $applicantsData = json_decode($response->getContent(), true);
 
-    log::debug($applicantsData);
-    // Create a new PDF instance
-    $pdf = PDF::loadView('pdf.applicantsFeeReceived', ['applicantsData' => $applicantsData]);
+//     log::debug($applicantsData);
+//     // Create a new PDF instance
+//     $pdf = PDF::loadView('pdf.applicantsFeeReceived', ['applicantsData' => $applicantsData]);
 
-    // Generate the PDF content
-    $pdfContent = $pdf->output();
+//     // Generate the PDF content
+//     $pdfContent = $pdf->output();
 
-    // Save the PDF to a temporary file
-    $pdfFilePath = public_path('temp/applicants.pdf');
-    file_put_contents($pdfFilePath, $pdfContent);
+//     // Save the PDF to a temporary file
+//     $pdfFilePath = public_path('temp/applicants.pdf');
+//     file_put_contents($pdfFilePath, $pdfContent);
 
-    // Return the PDF file path or you can return the PDF as a download
-    return response()->file($pdfFilePath);
-}
+//     // Return the PDF file path or you can return the PDF as a download
+//     return response()->file($pdfFilePath);
+// }
 
 // Voucher ID
 
@@ -635,6 +635,65 @@ foreach ($applications as $application) {
 return response()->json(['applicantsData' => $applicantsData]);
 
 }
+
+
+public function feePendingExcel(Request $request, $program_id)
+{
+    // Retrieve applicant data using the ApplicantsfeeApplicationReceived function.
+    $response = $this->ApplicantsfeeApplicationPending($request, $program_id);
+    $applicantsData = json_decode($response->getContent(), true);
+
+    log::debug($applicantsData);
+
+    // Create a new spreadsheet
+    $spreadsheet = new Spreadsheet();
+
+    // Create a new worksheet
+    $worksheet = $spreadsheet->getActiveSheet();
+
+    // Define the column headers
+    $headers = [
+        'Full Name',
+        'Father Name',
+        'Phone Number',
+        'Intermediate Percentage',
+        'Test Score Percentage',
+        'CNIC',
+
+        // Add more headers as needed
+    ];
+
+    // Set the column headers
+    $worksheet->fromArray([$headers], null, 'A1');
+
+    // Extract and format the data from $applicantsData
+    $data = [];
+    foreach ($applicantsData['applicantsData'] as $applicant) {
+        $data[] = [
+            $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'],
+            $applicant['student_information']['father_name'],
+            $applicant['student_information']['phone_number'],
+            $applicant['intermediate_percentage']['percentage_criteria'],
+            $applicant['test_score_percentage']['percentage'],
+            $applicant['cnic']['cnic'],
+
+            // Add more data fields as needed
+        ];
+    }
+
+    // Set the data rows
+    $worksheet->fromArray($data, null, 'A2');
+
+    // Create a temporary file to save the spreadsheet
+    $tempFilePath = tempnam(sys_get_temp_dir(), 'applicants_');
+    $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+    $writer->save($tempFilePath);
+
+    // Return the Excel file as a response
+    return response()->download($tempFilePath, 'applicants_Fee_Recieved.xlsx')->deleteFileAfterSend(true);
+}
+
+
 
 
 
