@@ -1,7 +1,7 @@
 import { BASE_URL } from "../../config";
 import React, { useRef, useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
-
+import "../Style/feereceived.css";
 import {
   Button,
   FormGroup,
@@ -15,6 +15,17 @@ import {
   // ... other imports
 } from "reactstrap";
 import axios from "axios";
+import {
+  Mail,
+  Home,
+  Package,
+  cros,
+  Check,
+  XCircle,
+  CheckCircle,
+  Save,
+  Download,
+} from "react-feather";
 
 const ApplicationFeeRejected = () => {
   const [responseData, setResponseData] = useState(null);
@@ -62,6 +73,26 @@ const ApplicationFeeRejected = () => {
         {remarks}
       </div>
     );
+  };
+  const getFeeRejectedApplicantExcel = () => {
+    fetch(`${BASE_URL}getfeerejectedapplicantsexcel/${selectedProgram}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary <a> element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feereceivedapplicants.xlsx"; // You can specify the file name here
+        document.body.appendChild(a);
+
+        // Trigger the download
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+      });
   };
 
   const handleProgramChange = (event) => {
@@ -113,6 +144,24 @@ const ApplicationFeeRejected = () => {
   };
   return (
     <div>
+      <div className="centered-container">
+        <Row>
+          <Button
+            title="Save Excel"
+            outline
+            color="info"
+            onClick={getFeeRejectedApplicantExcel}
+            style={{ marginRight: "10px" }} // Add this style for spacing
+          >
+            Excel<br></br>
+            <Download></Download>
+          </Button>
+          {/* <Button outline color="secondary" onClick={getFeePaidApplicantPdf}>
+            PDF<br></br>
+            <Download></Download>
+          </Button> */}
+        </Row>
+      </div>
       <FormGroup>
         <Label for="programDropdown">Select a Program:</Label>
         <Input
