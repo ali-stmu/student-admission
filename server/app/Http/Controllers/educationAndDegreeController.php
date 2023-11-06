@@ -306,9 +306,15 @@ public function getScoresByUserId($user_id)
             $schoolName = $request->input('schoolName');
             $schoolCountry = $request->input('schoolCountry');
             $schoolCity = $request->input('schoolCity');
-            $percentage = $request->input('percentage');
-            log::debug($percentage);
+            //$percentage = $request->input('percentage');
+            //log::debug($percentage);
             log::debug($degreeFiles = $request->file('degree'));
+            // Calculate percentage and fix decimal precision to 2
+            $percentage = [];
+            foreach ($totalMarksCGPA as $index => $total) {
+                $obtained = $obtainedMarksCGPA[$index];
+                $percentage[$index] = number_format(($obtained / $total) * 100, 2);
+            }
 
             $educationRecords = Education::where('student_id', $studentId)->get();
             $documentRecords = Document::where('student_id', $studentId)->get();
