@@ -80,7 +80,6 @@ const ApplicationVerified = () => {
         window.URL.revokeObjectURL(url);
       });
   };
-  console.log(filteredApplicants);
 
   const handleProgramChange = (event) => {
     const programId = event.target.value;

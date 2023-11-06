@@ -819,6 +819,69 @@ public function appVerifiedExcel(Request $request, $program_id)
 
 
 
+public function appRejectedExcel(Request $request, $program_id)
+{
+    $response = $this->ApplicantsApplicationRejected($request, $program_id);
+    $applicantsData = json_decode($response->getContent(), true);
+
+    log::debug($applicantsData);
+
+    // Create a new spreadsheet
+    $spreadsheet = new Spreadsheet();
+
+    // Create a new worksheet
+    $worksheet = $spreadsheet->getActiveSheet();
+
+    // Define the column headers
+    $headers = [
+        'Full Name',
+        'Father Name',
+        'Phone Number',
+        'Student ID',
+        'Intermediate Percentage',
+        'Test Score Percentage',
+        'CNIC',
+        'Voucher Id',
+        'Date',
+        'Reject Remarks'
+        // Add more headers as needed
+    ];
+
+    // Set the column headers
+    $worksheet->fromArray([$headers], null, 'A1');
+
+    // Extract and format the data from $applicantsData
+    $data = [];
+    foreach ($applicantsData['applicantsData'] as $applicant) {
+        $data[] = [
+            ($applicant['student_information']['first_name'] ?? '') . " " . ($applicant['student_information']['last_name'] ?? ''),
+            $applicant['student_information']['father_name'] ?? '',
+            $applicant['student_information']['phone_number'] ?? '',
+            $applicant['student_information']['student_id'] ?? '',
+            $applicant['intermediate_percentage']['percentage_criteria'] ?? '',
+            $applicant['test_score_percentage']['percentage'] ?? '',
+            $applicant['cnic']['cnic'] ?? '',
+            $applicant['voucherId'] ?? '',
+            $applicant['date'] ?? '',
+            $applicant['remarks'] ?? '',
+            // Add more data fields as needed
+        ];
+    }
+
+    // Set the data rows
+    $worksheet->fromArray($data, null, 'A2');
+
+    // Create a temporary file to save the spreadsheet
+    $tempFilePath = tempnam(sys_get_temp_dir(), 'applicants_');
+    $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+    $writer->save($tempFilePath);
+
+    // Return the Excel file as a response
+    return response()->download($tempFilePath, 'applicants_Fee_Recieved.xlsx')->deleteFileAfterSend(true);
+}
+
+
+
 public function feeRejectedExcel(Request $request, $program_id)
 {
     $response = $this->ApplicantsfeeApplicationRejected($request, $program_id);

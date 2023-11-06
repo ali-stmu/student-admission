@@ -89,6 +89,8 @@ Route::get('/getfeependingapplicantsexcel/{program_id}', [AdminApplicationContro
 Route::get('/getfeeverifiedapplicantsexcel/{program_id}', [AdminApplicationController::class, 'feeVerifiedExcel']);
 Route::get('/getfeerejectedapplicantsexcel/{program_id}', [AdminApplicationController::class, 'feeRejectedExcel']);
 Route::get('/getapplicationverified/{program_id}', [AdminApplicationController::class, 'appVerifiedExcel']);
+Route::get('/getapplicationrejected/{program_id}', [AdminApplicationController::class, 'appRejectedExcel']);
+
 
 
 
