@@ -1,6 +1,7 @@
 import { BASE_URL } from "../../config";
 import React, { useRef, useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
+import "../Style/feereceived.css";
 
 import {
   Button,
@@ -15,7 +16,17 @@ import {
   // ... other imports
 } from "reactstrap";
 import axios from "axios";
-
+import {
+  Mail,
+  Home,
+  Package,
+  cros,
+  Check,
+  XCircle,
+  CheckCircle,
+  Save,
+  Download,
+} from "react-feather";
 const ApplicationFeeVerified = () => {
   const [responseData, setResponseData] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState("");
@@ -65,6 +76,26 @@ const ApplicationFeeVerified = () => {
 
     window.open(`/StudentInformation/${studentId}/${programId}`, "_blank");
   };
+  const getFeeVerifiedApplicantExcel = () => {
+    fetch(`${BASE_URL}getfeeverifiedapplicantsexcel/${selectedProgram}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary <a> element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feereceivedapplicants.xlsx"; // You can specify the file name here
+        document.body.appendChild(a);
+
+        // Trigger the download
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+      });
+  };
 
   useEffect(() => {
     // Initialize the original applicants list when the component mounts
@@ -73,6 +104,25 @@ const ApplicationFeeVerified = () => {
   console.log(selectedProgram);
   return (
     <div>
+      <div className="centered-container">
+        {/* Your existing code here */}
+        <Row>
+          <Button
+            title="Save Excel"
+            outline
+            color="info"
+            onClick={getFeeVerifiedApplicantExcel}
+            style={{ marginRight: "10px" }} // Add this style for spacing
+          >
+            Excel<br></br>
+            <Download></Download>
+          </Button>
+          {/* <Button outline color="secondary" onClick={getFeePaidApplicantPdf}>
+            PDF<br></br>
+            <Download></Download>
+          </Button> */}
+        </Row>
+      </div>
       <FormGroup>
         <Label for="programDropdown">Select a Program:</Label>
         <Input
