@@ -36,28 +36,38 @@ const ProgramPriority = ({ stepper, type }) => {
         console.log(data);
         if (data && data.priority_names && Array.isArray(data.priority_names)) {
           // Assume the API response contains an array of selected priorities
-          const priorities = data.priority_names;
-
+          const priorities = data.priority_names || [];
           // Autofill the priorities if they exist
           if (priorities.length >= 1) {
             setPriority1(
               programOptions.find((option) => option.value === priorities[0])
             );
+          } else {
+            setPriority1("");
           }
+
           if (priorities.length >= 2) {
             setPriority2(
               programOptions.find((option) => option.value === priorities[1])
             );
+          } else {
+            setPriority2("");
           }
+
           if (priorities.length >= 3) {
             setPriority3(
               programOptions.find((option) => option.value === priorities[2])
             );
+          } else {
+            setPriority3("");
           }
+
           if (priorities.length >= 4) {
             setPriority4(
               programOptions.find((option) => option.value === priorities[3])
             );
+          } else {
+            setPriority4("");
           }
         }
       })
@@ -93,12 +103,12 @@ const ProgramPriority = ({ stepper, type }) => {
       });
   }, [isDisabled]);
 
-  console.log(priority1, priority2, priority3, priority4);
   const handleSubmit = () => {
     // Prepare the data to send to the API
     const priorities = [priority1, priority2, priority3, priority4].filter(
       (priority) => priority !== null
     );
+    console.log(priorities);
 
     const dataToSend = {
       user_id: user_id,
