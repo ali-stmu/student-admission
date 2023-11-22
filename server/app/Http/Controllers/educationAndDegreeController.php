@@ -86,6 +86,14 @@ class EducationAndDegreeController extends Controller
         $test_reg_no = $record['test_reg_no'];
         $test_type = $record['test_type'];
         $attachment_url = null;
+        $existingSkippedTest = TestScore::where('student_id', $studentId)
+        ->where('skip_test', 1)
+        ->first();
+
+    // If such a record exists, delete it
+        if ($existingSkippedTest) {
+            $existingSkippedTest->delete();
+        }
         $existingTestInfo = TestScore::where('student_id', $studentId)
         ->where('test_type', $test_type)
         ->where('test_name', $test_name)

@@ -96,7 +96,6 @@ public function getPriority(Request $request)
             //ye condition un program k lye add ki hai jinki test score nai hain
             $testScores[0] = '-1';
             $testNames[0] = '-1';
-            log::debug($testNames);
             // Handle the case where there are no records
         }
 
@@ -163,9 +162,13 @@ public function getPriority(Request $request)
                     $query->where('test_criteria', 0);
                 } else {
                     log::debug("test criteria wala else chal gya");
-
-                    $query->where('test_criteria', '<=', $testScores);
+                
+                    $query->where(function($query) use ($testScores) {
+                        $query->where('test_criteria', 0)
+                              ->orWhere('test_criteria', '<=', $testScores);
+                    });
                 }
+                
 
                 $programs = $query->where('program_criteria', '<=', $percentage)
                     ->get();
@@ -215,6 +218,7 @@ public function getPriority(Request $request)
         if (empty($programs)) {
             return response()->json(['error' => 'No programs found'], 404);
         }
+        log::debug(response()->json(['Programs' => $programs]));
 
         return response()->json(['Programs' => $programs]);
     } catch (\Exception $e) {
