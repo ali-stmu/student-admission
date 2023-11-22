@@ -93,6 +93,7 @@ public function getPriority(Request $request)
                 // Perform actions with $testScore and $testName
             }
         } else {
+            //ye condition un program k lye add ki hai jinki test score nai hain
             $testScores[0] = '-1';
             $testNames[0] = '-1';
             log::debug($testNames);
