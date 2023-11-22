@@ -231,9 +231,13 @@ const ApplicationFeeReceived = () => {
     {
       name: "Name",
       selector: (row) =>
-        `${row.student_information.first_name ?? ""} ${
-          row.student_information.last_name ?? ""
-        }`,
+        `${row.student_information.first_name ?? ""}${
+          row.student_information.middle_name !== null &&
+          row.student_information.middle_name !== "null"
+            ? row.student_information.middle_name
+            : ""
+        } ${row.student_information.last_name ?? ""}`,
+
       sortable: true,
       cell: (row) => (
         <div>
@@ -248,6 +252,10 @@ const ApplicationFeeReceived = () => {
             onClick={() => handleNameClick(row)}
           >
             {row.student_information.first_name ?? ""}{" "}
+            {row.student_information.middle_name !== null &&
+            row.student_information.middle_name !== "null"
+              ? row.student_information.middle_name
+              : ""}{" "}
             {row.student_information.last_name ?? ""}
           </Button>
         </div>

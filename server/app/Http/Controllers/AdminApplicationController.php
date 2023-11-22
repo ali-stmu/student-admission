@@ -89,7 +89,7 @@ public function ApplicantsfeeApplicationReceived(Request $request, $program_id)
         $user_id = $userId['user_id'];
         $cnic = User::select('cnic')->where('user_id', $user_id)->first();
 
-    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
         ->first();
 
@@ -366,7 +366,7 @@ foreach ($vouchers as $voucher) {
     $user_id = $userId['user_id'];
     $cnic = User::select('cnic')->where('user_id', $user_id)->first();
 
-    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
         ->first();
 
@@ -422,7 +422,7 @@ foreach ($vouchers as $voucher) {
     $user_id = $userId['user_id'];
     $cnic = User::select('cnic')->where('user_id', $user_id)->first();
 
-    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
         ->first();
 
@@ -480,7 +480,7 @@ foreach ($vouchers as $voucher) {
 
 
 
-    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
         ->first();
 
@@ -541,7 +541,7 @@ foreach ($vouchers as $voucher) {
 
 
 
-    $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
         ->first();
 
@@ -609,8 +609,8 @@ foreach ($applications as $application) {
         $user_id = $userId['user_id'];
         $cnic = User::select('cnic')->where('user_id', $user_id)->first();
 
-        $studentInformation = Student::select('first_name', 'last_name', 'father_name', 'phone_number')
-            ->where('student_id', $studentId)
+        $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+        ->where('student_id', $studentId)
             ->first();
 
         $intermediatePercentage = Education::select('percentage_criteria')

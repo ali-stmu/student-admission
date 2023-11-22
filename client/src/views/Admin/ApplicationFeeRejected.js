@@ -244,8 +244,11 @@ const ApplicationFeeRejected = () => {
         data={filteredApplicants.map((applicant, index) => ({
           sr: index + 1,
           name: `${applicant.student_information?.first_name ?? ""} ${
-            applicant.student_information?.last_name ?? ""
-          }`,
+            applicant.student_information?.middle_name !== null &&
+            applicant.student_information?.middle_name !== "null"
+              ? applicant.student_information?.middle_name
+              : ""
+          } ${applicant.student_information?.last_name ?? ""}`,
           father_name: applicant.student_information?.father_name ?? "",
           contact_no: applicant.student_information?.phone_number ?? "",
           intermediate_percentage: `${

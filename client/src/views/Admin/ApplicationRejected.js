@@ -201,18 +201,26 @@ const ApplicationRejected = () => {
             cell: (row) => handleRemarksCell(row.remarks),
           },
         ]}
-        data={filteredApplicants.map((applicant, index) => ({
-          sr: index + 1,
-          name: `${applicant.student_information.first_name} ${applicant.student_information.last_name}`,
-          father_name: applicant.student_information.father_name,
-          contact_no: applicant.student_information.phone_number,
-          intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
-          test_percentage: `${applicant.test_score_percentage.percentage}%`,
-          remarks: `${applicant.remarks}`,
-          date: `${applicant.date}`,
-          voucherId: `${applicant.voucherId}`,
-          cnic: `${applicant.cnic.cnic}`,
-        }))}
+        data={filteredApplicants.map((applicant, index) => {
+          // Check if the middle name is equal to "abc"
+          const middleName =
+            applicant.student_information.middle_name === "null"
+              ? ""
+              : applicant.student_information.middle_name;
+
+          return {
+            sr: index + 1,
+            name: `${applicant.student_information.first_name} ${middleName} ${applicant.student_information.last_name}`,
+            father_name: applicant.student_information.father_name,
+            contact_no: applicant.student_information.phone_number,
+            intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
+            test_percentage: `${applicant.test_score_percentage.percentage}%`,
+            remarks: `${applicant.remarks}`,
+            date: `${applicant.date}`,
+            voucherId: `${applicant.voucherId}`,
+            cnic: `${applicant.cnic.cnic}`,
+          };
+        })}
         pagination
         responsive
         subHeader

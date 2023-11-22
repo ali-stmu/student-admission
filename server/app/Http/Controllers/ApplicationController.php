@@ -26,6 +26,7 @@ class ApplicationController extends Controller
             $student_id = $student->student_id;
             $First_name = $student->first_name;
             $Last_name = $student->last_name;
+            $Middle_name = $student->middle_name;
         
             // Log::debug('Found student_id: ' . $student_id);
             
@@ -33,7 +34,8 @@ class ApplicationController extends Controller
             return response()->json([
                 'student_id' => $student_id,
                 'first_name' => $First_name,
-                'last_name' => $Last_name
+                'last_name' => $Last_name,
+                'middle_name' => $Middle_name
             ]);
         } else {
             Log::debug('Student not found for user_id: ' . $user_id);
@@ -200,11 +202,26 @@ public function generatePdf(Request $request)
         $programFromClient = $request->input('program');
 
         $student_id_json = $this->findStudentId($userId);
-        $studentId = $student_id_json->getData()->student_id;
-        $first_name = $student_id_json->getData()->first_name;
-        $last_name = $student_id_json->getData()->last_name;
-        $Full_name =  $first_name . " " . $last_name;
-        Log::debug($Full_name);
+        $studentData = $student_id_json->getData();
+        
+        $studentId = $studentData->student_id;
+        $first_name = $studentData->first_name;
+        $middle_name = $studentData->middle_name;
+        $last_name = $studentData->last_name;
+        
+        $full_name = $first_name . " ";
+        
+        // Check if middle name is not null
+        if (!empty($middle_name) || $middle_name != "null" || $middle_name != "-" || $middle_name != ".") {
+            $full_name .= $last_name;
+        }
+        else{
+        $full_name .= $middle_name . " " . $last_name;
+        }
+        
+        
+        Log::debug($full_name);
+        
         // Initialize variables
         $programNames = "";
         $bankIds = "";
@@ -317,7 +334,7 @@ public function generatePdf(Request $request)
             'AccountTitle' => $accountTitle,
             'bankAccountNumber' => $accountNumber,
             'programName' => $programFromClient,
-            'studentName' => $Full_name,
+            'studentName' => $full_name,
             'pyear' => $term_name,
             'session' => $term_name,
             'totalAmount' => $amount,

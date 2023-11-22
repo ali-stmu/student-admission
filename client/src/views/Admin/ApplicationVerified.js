@@ -203,19 +203,27 @@ const ApplicationVerified = () => {
             sortable: true,
           },
         ]}
-        data={filteredApplicants.map((applicant, index) => ({
-          sr: index + 1,
-          name: `${applicant.student_information.first_name} ${applicant.student_information.last_name}`,
-          father_name: applicant.student_information.father_name,
-          contact_no: applicant.student_information.phone_number,
-          intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
-          test_percentage: `${applicant.test_score_percentage.percentage}%`,
-          date: `${applicant.date}`,
-          voucherId: `${applicant.voucherId}`,
-          cnic: `${applicant.cnic.cnic}`,
-          studentId: `${applicant.student_information.student_id}`,
-          programId: `${applicant.student_information.student_id}`,
-        }))}
+        data={filteredApplicants.map((applicant, index) => {
+          // Check if the middle name is equal to "abc"
+          const middleName =
+            applicant.student_information.middle_name === "null"
+              ? "" // Replace 'MiddleNameModified' with your desired value
+              : applicant.student_information.middle_name;
+
+          return {
+            sr: index + 1,
+            name: `${applicant.student_information.first_name} ${middleName} ${applicant.student_information.last_name}`,
+            father_name: applicant.student_information.father_name,
+            contact_no: applicant.student_information.phone_number,
+            intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
+            test_percentage: `${applicant.test_score_percentage.percentage}%`,
+            date: `${applicant.date}`,
+            voucherId: `${applicant.voucherId}`,
+            cnic: `${applicant.cnic.cnic}`,
+            studentId: `${applicant.student_information.student_id}`,
+            programId: `${applicant.student_information.student_id}`,
+          };
+        })}
         pagination
         responsive
         subHeader

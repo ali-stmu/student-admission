@@ -97,6 +97,7 @@ const ApplicationFeePending = () => {
     // Initialize the original applicants list when the component mounts
     setOriginalApplicants(applicants);
   }, [applicants]);
+
   return (
     <div>
       <div className="centered-container">
@@ -174,21 +175,32 @@ const ApplicationFeePending = () => {
             sortable: true,
           },
         ]}
-        data={filteredApplicants.map((applicant, index) => ({
-          sr: index + 1,
-          name: `${applicant.student_information?.first_name ?? ""} ${
-            applicant.student_information?.last_name ?? ""
-          }`,
-          father_name: applicant.student_information?.father_name ?? "",
-          contact_no: applicant.student_information?.phone_number ?? "",
-          intermediate_percentage: `${
-            applicant.intermediate_percentage?.percentage_criteria ?? ""
-          }%`,
-          test_percentage: `${
-            applicant.test_score_percentage?.percentage ?? ""
-          }%`,
-          cnic: `${applicant.cnic?.cnic ?? ""}`,
-        }))}
+        data={filteredApplicants.map((applicant, index) => {
+          const middleName =
+            applicant.student_information?.middle_name &&
+            applicant.student_information.middle_name.toLowerCase() !==
+              "null" &&
+            applicant.student_information.middle_name !== "-" &&
+            applicant.student_information.middle_name !== "."
+              ? applicant.student_information.middle_name
+              : "";
+
+          return {
+            sr: index + 1,
+            name: `${
+              applicant.student_information?.first_name ?? ""
+            } ${middleName} ${applicant.student_information?.last_name ?? ""}`,
+            father_name: applicant.student_information?.father_name ?? "",
+            contact_no: applicant.student_information?.phone_number ?? "",
+            intermediate_percentage: `${
+              applicant.intermediate_percentage?.percentage_criteria ?? ""
+            }%`,
+            test_percentage: `${
+              applicant.test_score_percentage?.percentage ?? ""
+            }%`,
+            cnic: `${applicant.cnic?.cnic ?? ""}`,
+          };
+        })}
         pagination
         responsive
         subHeader
