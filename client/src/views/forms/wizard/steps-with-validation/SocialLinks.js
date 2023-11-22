@@ -267,53 +267,53 @@ function AcademicRecords({ stepper, type }) {
     }
   };
 
-  // const addRecord = () => {
-  //   setRecords([
-  //     ...records,
-  //     {
-  //       resultStatus: "",
-  //       qualification: "",
-  //       boardUniversity: "",
-  //       passingYear: "",
-  //       totalMarksCGPA: "",
-  //       obtainedMarksCGPA: "",
-  //       percentage: "",
-  //       schoolName: "",
-  //       schoolCountry: "",
-  //       schoolCity: "",
-  //       degree: null,
-  //     },
-  //   ]);
-  //   setDegreeFiles([...degreeFiles, null]);
-  // };
-  // const deleteRecord = () => {
-  //   const updatedRecords = [...records];
-  //   updatedRecords.pop(); // Remove the last record from the array
-  //   setRecords(updatedRecords);
+  const addRecord = () => {
+    setRecords([
+      ...records,
+      {
+        resultStatus: "",
+        qualification: "",
+        boardUniversity: "",
+        passingYear: "",
+        totalMarksCGPA: "",
+        obtainedMarksCGPA: "",
+        percentage: "",
+        schoolName: "",
+        schoolCountry: "",
+        schoolCity: "",
+        degree: null,
+      },
+    ]);
+    setDegreeFiles([...degreeFiles, null]);
+  };
+  const deleteRecord = () => {
+    const updatedRecords = [...records];
+    updatedRecords.pop(); // Remove the last record from the array
+    setRecords(updatedRecords);
 
-  //   // Make an API call to delete the record
-  //   const deletedRecord = records[records.length - 1]; // Assuming you want to delete the last record
-  //   if (deletedRecord) {
-  //     const { qualification } = deletedRecord;
+    // Make an API call to delete the record
+    const deletedRecord = records[records.length - 1]; // Assuming you want to delete the last record
+    if (deletedRecord) {
+      const { qualification } = deletedRecord;
 
-  //     // Create an object with the parameters to send to the API
-  //     const params = {
-  //       user_id,
-  //       qualification,
-  //     };
+      // Create an object with the parameters to send to the API
+      const params = {
+        user_id,
+        qualification,
+      };
 
-  //     axios
-  //       .post(`${BASE_URL}deleteRecordEndpoint`, { params })
-  //       .then((response) => {
-  //         // Handle the API response here
-  //         console.log("Record deleted successfully.");
-  //       })
-  //       .catch((error) => {
-  //         // Handle any errors that occurred during the request
-  //         console.error("Error deleting record:", error);
-  //       });
-  //   }
-  // };
+      axios
+        .post(`${BASE_URL}deleteRecordEndpoint`, { params })
+        .then((response) => {
+          // Handle the API response here
+          console.log("Record deleted successfully.");
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error("Error deleting record:", error);
+        });
+    }
+  };
   const handleRecordChange = (e, index) => {
     const { name, value, files } = e.target;
     let updatedValue = value;
@@ -716,7 +716,7 @@ function AcademicRecords({ stepper, type }) {
       <br></br>
       <br></br>
       <div className="d-flex justify-content-between">
-        {/* <Button.Ripple color="info" onClick={addRecord}>
+        <Button.Ripple color="info" onClick={addRecord}>
           <Plus size={14} />
           <span className="align-middle ml-25">Add More Records</span>
         </Button.Ripple>
@@ -729,7 +729,7 @@ function AcademicRecords({ stepper, type }) {
         >
           <X size={14} className="mr-50" />
           <span>Delete</span>
-        </Button.Ripple> */}
+        </Button.Ripple>
       </div>
     </Fragment>
   );
