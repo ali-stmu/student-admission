@@ -64,6 +64,8 @@ public function getPriority(Request $request)
         //Log::debug("StudentInfo to calculate percentage:".$studentInfoToCalculatePercentage);
 
         $intermediateDegrees = Degree::where('degree_name', 'Intermediate/A-Levels/Equivalent')->pluck('degree_name', 'degree_id');
+        $BachelorDegrees = Degree::where('degree_name', 'Bachelors')->pluck('degree_name', 'degree_id');
+
         $TestInformation = TestScore::where('student_id', $studentId)->get(); // Use get() to retrieve multiple records
         $testScores = [];
         $testNames = [];
