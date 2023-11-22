@@ -332,6 +332,7 @@ public function getScoresByUserId($user_id)
                 $education->school_country = $schoolCountry[$index] ?? null;
                 $education->school_city = $schoolCity[$index] ?? null;
                 $education->percentage_criteria = $percentage[$index];
+                $education->status = 1;
                 $education->student_id = $studentId;
                 $document->student_id = $studentId;
                 $document->degree_id = $qualification[$index];
