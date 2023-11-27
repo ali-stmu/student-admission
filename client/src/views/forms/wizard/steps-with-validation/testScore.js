@@ -306,6 +306,7 @@ const TestScore = ({ stepper, type }) => {
         console.log(
           `Successfully deleted test with ID ${id} for student ID ${studentId}`
         );
+        window.location.reload();
       })
       .catch((error) => {
         console.error(`Error deleting test: ${error}`);
