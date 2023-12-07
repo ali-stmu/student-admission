@@ -112,66 +112,131 @@ public function getPriority(Request $request)
             //log::debug("Degree Id".$degreeId);
             //log::debug($intermediateDegrees);
             //This condition checking if result sttaus is declared and its general status is 1 means active and degree id is 2 which means of intermediate
-            if ($intermediateDegrees->has($degreeId) && $resultStatus == "declared" && $status = '1' && $maxDegreeId == '2' ) {
-                log::debug("Inter ala chal gya");
-                foreach ($studentInfoToCalculatePercentage as $edu) {
-                    if ($edu->degree_id === $degreeId) {
-                        $totalMarks += $edu->total_marks;
-                        $obtainedMarks += $edu->obtained_marks;
-                        log::debug("Total marks is".$totalMarks);
-                        log::debug("Obtined marks is".$obtainedMarks);
+            
+            if ($intermediateDegrees->has($degreeId)  && $status = '1' && $maxDegreeId == '2' ) {
+                if($resultStatus == "declared"){
+                    log::debug("Inter ala chal gya");
+                    foreach ($studentInfoToCalculatePercentage as $edu) {
+                        if ($edu->degree_id === $degreeId) {
+                            $totalMarks += $edu->total_marks;
+                            $obtainedMarks += $edu->obtained_marks;
+                            log::debug("Total marks is".$totalMarks);
+                            log::debug("Obtined marks is".$obtainedMarks);
+                        }
                     }
+                // Get the student's voucher IDs for programs they've already applied to                
+                 $voucherProgramIds = Voucher::where('student_id', $studentId)
+                    ->whereIn('status', ['Pending', 'Verified'])
+                    ->whereIn('application_status', ['Pending', 'Verified'])
+                     ->pluck('program_id')
+                     ->toArray();
+                    //log::debug($voucherProgramIds);
+                    $percentage = ($obtainedMarks / $totalMarks) * 100;
+                    //log::debug($percentage);
+    
+                    $query = Program::select('program_name', 'program_criteria','test_criteria')
+                        ->where('degree_id', $maxDegreeId)->where('status', '1');
+                        // Modify the query to exclude programs where student and program IDs match in vouchers
+                     $programs = $query
+                     ->whereNotIn('program_id', $voucherProgramIds)
+                     ->get();                 
+                     if ($testNames[0] != '-1' && !in_array('mdcat', $testNames)) {
+                        log::debug("nationality wala if chal gya");
+    
+                        $nationality = 'foreign';
+                        $query->whereIn('nationality_check', ['foreign']);
+                    }else {
+                        log::debug("nationality wala else chal gya");
+    
+                    }
+    
+                    if ($nationality === 'pakistani') {
+                        $query->whereIn('nationality_check', ['pakistani']);
+                    } else if ($nationality === 'foreign') {
+                        $query->whereIn('nationality_check', ['foreign']);
+                    }else if ($nationality === 'dual'){
+                        $query->whereIn('nationality_check', ['foreign','dual','pakistani']);
+                    }
+    
+    
+                    if ($testScores[0] == '-1') {
+                        log::debug("test criteria wala if chal gya");
+                        $query->where('test_criteria', 0);
+                    } else {
+                        log::debug("test criteria wala else chal gya");
+                    
+                        $query->where(function($query) use ($testScores) {
+                            $query->where('test_criteria', 0)
+                                  ->orWhere('test_criteria', '<=', $testScores);
+                        });
+                    }
+                    
+    
+                    $programs = $query->where('program_criteria', '<=', $percentage)
+                        ->get();
+                } elseif($resultStatus == "awaited"){
+                    log::debug("Inter ala chal gya");
+                    foreach ($studentInfoToCalculatePercentage as $edu) {
+                        if ($edu->degree_id === $degreeId) {
+                            $totalMarks += $edu->total_marks;
+                            $obtainedMarks += $edu->obtained_marks;
+                            log::debug("Total marks is".$totalMarks);
+                            log::debug("Obtined marks is".$obtainedMarks);
+                        }
+                    }
+                // Get the student's voucher IDs for programs they've already applied to                
+                 $voucherProgramIds = Voucher::where('student_id', $studentId)
+                    ->whereIn('status', ['Pending', 'Verified'])
+                    ->whereIn('application_status', ['Pending', 'Verified'])
+                     ->pluck('program_id')
+                     ->toArray();
+                    //log::debug($voucherProgramIds);
+                    $percentage = ($obtainedMarks / $totalMarks) * 100;
+                    //log::debug($percentage);
+    
+                    $query = Program::select('program_name', 'program_criteria','test_criteria')
+                        ->where('degree_id', $maxDegreeId)->where('status', '1')->where('declared_status', 0);
+                        // Modify the query to exclude programs where student and program IDs match in vouchers
+                     $programs = $query
+                     ->whereNotIn('program_id', $voucherProgramIds)
+                     ->get();                 
+                     if ($testNames[0] != '-1' && !in_array('mdcat', $testNames)) {
+                        log::debug("nationality wala if chal gya");
+    
+                        $nationality = 'foreign';
+                        $query->whereIn('nationality_check', ['foreign']);
+                    }else {
+                        log::debug("nationality wala else chal gya");
+    
+                    }
+    
+                    if ($nationality === 'pakistani') {
+                        $query->whereIn('nationality_check', ['pakistani']);
+                    } else if ($nationality === 'foreign') {
+                        $query->whereIn('nationality_check', ['foreign']);
+                    }else if ($nationality === 'dual'){
+                        $query->whereIn('nationality_check', ['foreign','dual','pakistani']);
+                    }
+    
+    
+                    if ($testScores[0] == '-1') {
+                        log::debug("test criteria wala if chal gya");
+                        $query->where('test_criteria', 0);
+                    } else {
+                        log::debug("test criteria wala else chal gya");
+                    
+                        $query->where(function($query) use ($testScores) {
+                            $query->where('test_criteria', 0)
+                                  ->orWhere('test_criteria', '<=', $testScores);
+                        });
+                    }
+                    
+    
+                    $programs = $query->where('program_criteria', '<=', $percentage)
+                        ->get();
+
                 }
-            // Get the student's voucher IDs for programs they've already applied to                
-             $voucherProgramIds = Voucher::where('student_id', $studentId)
-                ->whereIn('status', ['Pending', 'Verified'])
-                ->whereIn('application_status', ['Pending', 'Verified'])
-                 ->pluck('program_id')
-                 ->toArray();
-                //log::debug($voucherProgramIds);
-                $percentage = ($obtainedMarks / $totalMarks) * 100;
-                //log::debug($percentage);
 
-                $query = Program::select('program_name', 'program_criteria','test_criteria')
-                    ->where('degree_id', $maxDegreeId)->where('status', '1');
-                    // Modify the query to exclude programs where student and program IDs match in vouchers
-                 $programs = $query
-                 ->whereNotIn('program_id', $voucherProgramIds)
-                 ->get();                 
-                 if ($testNames[0] != '-1' && !in_array('mdcat', $testNames)) {
-                    log::debug("nationality wala if chal gya");
-
-                    $nationality = 'foreign';
-                    $query->whereIn('nationality_check', ['foreign']);
-                }else {
-                    log::debug("nationality wala else chal gya");
-
-                }
-
-                if ($nationality === 'pakistani') {
-                    $query->whereIn('nationality_check', ['pakistani']);
-                } else if ($nationality === 'foreign') {
-                    $query->whereIn('nationality_check', ['foreign']);
-                }else if ($nationality === 'dual'){
-                    $query->whereIn('nationality_check', ['foreign','dual','pakistani']);
-                }
-
-
-                if ($testScores[0] == '-1') {
-                    log::debug("test criteria wala if chal gya");
-                    $query->where('test_criteria', 0);
-                } else {
-                    log::debug("test criteria wala else chal gya");
-                
-                    $query->where(function($query) use ($testScores) {
-                        $query->where('test_criteria', 0)
-                              ->orWhere('test_criteria', '<=', $testScores);
-                    });
-                }
-                
-
-                $programs = $query->where('program_criteria', '<=', $percentage)
-                    ->get();
             } elseif($BachelorDegrees->has($degreeId) && $resultStatus == "declared" && $status = '1' && $maxDegreeId == '3'){
                 foreach ($studentInfoToCalculatePercentage as $edu) {
                     if ($edu->degree_id === $degreeId) {
