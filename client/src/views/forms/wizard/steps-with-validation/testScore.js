@@ -60,6 +60,8 @@ const TestScore = ({ stepper, type }) => {
     { value: "sat2", label: "SAT-II" },
     { value: "mcat", label: "MCAT" },
     { value: "ucat", label: "UCAT" },
+    { value: "ilets", label: "ILETS" },
+
     // Add more options as needed
   ];
   const testTypeOptions = [
@@ -453,6 +455,7 @@ const TestScore = ({ stepper, type }) => {
 
           {/* Show a message based on the selected test name */}
           {selectedTestNames[index] === "mdcat" ||
+          selectedTestNames[index] === "ilets" ||
           selectedTestNames[index] === null ? (
             <></>
           ) : (
