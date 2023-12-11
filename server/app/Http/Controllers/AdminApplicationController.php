@@ -607,7 +607,8 @@ foreach ($applications as $application) {
 
         // Now you can access the 'user_id' key
         $user_id = $userId['user_id'];
-        $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+        $userData = User::select('email', 'cnic')->where('user_id', $user_id)->first();
+
 
         $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
@@ -626,7 +627,8 @@ foreach ($applications as $application) {
             'student_information' => $studentInformation,
             'intermediate_percentage' => $intermediatePercentage,
             'test_score_percentage' => $testScorePercentage,
-            'cnic' => $cnic,
+            'cnic' => $userData->cnic,
+            'email' => $userData->email,
         ];
     }
     log::debug($applicantsData);
@@ -659,6 +661,8 @@ public function feePendingExcel(Request $request, $program_id)
         'Intermediate Percentage',
         'Test Score Percentage',
         'CNIC',
+        'Email',
+
 
         // Add more headers as needed
     ];
@@ -675,7 +679,9 @@ public function feePendingExcel(Request $request, $program_id)
             $applicant['student_information']['phone_number'],
             $applicant['intermediate_percentage']['percentage_criteria'],
             $applicant['test_score_percentage']['percentage'],
-            $applicant['cnic']['cnic'],
+             $applicant['cnic'],
+             $applicant['email'],
+
 
             // Add more data fields as needed
         ];

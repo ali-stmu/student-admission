@@ -198,7 +198,7 @@ const ApplicationFeePending = () => {
             test_percentage: `${
               applicant.test_score_percentage?.percentage ?? ""
             }%`,
-            cnic: `${applicant.cnic?.cnic ?? ""}`,
+            cnic: `${applicant.cnic ?? ""}`,
           };
         })}
         pagination
