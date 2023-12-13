@@ -291,6 +291,11 @@ public function generatePdf(Request $request)
                             $session_id = $session->session_id;
                             $term_id = $session->term_id;
                             $amount = $session->amount;
+                            if ($amount == 0) {
+                                // Call the store function here
+                                $this->storeFunction($studentId, $program_ID, $session_id, $term_id);
+                                return response()->json(['message' => 'Amount is 0. Stored successfully.'], 200);
+                            }
                             $dueDate = $session->due_date;
                              if ($issueDate > $dueDate) {
                                  return response()->json(['error' => 'Issue date cannot be smaller or earlier than due date'], 400);
@@ -353,6 +358,40 @@ public function generatePdf(Request $request)
         return response()->json(['error' => 'An error occurred'], 500);
     }
 }
+private function storeFunction($studentId, $program_ID, $session_id, $term_id)
+{
+    try {
+
+        // Update or create a Voucher instance with status "Verified" and application_status "Pending"
+        Voucher::updateOrCreate(
+            [
+                'student_id' => $studentId,
+                'program_id' => $program_ID,
+            ],
+            [
+                'status' => 'Verified',
+                'application_status' => 'Pending',
+                'voucher_file_name' => 'null',
+                'upload_date' => now(),
+                'bank_name' => 'null',
+                'branch_code' => 'null',
+                'transaction_id' => 'null',
+                'mode_of_payment' => 'null',
+                // Add other fields as needed
+            ]
+        );
+
+        Log::info('Voucher stored successfully with status Verified and application_status Pending.');
+
+        // Return a success response or any necessary data
+        return response()->json(['message' => 'Voucher stored successfully with status Verified and application_status Pending.']);
+    } catch (\Exception $e) {
+        // Handle any exceptions here
+        Log::error('An error occurred while storing the voucher: ' . $e->getMessage());
+        return response()->json(['error' => 'An error occurred while storing the voucher.'], 500);
+    }
+}
+
 
 public function store(Request $request)
 {
