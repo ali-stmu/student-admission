@@ -430,6 +430,10 @@ foreach ($vouchers as $voucher) {
         ->where('student_id', $studentId)
         ->where('degree_id', 2)
         ->first();
+    $matricPercentage = Education::select('percentage_criteria')
+        ->where('student_id', $studentId)
+        ->where('degree_id', 1)
+        ->first();
 
     $testScorePercentage = TestScore::select('percentage')
         ->where('student_id', $studentId)
@@ -440,6 +444,7 @@ foreach ($vouchers as $voucher) {
     $applicantsData[] = [
         'student_information' => $studentInformation,
         'intermediate_percentage' => $intermediatePercentage,
+        'matric_percentage' => $matricPercentage,
         'test_score_percentage' => $testScorePercentage,
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
         'voucherId' => $voucherID,
@@ -822,6 +827,98 @@ public function appVerifiedExcel(Request $request, $program_id)
     // Return the Excel file as a response
     return response()->download($tempFilePath, 'applicants_Fee_Recieved.xlsx')->deleteFileAfterSend(true);
 }
+
+
+public function appVerifiedMeritList(Request $request, $program_id)
+{
+    $response = $this->ApplicantsApplicationVerified($request, $program_id);
+    $applicantsData = json_decode($response->getContent(), true);
+
+    // Create a new spreadsheet
+    $spreadsheet = new Spreadsheet();
+
+    // Create a new worksheet
+    $worksheet = $spreadsheet->getActiveSheet();
+
+    // Define the column headers
+    $headers = [
+        'Full Name',
+        'Father Name',
+        'Phone Number',
+        'Student ID',
+        'Intermediate Percentage',
+        'Matric Percentage',
+        'Test Score Percentage',
+        'CNIC',
+        'Voucher Id',
+        'Date',
+        'Aggregate', // New column for aggregate
+        // Add more headers as needed
+    ];
+
+    // Set the column headers
+    $worksheet->fromArray([$headers], null, 'A1');
+
+    // Extract and format the data from $applicantsData
+    $data = [];
+    $data = [];
+    foreach ($applicantsData['applicantsData'] as $applicant) {
+        // Handle null values in the percentage criteria
+        $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? 0;
+        $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? 0;
+        $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? 0;
+    
+        // Calculate the aggregate, handling null values
+        $aggregate = ($testScorePercentage * 0.5) +
+                     ($intermediatePercentage * 0.4) +
+                     ($matricPercentage * 0.1);
+    
+        // Handle null values in other fields
+        $fullName = $applicant['student_information']['first_name'] ?? '' . " " .
+                    $applicant['student_information']['last_name'] ?? '';
+        $fatherName = $applicant['student_information']['father_name'] ?? '';
+        $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
+        $studentId = $applicant['student_information']['student_id'] ?? '';
+        $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? '';
+        $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? '';
+        $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? '';
+        $cnic = $applicant['cnic']['cnic'] ?? '';
+        $voucherId = $applicant['voucherId'] ?? '';
+        $date = $applicant['date'] ?? '';
+    
+        $data[] = [
+            $fullName,
+            $fatherName,
+            $phoneNumber,
+            $studentId,
+            $intermediatePercentage,
+            $matricPercentage,
+            $testScorePercentage,
+            $cnic,
+            $voucherId,
+            $date,
+            $aggregate, // Add the aggregate to the data
+            // Add more data fields as needed
+        ];
+    }
+
+    // Sort the data by the aggregate (ascending order)
+    usort($data, function ($a, $b) {
+        return $b[10] <=> $a[10];
+    });
+
+    // Set the data rows
+    $worksheet->fromArray($data, null, 'A2');
+
+    // Create a temporary file to save the spreadsheet
+    $tempFilePath = tempnam(sys_get_temp_dir(), 'applicants_');
+    $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+    $writer->save($tempFilePath);
+
+    // Return the Excel file as a response
+    return response()->download($tempFilePath, 'applicants_Fee_Received.xlsx')->deleteFileAfterSend(true);
+}
+
 
 
 

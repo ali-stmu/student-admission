@@ -80,6 +80,26 @@ const ApplicationVerified = () => {
         window.URL.revokeObjectURL(url);
       });
   };
+  const getApplicationVerifiedMeritList = () => {
+    fetch(`${BASE_URL}getapplicationverifiedmeritlist/${selectedProgram}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary <a> element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "meritList.xlsx"; // You can specify the file name here
+        document.body.appendChild(a);
+
+        // Trigger the download
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+      });
+  };
 
   const handleProgramChange = (event) => {
     const programId = event.target.value;
@@ -115,6 +135,17 @@ const ApplicationVerified = () => {
             Excel<br></br>
             <Download></Download>
           </Button>
+          <Button
+            title="Save Merit List"
+            outline
+            color="success"
+            onClick={getApplicationVerifiedMeritList}
+            style={{ marginRight: "10px" }} // Add this style for spacing
+          >
+            Merit List<br></br>
+            <Download></Download>
+          </Button>
+
           {/* <Button outline color="secondary" onClick={getFeePaidApplicantPdf}>
             PDF<br></br>
             <Download></Download>
@@ -215,8 +246,12 @@ const ApplicationVerified = () => {
             name: `${applicant.student_information.first_name} ${middleName} ${applicant.student_information.last_name}`,
             father_name: applicant.student_information.father_name,
             contact_no: applicant.student_information.phone_number,
-            intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
-            test_percentage: `${applicant.test_score_percentage.percentage}%`,
+            intermediate_percentage: `${
+              applicant.intermediate_percentage?.percentage_criteria ?? ""
+            }%`,
+            test_percentage: `${
+              applicant.test_score_percentage?.percentage ?? ""
+            }%`,
             date: `${applicant.date}`,
             voucherId: `${applicant.voucherId}`,
             cnic: `${applicant.cnic.cnic}`,
