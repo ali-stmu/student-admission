@@ -272,7 +272,7 @@ function AcademicRecords({ stepper, type }) {
       ...records,
       {
         resultStatus: "",
-        qualification: "",
+        qualification: "2",
         boardUniversity: "",
         passingYear: "",
         totalMarksCGPA: "",
