@@ -128,7 +128,7 @@ public function feeReceivedExcel(Request $request, $program_id)
     $response = $this->ApplicantsfeeApplicationReceived($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
 
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 
     // Create a new spreadsheet
     $spreadsheet = new Spreadsheet();
@@ -390,7 +390,7 @@ foreach ($vouchers as $voucher) {
         'cnic' => $cnic,
 
     ];
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 }
 
 return response()->json(['applicantsData' => $applicantsData]);
@@ -404,7 +404,7 @@ public function ApplicantsApplicationVerified(Request $request, $program_id)
     ->where('application_status', "Verified")
     ->where('status', "Verified")
     ->get();
-    log::debug($vouchers);
+    //log::debug($vouchers);
 
 $applicantsData = [];
 
@@ -446,7 +446,7 @@ foreach ($vouchers as $voucher) {
         'cnic' => $cnic,
 
     ];
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 }
 
 return response()->json(['applicantsData' => $applicantsData]);
@@ -507,7 +507,7 @@ foreach ($vouchers as $voucher) {
 
 
     ];
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 }
 
 
@@ -567,7 +567,7 @@ foreach ($vouchers as $voucher) {
 
 
     ];
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 }
 
 
@@ -631,7 +631,7 @@ foreach ($applications as $application) {
             'email' => $userData->email,
         ];
     }
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 }
 
 return response()->json(['applicantsData' => $applicantsData]);
@@ -645,7 +645,7 @@ public function feePendingExcel(Request $request, $program_id)
     $response = $this->ApplicantsfeeApplicationPending($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
 
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 
     // Create a new spreadsheet
     $spreadsheet = new Spreadsheet();
@@ -707,7 +707,7 @@ public function feeVerifiedExcel(Request $request, $program_id)
     $response = $this->ApplicantsfeeApplicationVerified($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
 
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 
     // Create a new spreadsheet
     $spreadsheet = new Spreadsheet();
@@ -769,7 +769,7 @@ public function appVerifiedExcel(Request $request, $program_id)
     $response = $this->ApplicantsApplicationVerified($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
 
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 
     // Create a new spreadsheet
     $spreadsheet = new Spreadsheet();
@@ -830,7 +830,7 @@ public function appRejectedExcel(Request $request, $program_id)
     $response = $this->ApplicantsApplicationRejected($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
 
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 
     // Create a new spreadsheet
     $spreadsheet = new Spreadsheet();
@@ -893,7 +893,7 @@ public function feeRejectedExcel(Request $request, $program_id)
     $response = $this->ApplicantsfeeApplicationRejected($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
 
-    log::debug($applicantsData);
+    //log::debug($applicantsData);
 
     // Create a new spreadsheet
     $spreadsheet = new Spreadsheet();
