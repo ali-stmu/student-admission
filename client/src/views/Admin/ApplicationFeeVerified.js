@@ -206,7 +206,6 @@ const ApplicationFeeVerified = () => {
           },
         ]}
         data={filteredApplicants.map((applicant, index) => {
-          // Check if the middle name is equal to "abc"
           const middleName =
             applicant.student_information.middle_name === "null"
               ? ""
@@ -214,16 +213,22 @@ const ApplicationFeeVerified = () => {
 
           return {
             sr: index + 1,
-            name: `${applicant.student_information.first_name} ${middleName} ${applicant.student_information.last_name}`,
-            father_name: applicant.student_information.father_name,
-            contact_no: applicant.student_information.phone_number,
-            intermediate_percentage: `${applicant.intermediate_percentage.percentage_criteria}%`,
-            test_percentage: `${applicant.test_score_percentage.percentage}%`,
-            date: `${applicant.date}`,
-            voucherId: `${applicant.voucherId}`,
-            cnic: `${applicant.cnic.cnic}`,
-            studentId: `${applicant.student_information.student_id}`,
-            programId: `${applicant.student_information.student_id}`,
+            name: `${applicant.student_information.first_name || ""} ${
+              middleName || ""
+            } ${applicant.student_information.last_name || ""}`,
+            father_name: applicant.student_information.father_name || "",
+            contact_no: applicant.student_information.phone_number || "",
+            intermediate_percentage: `${
+              applicant.intermediate_percentage?.percentage_criteria || ""
+            }%`,
+            test_percentage: `${
+              applicant.test_score_percentage?.percentage || ""
+            }%`,
+            date: `${applicant.date || ""}`,
+            voucherId: `${applicant.voucherId || ""}`,
+            cnic: `${applicant.cnic?.cnic || ""}`,
+            studentId: `${applicant.student_information.student_id || ""}`,
+            programId: `${applicant.student_information.student_id || ""}`,
           };
         })}
         pagination
@@ -236,35 +241,26 @@ const ApplicationFeeVerified = () => {
               placeholder="Search..."
               onChange={(e) => {
                 const searchText = e.target.value.toLowerCase();
-
-                // Check if search input is empty
                 if (searchText === "12345") {
-                  console.log("if chal gya");
-                  console.log(searchText);
-                  // Display all original applicants when the search box is empty
                   setApplicants(originalApplicants);
                 } else {
-                  console.log("else chal gya");
-                  console.log(searchText);
-
-                  // Filter the applicants based on the search input
                   setFilteredApplicants(
                     originalApplicants.filter(
                       (item) =>
                         item.student_information.first_name
-                          .toLowerCase()
+                          ?.toLowerCase()
                           .includes(searchText) ||
                         item.student_information.last_name
-                          .toLowerCase()
+                          ?.toLowerCase()
                           .includes(searchText) ||
                         item.student_information.father_name
-                          .toLowerCase()
+                          ?.toLowerCase()
                           .includes(searchText) ||
-                        item.student_information.phone_number.includes(
+                        item.student_information.phone_number?.includes(
                           searchText
                         ) ||
-                        item.voucherId.includes(searchText) ||
-                        item.cnic.cnic.includes(searchText)
+                        item.voucherId?.includes(searchText) ||
+                        item.cnic?.cnic?.includes(searchText)
                     )
                   );
                 }
