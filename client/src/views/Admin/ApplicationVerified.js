@@ -60,6 +60,7 @@ const ApplicationVerified = () => {
         console.error(error);
       });
   };
+  console.log(filteredApplicants);
   const getApplicationVerifiedExcel = () => {
     fetch(`${BASE_URL}getapplicationverified/${selectedProgram}`)
       .then((response) => response.blob())
@@ -247,11 +248,9 @@ const ApplicationVerified = () => {
             father_name: applicant.student_information.father_name,
             contact_no: applicant.student_information.phone_number,
             intermediate_percentage: `${
-              applicant.intermediate_percentage?.percentage_criteria ?? ""
+              applicant.intermediate_percentage ?? ""
             }%`,
-            test_percentage: `${
-              applicant.test_score_percentage?.percentage ?? ""
-            }%`,
+            test_percentage: `${applicant.test_score_percentage ?? ""}%`,
             date: `${applicant.date}`,
             voucherId: `${applicant.voucherId}`,
             cnic: `${applicant.cnic.cnic}`,

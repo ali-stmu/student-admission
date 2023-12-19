@@ -426,16 +426,16 @@ foreach ($vouchers as $voucher) {
         ->where('student_id', $studentId)
         ->first();
 
-    $intermediatePercentage = Education::select('percentage_criteria')
+    $intermediatePercentage = Education::select('percentage_criteria','total_marks','obtained_marks')
         ->where('student_id', $studentId)
         ->where('degree_id', 2)
         ->first();
-    $matricPercentage = Education::select('percentage_criteria')
+    $matricPercentage = Education::select('percentage_criteria','total_marks','obtained_marks')
         ->where('student_id', $studentId)
         ->where('degree_id', 1)
         ->first();
 
-    $testScorePercentage = TestScore::select('percentage')
+    $testScorePercentage = TestScore::select('percentage','test_score_total','test_score_total')
         ->where('student_id', $studentId)
         ->first();
 
@@ -443,9 +443,18 @@ foreach ($vouchers as $voucher) {
 
     $applicantsData[] = [
         'student_information' => $studentInformation,
-        'intermediate_percentage' => $intermediatePercentage,
-        'matric_percentage' => $matricPercentage,
-        'test_score_percentage' => $testScorePercentage,
+        'intermediate_percentage' => $intermediatePercentage->percentage_criteria,
+        'intermediate_total' => $intermediatePercentage->total_marks,
+        'intermediate_obtained' => $intermediatePercentage->obtained_marks,
+
+        'matric_percentage' => $matricPercentage->percentage_criteria,
+        'matric_total' => $matricPercentage->total_marks,
+        'matric_obtained' => $matricPercentage->obtained_marks,
+
+        'test_score_percentage' => $testScorePercentage->percentage,
+        'test_score_total' => $testScorePercentage->test_score_total,
+        'test_score_obtained' => $testScorePercentage->test_score_total,
+
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
         'voucherId' => $voucherID,
         'cnic' => $cnic,
@@ -773,7 +782,6 @@ public function appVerifiedExcel(Request $request, $program_id)
 {
     $response = $this->ApplicantsApplicationVerified($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
-
     //log::debug($applicantsData);
 
     // Create a new spreadsheet
@@ -807,8 +815,8 @@ public function appVerifiedExcel(Request $request, $program_id)
             $applicant['student_information']['father_name'],
             $applicant['student_information']['phone_number'],
             $applicant['student_information']['student_id'],
-            $applicant['intermediate_percentage']['percentage_criteria'],
-            $applicant['test_score_percentage']['percentage'],
+            $applicant['intermediate_percentage'],
+            $applicant['test_score_percentage'],
             $applicant['cnic']['cnic'],
             $applicant['voucherId'],
             $applicant['date'],
@@ -825,8 +833,9 @@ public function appVerifiedExcel(Request $request, $program_id)
     $writer->save($tempFilePath);
 
     // Return the Excel file as a response
-    return response()->download($tempFilePath, 'applicants_Fee_Recieved.xlsx')->deleteFileAfterSend(true);
+    return response()->download($tempFilePath, 'applicants_Fee_Received.xlsx')->deleteFileAfterSend(true);
 }
+
 
 
 public function appVerifiedMeritList(Request $request, $program_id)
@@ -847,13 +856,22 @@ public function appVerifiedMeritList(Request $request, $program_id)
         'Phone Number',
         'Student ID',
         'Intermediate Percentage',
+        'Intermediate Obtained',
+        'Intermediate Total',
+        'Intermediate Aggregate',
         'Matric Percentage',
+        'Matric Total',
+        'Matric Obtained',
+        'Matric Aggregate',
         'Test Score Percentage',
+        'Test Score Total',
+        'Test Score Obtained',
+        'Test Score Aggregate',
+
         'CNIC',
         'Voucher Id',
         'Date',
         'Aggregate', // New column for aggregate
-        // Add more headers as needed
     ];
 
     // Set the column headers
@@ -861,50 +879,65 @@ public function appVerifiedMeritList(Request $request, $program_id)
 
     // Extract and format the data from $applicantsData
     $data = [];
-    $data = [];
     foreach ($applicantsData['applicantsData'] as $applicant) {
         // Handle null values in the percentage criteria
-        $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? 0;
-        $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? 0;
-        $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? 0;
-    
+        $testScorePercentage = $applicant['test_score_percentage'] ?? 0;
+        $testScoreTotal = $applicant['test_score_total'] ?? 0;
+        $testScoreObtained = $applicant['test_score_obtained'] ?? 0;
+
+        $intermediatePercentage = $applicant['intermediate_percentage'] ?? 0;
+        $intermediateObtained = $applicant['intermediate_obtained'] ?? 0;
+        $intermediateTotal = $applicant['intermediate_total'] ?? 0;
+
+        $matricPercentage = $applicant['matric_percentage'] ?? 0;
+        $matricTotal = $applicant['matric_total'] ?? 0;
+        $matricObtained = $applicant['matric_obtained'] ?? 0;
+
+
+
         // Calculate the aggregate, handling null values
         $aggregate = ($testScorePercentage * 0.5) +
                      ($intermediatePercentage * 0.4) +
                      ($matricPercentage * 0.1);
-    
+
         // Handle null values in other fields
-        $fullName = $applicant['student_information']['first_name'] ?? '' . " " .
-                    $applicant['student_information']['last_name'] ?? '';
+        $fullName = $applicant['student_information']['first_name'] . " " .
+                    $applicant['student_information']['last_name'];
         $fatherName = $applicant['student_information']['father_name'] ?? '';
         $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
         $studentId = $applicant['student_information']['student_id'] ?? '';
-        $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? '';
-        $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? '';
-        $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? '';
         $cnic = $applicant['cnic']['cnic'] ?? '';
         $voucherId = $applicant['voucherId'] ?? '';
         $date = $applicant['date'] ?? '';
-    
+
+        // Add the data to the array
         $data[] = [
             $fullName,
             $fatherName,
             $phoneNumber,
             $studentId,
             $intermediatePercentage,
+            $intermediateObtained,
+            $intermediateTotal,
+            $intermediatePercentage * 0.4,
             $matricPercentage,
+            $matricTotal,
+            $matricObtained,
+            $matricPercentage * 0.1,
             $testScorePercentage,
+            $testScoreTotal,
+            $testScoreObtained,
+            $testScorePercentage * 0.5,
             $cnic,
             $voucherId,
             $date,
             $aggregate, // Add the aggregate to the data
-            // Add more data fields as needed
         ];
     }
 
-    // Sort the data by the aggregate (ascending order)
+    // Sort the data by the aggregate (descending order)
     usort($data, function ($a, $b) {
-        return $b[10] <=> $a[10];
+        return $b[19] <=> $a[19];
     });
 
     // Set the data rows
@@ -916,7 +949,7 @@ public function appVerifiedMeritList(Request $request, $program_id)
     $writer->save($tempFilePath);
 
     // Return the Excel file as a response
-    return response()->download($tempFilePath, 'applicants_Fee_Received.xlsx')->deleteFileAfterSend(true);
+    return response()->download($tempFilePath, 'applicants_Merit_List.xlsx')->deleteFileAfterSend(true);
 }
 
 
