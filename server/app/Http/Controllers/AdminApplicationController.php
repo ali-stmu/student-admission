@@ -435,7 +435,7 @@ foreach ($vouchers as $voucher) {
         ->where('degree_id', 1)
         ->first();
 
-    $testScorePercentage = TestScore::select('percentage','test_score_total','test_score_total')
+    $testScorePercentage = TestScore::select('percentage','test_score','test_score_total')
         ->where('student_id', $studentId)
         ->first();
 
@@ -453,7 +453,7 @@ foreach ($vouchers as $voucher) {
 
         'test_score_percentage' => $testScorePercentage->percentage,
         'test_score_total' => $testScorePercentage->test_score_total,
-        'test_score_obtained' => $testScorePercentage->test_score_total,
+        'test_score_obtained' => $testScorePercentage->test_score,
 
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
         'voucherId' => $voucherID,
