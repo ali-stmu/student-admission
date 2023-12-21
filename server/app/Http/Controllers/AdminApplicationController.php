@@ -87,7 +87,7 @@ public function ApplicantsfeeApplicationReceived(Request $request, $program_id)
 
         // Now you can access the 'user_id' key
         $user_id = $userId['user_id'];
-        $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+        $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
     $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
@@ -145,6 +145,7 @@ public function feeReceivedExcel(Request $request, $program_id)
         'Intermediate Percentage',
         'Test Score Percentage',
         'CNIC',
+        'Email',
         'Voucher Id',
         'Date',
         // Add more headers as needed
@@ -164,6 +165,7 @@ public function feeReceivedExcel(Request $request, $program_id)
             $applicant['intermediate_percentage']['percentage_criteria'],
             $applicant['test_score_percentage']['percentage'],
             $applicant['cnic']['cnic'],
+            $applicant['cnic']['email'],
             $applicant['voucherId'],
             $applicant['date'],
             // Add more data fields as needed
@@ -364,7 +366,7 @@ foreach ($vouchers as $voucher) {
 
     // Now you can access the 'user_id' key
     $user_id = $userId['user_id'];
-    $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+    $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
     $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
         ->where('student_id', $studentId)
@@ -490,7 +492,7 @@ foreach ($vouchers as $voucher) {
 
     // Now you can access the 'user_id' key
     $user_id = $userId['user_id'];
-    $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+    $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
 
 
@@ -551,7 +553,7 @@ foreach ($vouchers as $voucher) {
 
     // Now you can access the 'user_id' key
     $user_id = $userId['user_id'];
-    $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+    $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
 
 
@@ -738,6 +740,8 @@ public function feeVerifiedExcel(Request $request, $program_id)
         'Intermediate Percentage',
         'Test Score Percentage',
         'CNIC',
+        'Email',
+
         'Voucher Id',
         'Date',
         // Add more headers as needed
@@ -757,6 +761,7 @@ foreach ($applicantsData['applicantsData'] as $applicant) {
     $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? '';
     $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? '';
     $cnic = $applicant['cnic']['cnic'] ?? '';
+    $email = $applicant['cnic']['email'] ?? '';
     $voucherId = $applicant['voucherId'] ?? '';
     $date = $applicant['date'] ?? '';
 
@@ -768,6 +773,7 @@ foreach ($applicantsData['applicantsData'] as $applicant) {
         $intermediatePercentage,
         $testScorePercentage,
         $cnic,
+        $email,
         $voucherId,
         $date,
         // Add more data fields as needed
@@ -988,6 +994,7 @@ public function appRejectedExcel(Request $request, $program_id)
         'Intermediate Percentage',
         'Test Score Percentage',
         'CNIC',
+        'Email',
         'Voucher Id',
         'Date',
         'Reject Remarks'
@@ -1008,6 +1015,7 @@ public function appRejectedExcel(Request $request, $program_id)
             $applicant['intermediate_percentage']['percentage_criteria'] ?? '',
             $applicant['test_score_percentage']['percentage'] ?? '',
             $applicant['cnic']['cnic'] ?? '',
+            $applicant['cnic']['email'] ?? '',
             $applicant['voucherId'] ?? '',
             $applicant['date'] ?? '',
             $applicant['remarks'] ?? '',
@@ -1051,6 +1059,7 @@ public function feeRejectedExcel(Request $request, $program_id)
         'Intermediate Percentage',
         'Test Score Percentage',
         'CNIC',
+        'Email',
         'Voucher Id',
         'Date',
         'Reject Remarks'
@@ -1071,6 +1080,7 @@ public function feeRejectedExcel(Request $request, $program_id)
             $applicant['intermediate_percentage']['percentage_criteria'] ?? '',
             $applicant['test_score_percentage']['percentage'] ?? '',
             $applicant['cnic']['cnic'] ?? '',
+            $applicant['cnic']['email'] ?? '',
             $applicant['voucherId'] ?? '',
             $applicant['date'] ?? '',
             $applicant['remarks'] ?? '',
