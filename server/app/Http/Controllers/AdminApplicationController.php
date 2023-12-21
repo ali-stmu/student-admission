@@ -747,21 +747,32 @@ public function feeVerifiedExcel(Request $request, $program_id)
     $worksheet->fromArray([$headers], null, 'A1');
 
     // Extract and format the data from $applicantsData
-    $data = [];
-    foreach ($applicantsData['applicantsData'] as $applicant) {
-        $data[] = [
-            $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'],
-            $applicant['student_information']['father_name'],
-            $applicant['student_information']['phone_number'],
-            $applicant['student_information']['student_id'],
-            $applicant['intermediate_percentage']['percentage_criteria'],
-            $applicant['test_score_percentage']['percentage'],
-            $applicant['cnic']['cnic'],
-            $applicant['voucherId'],
-            $applicant['date'],
-            // Add more data fields as needed
-        ];
-    }
+  // Extract and format the data from $applicantsData
+$data = [];
+foreach ($applicantsData['applicantsData'] as $applicant) {
+    $fullName = isset($applicant['student_information']['first_name']) ? $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'] : '';
+    $fatherName = $applicant['student_information']['father_name'] ?? '';
+    $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
+    $studentId = $applicant['student_information']['student_id'] ?? '';
+    $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? '';
+    $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? '';
+    $cnic = $applicant['cnic']['cnic'] ?? '';
+    $voucherId = $applicant['voucherId'] ?? '';
+    $date = $applicant['date'] ?? '';
+
+    $data[] = [
+        $fullName,
+        $fatherName,
+        $phoneNumber,
+        $studentId,
+        $intermediatePercentage,
+        $testScorePercentage,
+        $cnic,
+        $voucherId,
+        $date,
+        // Add more data fields as needed
+    ];
+}
 
     // Set the data rows
     $worksheet->fromArray($data, null, 'A2');
