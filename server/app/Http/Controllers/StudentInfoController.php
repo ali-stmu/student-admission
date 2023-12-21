@@ -278,6 +278,48 @@ public function getPriority(Request $request)
                 $programs = $query->where('program_criteria', '<=', $percentage)
                     ->get();
             }
+            elseif($BachelorDegrees->has($degreeId) && $resultStatus == "declared" && $status = '1' && $maxDegreeId == '4'){
+                log::debug("Masters in");
+                foreach ($studentInfoToCalculatePercentage as $edu) {
+                    if ($edu->degree_id === $degreeId) {
+                        $totalMarks += $edu->total_marks;
+                        $obtainedMarks += $edu->obtained_marks;
+                    }
+                }
+            // Get the student's voucher IDs for programs they've already applied to                
+             $voucherProgramIds = Voucher::where('student_id', $studentId)
+                ->whereIn('status', ['Pending', 'Verified'])
+                ->whereIn('application_status', ['Pending', 'Verified'])
+                 ->pluck('program_id')
+                 ->toArray();
+                //log::debug($voucherProgramIds);
+                $percentage = ($obtainedMarks / $totalMarks) * 100;
+                //log::debug($percentage);
+
+                $query = Program::select('program_name', 'program_criteria','test_criteria')
+                    ->where('degree_id', $maxDegreeId)->where('status', '1');
+                    // Modify the query to exclude programs where student and program IDs match in vouchers
+                 $programs = $query
+                 ->whereNotIn('program_id', $voucherProgramIds)
+                 ->get();
+
+                if ($nationality === 'pakistani') {
+                    $query->whereIn('nationality_check', ['pakistani']);
+                } else if ($nationality === 'foreign') {
+                    $query->whereIn('nationality_check', ['foreign']);
+                }else if ($nationality === 'dual'){
+                    $query->whereIn('nationality_check', ['foreign','dual','pakistani']);
+                }
+
+                if ($testScores[0] == '-1') {
+                    $query->where('test_criteria', 0);
+                } else {
+                    $query->where('test_criteria', '<=', $testScores);
+                }
+
+                $programs = $query->where('program_criteria', '<=', $percentage)
+                    ->get();
+            }
         }
 
         if (empty($programs)) {
