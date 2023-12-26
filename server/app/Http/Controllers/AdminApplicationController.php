@@ -422,22 +422,22 @@ foreach ($vouchers as $voucher) {
 
     // Now you can access the 'user_id' key
     $user_id = $userId['user_id'];
-    $cnic = User::select('cnic')->where('user_id', $user_id)->first();
+    $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
-    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id','gender','date_of_birth','address')
         ->where('student_id', $studentId)
         ->first();
 
-    $intermediatePercentage = Education::select('percentage_criteria','total_marks','obtained_marks')
+    $intermediatePercentage = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
         ->where('student_id', $studentId)
         ->where('degree_id', 2)
         ->first();
-    $matricPercentage = Education::select('percentage_criteria','total_marks','obtained_marks')
+    $matricPercentage = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
         ->where('student_id', $studentId)
         ->where('degree_id', 1)
         ->first();
 
-    $testScorePercentage = TestScore::select('percentage','test_score','test_score_total')
+    $testScorePercentage = TestScore::select('percentage','test_score','test_score_total','test_date','test_reg_no')
         ->where('student_id', $studentId)
         ->first();
 
@@ -448,14 +448,22 @@ foreach ($vouchers as $voucher) {
         'intermediate_percentage' => $intermediatePercentage->percentage_criteria,
         'intermediate_total' => $intermediatePercentage->total_marks,
         'intermediate_obtained' => $intermediatePercentage->obtained_marks,
+        'intermediate_board' => $intermediatePercentage->institution_name,
+
 
         'matric_percentage' => $matricPercentage->percentage_criteria,
         'matric_total' => $matricPercentage->total_marks,
         'matric_obtained' => $matricPercentage->obtained_marks,
+        'matric_board' => $matricPercentage->institution_name,
+
 
         'test_score_percentage' => $testScorePercentage->percentage,
         'test_score_total' => $testScorePercentage->test_score_total,
         'test_score_obtained' => $testScorePercentage->test_score,
+        'test_score_year' => $testScorePercentage->test_date,
+        'test_score_roll_no' => $testScorePercentage->test_reg_no,
+
+
 
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
         'voucherId' => $voucherID,
@@ -868,27 +876,31 @@ public function appVerifiedMeritList(Request $request, $program_id)
 
     // Define the column headers
     $headers = [
-        'Full Name',
+        'Application No',
+        'Student Name',
         'Father Name',
-        'Phone Number',
-        'Student ID',
-        'Intermediate Percentage',
-        'Intermediate Obtained',
-        'Intermediate Total',
-        'Intermediate Aggregate',
-        'Matric Percentage',
-        'Matric Total',
-        'Matric Obtained',
-        'Matric Aggregate',
-        'Test Score Percentage',
-        'Test Score Total',
-        'Test Score Obtained',
-        'Test Score Aggregate',
-
         'CNIC',
-        'Voucher Id',
+        'Gender',
+        'Date of Birth',
+        'Address',
+        'Contact Number',
+        'Email',
+        'SSC/IBCC Equivalence Board name',
+        'SSC/IBCC Equivalence Total Marks',
+        'SSC/IBCC Equivalence Marks Obtained',
+        'SSC Obtained Weightage (10%)',
+        'HSSC/IBCC Equivalence Board name',
+        'HSSC/IBCC Equivalence Total Marks',
+        'HSSC/IBCC Equivalence Obtained Marks',
+        'Obtained Weightage (40%)',
+        'MDCAT Year',
+        'MDCAT Roll No',
+        'MDCAT / Sat- II / MCAT / UCAT Total Marks',
+        'MDCAT / Sat- II / MCAT / UCAT Obtained Marks',
+        'MDCAT / Sat- II / MCAT / UCAT Obtained Weightage (50%)',
         'Date',
-        'Aggregate', // New column for aggregate
+        'Total Aggregate', // New column for aggregate
+        'Merit Standing',
     ];
 
     // Set the column headers
@@ -896,7 +908,10 @@ public function appVerifiedMeritList(Request $request, $program_id)
 
     // Extract and format the data from $applicantsData
     $data = [];
+    $meritPosition = 1; // Initialize merit position counter
     foreach ($applicantsData['applicantsData'] as $applicant) {
+        $voucherId = $applicant['voucherId'] ?? '';
+
         // Handle null values in the percentage criteria
         $testScorePercentage = $applicant['test_score_percentage'] ?? 0;
         $testScoreTotal = $applicant['test_score_total'] ?? 0;
@@ -924,38 +939,60 @@ public function appVerifiedMeritList(Request $request, $program_id)
         $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
         $studentId = $applicant['student_information']['student_id'] ?? '';
         $cnic = $applicant['cnic']['cnic'] ?? '';
+        $email = $applicant['cnic']['email'] ?? '';
+
         $voucherId = $applicant['voucherId'] ?? '';
         $date = $applicant['date'] ?? '';
+        $gender =  $applicant['student_information']['gender'] ?? '';
+        $dob = $applicant['student_information']['date_of_birth'] ?? '';
+        $address = $applicant['student_information']['address'] ?? '';
+        $matricBoardName = $applicant['matric_board'] ?? '';
+        $intermediateBoardName = $applicant['intermediate_board'] ?? '';
+        $mdcatYear = $applicant['test_score_year'] ?? '';
+        $mdcatRollNo = $applicant['test_score_roll_no'] ?? '';
+        $meritStanding = $applicant['date'] ?? '';
+
 
         // Add the data to the array
         $data[] = [
+            $voucherId,
             $fullName,
             $fatherName,
+            $cnic,
+            $gender,
+            $dob,
+            $address,
             $phoneNumber,
-            $studentId,
-            $intermediatePercentage,
-            $intermediateObtained,
-            $intermediateTotal,
-            $intermediatePercentage * 0.4,
-            $matricPercentage,
+            $email,
+            $matricBoardName,
             $matricTotal,
             $matricObtained,
             $matricPercentage * 0.1,
-            $testScorePercentage,
+            $intermediateBoardName,
+            $intermediateTotal,
+            $intermediateObtained,
+            $intermediatePercentage * 0.4,
+            $mdcatYear,
+            $mdcatRollNo,
             $testScoreTotal,
             $testScoreObtained,
             $testScorePercentage * 0.5,
-            $cnic,
-            $voucherId,
             $date,
-            $aggregate, // Add the aggregate to the data
+            $aggregate,
         ];
     }
 
     // Sort the data by the aggregate (descending order)
     usort($data, function ($a, $b) {
-        return $b[19] <=> $a[19];
+        return $b[23] <=> $a[23];
     });
+    foreach ($data as &$applicant) {
+        $applicant[] = $meritPosition; // Assign merit position counter
+        $meritPosition++; // Increment merit position for the next applicant
+    }
+    unset($applicant); // unset reference to last element
+    
+
 
     // Set the data rows
     $worksheet->fromArray($data, null, 'A2');
