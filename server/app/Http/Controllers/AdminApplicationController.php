@@ -377,6 +377,12 @@ foreach ($vouchers as $voucher) {
         ->where('degree_id', 2)
         ->first();
 
+    $matricPercentage = Education::select('percentage_criteria')
+        ->where('student_id', $studentId)
+        ->where('degree_id', 1)
+        ->first();
+            
+
     $testScorePercentage = TestScore::select('percentage')
         ->where('student_id', $studentId)
         ->first();
@@ -386,6 +392,7 @@ foreach ($vouchers as $voucher) {
     $applicantsData[] = [
         'student_information' => $studentInformation,
         'intermediate_percentage' => $intermediatePercentage,
+        'matric_percentage' => $intermediatePercentage,
         'test_score_percentage' => $testScorePercentage,
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
         'voucherId' => $voucherID,
@@ -698,15 +705,14 @@ public function feePendingExcel(Request $request, $program_id)
     $data = [];
     foreach ($applicantsData['applicantsData'] as $applicant) {
         $data[] = [
-            $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'],
-            $applicant['student_information']['father_name'],
-            $applicant['student_information']['phone_number'],
-            $applicant['intermediate_percentage']['percentage_criteria'],
-            $applicant['test_score_percentage']['percentage'],
-             $applicant['cnic'],
-             $applicant['email'],
-
-
+            $applicant['student_information']['first_name'] ?? '', // Use an empty string if null
+            $applicant['student_information']['last_name'] ?? '',  // Use an empty string if null
+            $applicant['student_information']['father_name'] ?? '',
+            $applicant['student_information']['phone_number'] ?? '',
+            $applicant['intermediate_percentage']['percentage_criteria'] ?? '',
+            $applicant['test_score_percentage']['percentage'] ?? '',
+            $applicant['cnic'] ?? '',
+            $applicant['email'] ?? '',
             // Add more data fields as needed
         ];
     }
@@ -746,12 +752,15 @@ public function feeVerifiedExcel(Request $request, $program_id)
         'Phone Number',
         'Student ID',
         'Intermediate Percentage',
+        'Matric Percentage',
         'Test Score Percentage',
         'CNIC',
         'Email',
 
         'Voucher Id',
         'Date',
+        'Aggregate',
+
         // Add more headers as needed
     ];
 
@@ -767,11 +776,15 @@ foreach ($applicantsData['applicantsData'] as $applicant) {
     $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
     $studentId = $applicant['student_information']['student_id'] ?? '';
     $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? '';
+    $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? '';
     $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? '';
     $cnic = $applicant['cnic']['cnic'] ?? '';
     $email = $applicant['cnic']['email'] ?? '';
     $voucherId = $applicant['voucherId'] ?? '';
     $date = $applicant['date'] ?? '';
+    $aggregate = ($testScorePercentage * 0.5) +
+    ($intermediatePercentage * 0.4) +
+    ($matricPercentage * 0.1);
 
     $data[] = [
         $fullName,
@@ -779,11 +792,13 @@ foreach ($applicantsData['applicantsData'] as $applicant) {
         $phoneNumber,
         $studentId,
         $intermediatePercentage,
+        $matricPercentage,
         $testScorePercentage,
         $cnic,
         $email,
         $voucherId,
         $date,
+        $aggregate,
         // Add more data fields as needed
     ];
 }
