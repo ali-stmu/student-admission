@@ -227,7 +227,6 @@ public function getVoucherId($studentId,$programId)
 
                 if ($programIds) {
                     $program = Program::where('program_id', $programId)
-                        ->where('status', '1')
                         ->first();
                     if ($program) {
                         $bankIds = $program->bank_id;                        
@@ -775,9 +774,9 @@ foreach ($applicantsData['applicantsData'] as $applicant) {
     $fatherName = $applicant['student_information']['father_name'] ?? '';
     $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
     $studentId = $applicant['student_information']['student_id'] ?? '';
-    $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? '';
-    $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? '';
-    $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? '';
+    $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? 0;
+    $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? 0;
+    $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? 0;
     $cnic = $applicant['cnic']['cnic'] ?? '';
     $email = $applicant['cnic']['email'] ?? '';
     $voucherId = $applicant['voucherId'] ?? '';
