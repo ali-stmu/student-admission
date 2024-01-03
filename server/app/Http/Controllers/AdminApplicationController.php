@@ -927,24 +927,47 @@ public function appVerifiedMeritList(Request $request, $program_id)
         $voucherId = $applicant['voucherId'] ?? '';
 
         // Handle null values in the percentage criteria
-        $testScorePercentage = $applicant['test_score_percentage'] ?? 0;
-        $testScoreTotal = $applicant['test_score_total'] ?? 0;
         $testScoreObtained = $applicant['test_score_obtained'] ?? 0;
-
-        $intermediatePercentage = $applicant['intermediate_percentage'] ?? 0;
+        $testScoreTotal = $applicant['test_score_total'] ?? 0;
+        
+        if ($testScoreTotal != 0) {
+            $testScorePercentage = number_format(($testScoreObtained / $testScoreTotal) * 100, 3, '.', '');
+        } else {
+            $testScorePercentage = 0.000; // Set a default value when the total is zero to avoid division by zero
+        }
+        
+        // Other calculations for intermediate and matric percentages
         $intermediateObtained = $applicant['intermediate_obtained'] ?? 0;
         $intermediateTotal = $applicant['intermediate_total'] ?? 0;
-
-        $matricPercentage = $applicant['matric_percentage'] ?? 0;
-        $matricTotal = $applicant['matric_total'] ?? 0;
+        
+        if ($intermediateTotal != 0) {
+            $intermediatePercentage = number_format(($intermediateObtained / $intermediateTotal) * 100, 3, '.', '');
+        } else {
+            $intermediatePercentage = 0.000;
+        }
+        
         $matricObtained = $applicant['matric_obtained'] ?? 0;
+        $matricTotal = $applicant['matric_total'] ?? 0;
+        
+        if ($matricTotal != 0) {
+            $matricPercentage = number_format(($matricObtained / $matricTotal) * 100, 3, '.', '');
+        } else {
+            $matricPercentage = 0.000;
+        }
+        
 
 
 
         // Calculate the aggregate, handling null values
-        $aggregate = ($testScorePercentage * 0.5) +
-                     ($intermediatePercentage * 0.4) +
-                     ($matricPercentage * 0.1);
+        $aggregate = round((number_format($testScorePercentage * 0.5, 3, '.', '')) +
+        (number_format($intermediatePercentage * 0.4, 3, '.', '')) +
+        (number_format($matricPercentage * 0.1, 3, '.', '')), 3);
+
+        // $aggregate is now rounded off to three decimal places
+
+
+        // Format the result with three decimal points
+        $aggregateFormatted = number_format($aggregate, 3, '.', '');
 
         // Handle null values in other fields
         $fullName = $applicant['student_information']['first_name'] . " " .
@@ -981,18 +1004,18 @@ public function appVerifiedMeritList(Request $request, $program_id)
             $matricBoardName,
             $matricTotal,
             $matricObtained,
-            $matricPercentage * 0.1,
+            $matricPercentage = number_format($matricPercentage * 0.1, 3, '.', ''),
             $intermediateBoardName,
             $intermediateTotal,
             $intermediateObtained,
-            $intermediatePercentage * 0.4,
+            $intermediatePercentage = number_format($intermediatePercentage * 0.4, 3, '.', ''),
             $mdcatYear,
             $mdcatRollNo,
             $testScoreTotal,
             $testScoreObtained,
-            $testScorePercentage * 0.5,
+            $testScorePercentage = number_format($testScorePercentage * 0.5, 3, '.', ''),
             $date,
-            $aggregate,
+            $aggregateFormatted,
         ];
     }
 
