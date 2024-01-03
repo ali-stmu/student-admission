@@ -692,20 +692,20 @@ public function feePendingExcel(Request $request, $program_id)
         'Test Score Percentage',
         'CNIC',
         'Email',
-
-
         // Add more headers as needed
     ];
-
+    
     // Set the column headers
     $worksheet->fromArray([$headers], null, 'A1');
-
+    
     // Extract and format the data from $applicantsData
     $data = [];
     foreach ($applicantsData['applicantsData'] as $applicant) {
+        $fullName = $applicant['student_information']['first_name'] ?? '';
+        $fullName .= ' ' . ($applicant['student_information']['last_name'] ?? '');
+    
         $data[] = [
-            $applicant['student_information']['first_name'] ?? '', // Use an empty string if null
-            $applicant['student_information']['last_name'] ?? '',  // Use an empty string if null
+            $fullName,
             $applicant['student_information']['father_name'] ?? '',
             $applicant['student_information']['phone_number'] ?? '',
             $applicant['intermediate_percentage']['percentage_criteria'] ?? '',
@@ -715,6 +715,7 @@ public function feePendingExcel(Request $request, $program_id)
             // Add more data fields as needed
         ];
     }
+    
 
     // Set the data rows
     $worksheet->fromArray($data, null, 'A2');
