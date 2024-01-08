@@ -236,26 +236,34 @@ const ApplicationVerified = () => {
           },
         ]}
         data={filteredApplicants.map((applicant, index) => {
-          // Check if the middle name is equal to "abc"
+          // Check if the middle name is equal to "null"
           const middleName =
             applicant.student_information.middle_name === "null"
               ? "" // Replace 'MiddleNameModified' with your desired value
               : applicant.student_information.middle_name;
 
+          // Handle null values for other fields
+          const intermediatePercentage =
+            applicant.intermediate_percentage !== null
+              ? `${applicant.intermediate_percentage}%`
+              : "";
+          const testPercentage =
+            applicant.test_score_percentage !== null
+              ? `${applicant.test_score_percentage}%`
+              : "";
+
           return {
             sr: index + 1,
             name: `${applicant.student_information.first_name} ${middleName} ${applicant.student_information.last_name}`,
-            father_name: applicant.student_information.father_name,
-            contact_no: applicant.student_information.phone_number,
-            intermediate_percentage: `${
-              applicant.intermediate_percentage ?? ""
-            }%`,
-            test_percentage: `${applicant.test_score_percentage ?? ""}%`,
-            date: `${applicant.date}`,
-            voucherId: `${applicant.voucherId}`,
-            cnic: `${applicant.cnic.cnic}`,
-            studentId: `${applicant.student_information.student_id}`,
-            programId: `${applicant.student_information.student_id}`,
+            father_name: applicant.student_information.father_name || "", // Handle null for father_name
+            contact_no: applicant.student_information.phone_number || "", // Handle null for phone_number
+            intermediate_percentage: intermediatePercentage,
+            test_percentage: testPercentage,
+            date: `${applicant.date || ""}`,
+            voucherId: `${applicant.voucherId || ""}`,
+            cnic: `${applicant.cnic.cnic || ""}`,
+            studentId: `${applicant.student_information.student_id || ""}`,
+            programId: `${applicant.student_information.student_id || ""}`,
           };
         })}
         pagination
