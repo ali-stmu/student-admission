@@ -410,7 +410,7 @@ public function ApplicantsApplicationVerified(Request $request, $program_id)
 {
     $vouchers = Voucher::where('program_id', $program_id)
     ->where('application_status', "Verified")
-    ->where('status', "Verified")
+    ->orderBy('updated_at', 'asc')
     ->get();
     //log::debug($vouchers);
 
@@ -451,31 +451,27 @@ foreach ($vouchers as $voucher) {
 
     $applicantsData[] = [
         'student_information' => $studentInformation,
-        'intermediate_percentage' => $intermediatePercentage->percentage_criteria,
-        'intermediate_total' => $intermediatePercentage->total_marks,
-        'intermediate_obtained' => $intermediatePercentage->obtained_marks,
-        'intermediate_board' => $intermediatePercentage->institution_name,
-
-
-        'matric_percentage' => $matricPercentage->percentage_criteria,
-        'matric_total' => $matricPercentage->total_marks,
-        'matric_obtained' => $matricPercentage->obtained_marks,
-        'matric_board' => $matricPercentage->institution_name,
-
-
-        'test_score_percentage' => $testScorePercentage->percentage,
-        'test_score_total' => $testScorePercentage->test_score_total,
-        'test_score_obtained' => $testScorePercentage->test_score,
-        'test_score_year' => $testScorePercentage->test_date,
-        'test_score_roll_no' => $testScorePercentage->test_reg_no,
-
-
-
-        'date' => date('d/m/Y', strtotime($voucher->updated_at)),
-        'voucherId' => $voucherID,
-        'cnic' => $cnic,
-
+        'intermediate_percentage' => $intermediatePercentage->percentage_criteria ?? null,
+        'intermediate_total' => $intermediatePercentage->total_marks ?? null,
+        'intermediate_obtained' => $intermediatePercentage->obtained_marks ?? null,
+        'intermediate_board' => $intermediatePercentage->institution_name ?? null,
+    
+        'matric_percentage' => $matricPercentage->percentage_criteria ?? null,
+        'matric_total' => $matricPercentage->total_marks ?? null,
+        'matric_obtained' => $matricPercentage->obtained_marks ?? null,
+        'matric_board' => $matricPercentage->institution_name ?? null,
+    
+        'test_score_percentage' => $testScorePercentage->percentage ?? null,
+        'test_score_total' => $testScorePercentage->test_score_total ?? null,
+        'test_score_obtained' => $testScorePercentage->test_score ?? null,
+        'test_score_year' => $testScorePercentage->test_date ?? null,
+        'test_score_roll_no' => $testScorePercentage->test_reg_no ?? null,
+    
+        'date' => date('d/m/Y', strtotime($voucher->updated_at)) ?? null,
+        'voucherId' => $voucherID ?? null,
+        'cnic' => $cnic ?? null,
     ];
+    
     //log::debug($applicantsData);
 }
 
@@ -835,12 +831,14 @@ public function appVerifiedExcel(Request $request, $program_id)
         'Full Name',
         'Father Name',
         'Phone Number',
+        'Email',
         'Student ID',
         'Intermediate Percentage',
         'Test Score Percentage',
         'CNIC',
         'Voucher Id',
         'Date',
+        
         // Add more headers as needed
     ];
 
@@ -850,19 +848,26 @@ public function appVerifiedExcel(Request $request, $program_id)
     // Extract and format the data from $applicantsData
     $data = [];
     foreach ($applicantsData['applicantsData'] as $applicant) {
+        $fullName = $applicant['student_information']['first_name'] . " " . 
+                    ($applicant['student_information']['middle_name'] !== "null" ? $applicant['student_information']['middle_name'] . " " : '') . 
+                    $applicant['student_information']['last_name'];
+    
         $data[] = [
-            $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'],
-            $applicant['student_information']['father_name'],
-            $applicant['student_information']['phone_number'],
-            $applicant['student_information']['student_id'],
-            $applicant['intermediate_percentage'],
-            $applicant['test_score_percentage'],
-            $applicant['cnic']['cnic'],
-            $applicant['voucherId'],
-            $applicant['date'],
+            $fullName,
+            $applicant['student_information']['father_name'] ?? '',
+            $applicant['student_information']['phone_number'] ?? '',
+            $applicant['cnic']['email'] ?? '',
+            $applicant['student_information']['student_id'] ?? '',
+            $applicant['intermediate_percentage'] ?? '',
+            $applicant['test_score_percentage'] ?? '',
+            $applicant['cnic']['cnic'] ?? '',
+            $applicant['voucherId'] ?? '',
+            $applicant['date'] ?? '',
             // Add more data fields as needed
         ];
     }
+    
+    
 
     // Set the data rows
     $worksheet->fromArray($data, null, 'A2');
