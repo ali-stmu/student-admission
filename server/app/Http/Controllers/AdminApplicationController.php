@@ -23,7 +23,11 @@ use Illuminate\Http\JsonResponse;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use PDF; // Assuming you have Dompdf or any other PDF generation library installed
+use Dompdf\Dompdf;
+
+use PDF;
+
+
 
 class AdminApplicationController extends Controller
 {
@@ -367,7 +371,7 @@ foreach ($vouchers as $voucher) {
     $user_id = $userId['user_id'];
     $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
-    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id','address','city','father_contact','gender')
         ->where('student_id', $studentId)
         ->first();
 
@@ -385,13 +389,31 @@ foreach ($vouchers as $voucher) {
     $testScorePercentage = TestScore::select('percentage')
         ->where('student_id', $studentId)
         ->first();
+    
+    $intermediate = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
+        ->where('student_id', $studentId)
+        ->where('degree_id', 2)
+        ->first();
+    $matric = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
+        ->where('student_id', $studentId)
+        ->where('degree_id', 1)
+        ->first();
+
+    $testScore = TestScore::select('percentage','test_score','test_score_total','test_date','test_reg_no')
+        ->where('student_id', $studentId)
+        ->first();
 
     // Concatenate the voucher file name with the voucher path
 
     $applicantsData[] = [
         'student_information' => $studentInformation,
         'intermediate_percentage' => $intermediatePercentage,
+        'intermediate_total' => $intermediate->total_marks,
+        'intermediate_obtained' => $intermediate->obtained_marks,
+        'matric_total' => $matric->total_marks,
+        'matric_obtained' => $matric->obtained_marks,
         'matric_percentage' => $intermediatePercentage,
+        
         'test_score_percentage' => $testScorePercentage,
         'date' => date('d/m/Y', strtotime($voucher->updated_at)),
         'voucherId' => $voucherID,
@@ -414,9 +436,9 @@ public function ApplicantsApplicationVerified(Request $request, $program_id)
     ->get();
     //log::debug($vouchers);
 
-$applicantsData = [];
+    $applicantsData = [];
 
-foreach ($vouchers as $voucher) {
+    foreach ($vouchers as $voucher) {
     $studentId = $voucher->student_id;
     $programId = $voucher->program_id;
     $voucherID = $this->getVoucherId($studentId,$program_id);
@@ -430,7 +452,7 @@ foreach ($vouchers as $voucher) {
     $user_id = $userId['user_id'];
     $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
-    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id','gender','date_of_birth','address')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id','gender','date_of_birth','address','father_contact')
         ->where('student_id', $studentId)
         ->first();
 
@@ -473,9 +495,9 @@ foreach ($vouchers as $voucher) {
     ];
     
     //log::debug($applicantsData);
-}
+    }
 
-return response()->json(['applicantsData' => $applicantsData]);
+    return response()->json(['applicantsData' => $applicantsData]);
 }
 
 
@@ -733,8 +755,6 @@ public function feeVerifiedExcel(Request $request, $program_id)
     $response = $this->ApplicantsfeeApplicationVerified($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
 
-    //log::debug($applicantsData);
-
     // Create a new spreadsheet
     $spreadsheet = new Spreadsheet();
 
@@ -743,61 +763,102 @@ public function feeVerifiedExcel(Request $request, $program_id)
 
     // Define the column headers
     $headers = [
-        'Full Name',
+        'Sr. No',
+        'Applicant Name',
         'Father Name',
-        'Phone Number',
-        'Student ID',
-        'Intermediate Percentage',
-        'Matric Percentage',
-        'Test Score Percentage',
+        'Gender',
+        'Total Marks in Matric',
+        'Obtained Marks in Matric',
+        'Total Marks in FSc',
+        'Obtained Marks in FSc',
+        'Applicant Mobile No-1',
+        'Guardian Mobile No-2',
+        'Email Address',
         'CNIC',
-        'Email',
-
-        'Voucher Id',
-        'Date',
-        'Aggregate',
-
+        'City',
+        'Postal Address',
         // Add more headers as needed
     ];
+
+    // If program_id is not 8, include additional headers
+    if ($program_id == 8) {
+        array_splice($headers, 1, 0, ['Slip/Reg. No','Entry Test Roll No']);
+        $headers[] = 'Test Centre';
+    }
 
     // Set the column headers
     $worksheet->fromArray([$headers], null, 'A1');
 
     // Extract and format the data from $applicantsData
-  // Extract and format the data from $applicantsData
-$data = [];
-foreach ($applicantsData['applicantsData'] as $applicant) {
-    $fullName = isset($applicant['student_information']['first_name']) ? $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'] : '';
-    $fatherName = $applicant['student_information']['father_name'] ?? '';
-    $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
-    $studentId = $applicant['student_information']['student_id'] ?? '';
-    $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? 0;
-    $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? 0;
-    $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? 0;
-    $cnic = $applicant['cnic']['cnic'] ?? '';
-    $email = $applicant['cnic']['email'] ?? '';
-    $voucherId = $applicant['voucherId'] ?? '';
-    $date = $applicant['date'] ?? '';
-    $aggregate = ($testScorePercentage * 0.5) +
-    ($intermediatePercentage * 0.4) +
-    ($matricPercentage * 0.1);
-
-    $data[] = [
-        $fullName,
-        $fatherName,
-        $phoneNumber,
-        $studentId,
-        $intermediatePercentage,
-        $matricPercentage,
-        $testScorePercentage,
-        $cnic,
-        $email,
-        $voucherId,
-        $date,
-        $aggregate,
-        // Add more data fields as needed
-    ];
-}
+    $data = [];
+    foreach ($applicantsData['applicantsData'] as $applicant) {
+        $fullName = isset($applicant['student_information']['first_name']) ? $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'] : '';
+        $fatherName = $applicant['student_information']['father_name'] ?? '';
+        $address = $applicant['student_information']['address'] ?? '';
+        $fatherContact = $applicant['student_information']['father_contact'] ?? '';
+        $city = $applicant['student_information']['city'] ?? '';
+        $gender = $applicant['student_information']['gender'] ?? '';
+        $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
+        $studentId = $applicant['student_information']['student_id'] ?? '';
+        $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? 0;
+        $intermediate_total = $applicant['intermediate_total'] ?? 0;
+        $intermediate_obtained = $applicant['intermediate_obtained'] ?? 0;
+        $matric_obtained = $applicant['matric_obtained'] ?? 0;
+        $matric_total = $applicant['matric_total'] ?? 0;
+        $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? 0;
+        $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? 0;
+        $cnic = $applicant['cnic']['cnic'] ?? '';
+        $email = $applicant['cnic']['email'] ?? '';
+        $voucherId = $applicant['voucherId'] ?? '';
+        $date = $applicant['date'] ?? '';
+        $aggregate = ($testScorePercentage * 0.5) +
+        ($intermediatePercentage * 0.4) +
+        ($matricPercentage * 0.1);
+        
+        // If program_id is not 8, include additional data
+        if ($program_id == 8) {
+            $testCenter = $applicant['test_center'] ?? '';
+            $data[] = [
+                1,
+                $voucherId,
+                'BSN-2024-'.$studentId,
+                $fullName,
+                $fatherName,
+                $gender,
+                $intermediate_total,
+                $intermediate_obtained,
+                $matric_total,
+                $matric_obtained,
+                $phoneNumber,
+                $fatherContact,
+                $email,
+                $cnic,
+                $city,
+                $address,
+                $testCenter
+                // Add more data fields as needed
+            ];
+        } else {
+            $data[] = [
+                1,
+               
+                $fullName,
+                $fatherName,
+                $gender,
+                $intermediate_total,
+                $intermediate_obtained,
+                $matric_total,
+                $matric_obtained,
+                $phoneNumber,
+                $fatherContact,
+                $email,
+                $cnic,
+                $city,
+                $address,
+                // Add more data fields as needed
+            ];
+        }
+    }
 
     // Set the data rows
     $worksheet->fromArray($data, null, 'A2');
@@ -810,10 +871,6 @@ foreach ($applicantsData['applicantsData'] as $applicant) {
     // Return the Excel file as a response
     return response()->download($tempFilePath, 'applicants_Fee_Recieved.xlsx')->deleteFileAfterSend(true);
 }
-
-
-
-
 public function appVerifiedExcel(Request $request, $program_id)
 {
     $response = $this->ApplicantsApplicationVerified($request, $program_id);
@@ -826,21 +883,30 @@ public function appVerifiedExcel(Request $request, $program_id)
     // Create a new worksheet
     $worksheet = $spreadsheet->getActiveSheet();
 
-    // Define the column headers
-    $headers = [
-        'Full Name',
+     // Define the column headers
+     $headers = [
+        'Sr. No',
+        'Applicant Name',
         'Father Name',
-        'Phone Number',
-        'Email',
-        'Student ID',
-        'Intermediate Percentage',
-        'Test Score Percentage',
+        'Gender',
+        'Total Marks in Matric',
+        'Obtained Marks in Matric',
+        'Total Marks in FSc',
+        'Obtained Marks in FSc',
+        'Applicant Mobile No-1',
+        'Guardian Mobile No-2',
+        'Email Address',
         'CNIC',
-        'Voucher Id',
-        'Date',
-        
+        'City',
+        'Postal Address',
         // Add more headers as needed
     ];
+
+    // If program_id is not 8, include additional headers
+    if ($program_id == 8) {
+        array_splice($headers, 1, 0, ['Slip/Reg. No','Entry Test Roll No']);
+        $headers[] = 'Test Centre';
+    }
 
     // Set the column headers
     $worksheet->fromArray([$headers], null, 'A1');
@@ -848,25 +914,73 @@ public function appVerifiedExcel(Request $request, $program_id)
     // Extract and format the data from $applicantsData
     $data = [];
     foreach ($applicantsData['applicantsData'] as $applicant) {
-        $fullName = $applicant['student_information']['first_name'] . " " . 
-                    ($applicant['student_information']['middle_name'] !== "null" ? $applicant['student_information']['middle_name'] . " " : '') . 
-                    $applicant['student_information']['last_name'];
-    
-        $data[] = [
-            $fullName,
-            $applicant['student_information']['father_name'] ?? '',
-            $applicant['student_information']['phone_number'] ?? '',
-            $applicant['cnic']['email'] ?? '',
-            $applicant['student_information']['student_id'] ?? '',
-            $applicant['intermediate_percentage'] ?? '',
-            $applicant['test_score_percentage'] ?? '',
-            $applicant['cnic']['cnic'] ?? '',
-            $applicant['voucherId'] ?? '',
-            $applicant['date'] ?? '',
-            // Add more data fields as needed
-        ];
+        $fullName = isset($applicant['student_information']['first_name']) ? $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'] : '';
+        $fatherName = $applicant['student_information']['father_name'] ?? '';
+        $address = $applicant['student_information']['address'] ?? '';
+        $fatherContact = $applicant['student_information']['father_contact'] ?? '';
+        $city = $applicant['student_information']['city'] ?? '';
+        $gender = $applicant['student_information']['gender'] ?? '';
+        $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
+        $studentId = $applicant['student_information']['student_id'] ?? '';
+        $intermediatePercentage = $applicant['intermediate_percentage']['percentage_criteria'] ?? 0;
+        $intermediate_total = $applicant['intermediate_total'] ?? 0;
+        $intermediate_obtained = $applicant['intermediate_obtained'] ?? 0;
+        $matric_obtained = $applicant['matric_obtained'] ?? 0;
+        $matric_total = $applicant['matric_total'] ?? 0;
+        $matricPercentage = $applicant['matric_percentage']['percentage_criteria'] ?? 0;
+        $testScorePercentage = $applicant['test_score_percentage']['percentage'] ?? 0;
+        $cnic = $applicant['cnic']['cnic'] ?? '';
+        $email = $applicant['cnic']['email'] ?? '';
+        $voucherId = $applicant['voucherId'] ?? '';
+        $date = $applicant['date'] ?? '';
+        $aggregate = ($testScorePercentage * 0.5) +
+        ($intermediatePercentage * 0.4) +
+        ($matricPercentage * 0.1);
+        
+        // If program_id is not 8, include additional data
+        if ($program_id == 8) {
+            $testCenter = $applicant['test_center'] ?? '';
+            $data[] = [
+                1,
+                $voucherId,
+                'BSN-2024-'.$studentId,
+                $fullName,
+                $fatherName,
+                $gender,
+                $intermediate_total,
+                $intermediate_obtained,
+                $matric_total,
+                $matric_obtained,
+                $phoneNumber,
+                $fatherContact,
+                $email,
+                $cnic,
+                $city,
+                $address,
+                $testCenter
+                // Add more data fields as needed
+            ];
+        } else {
+            $data[] = [
+                1,
+               
+                $fullName,
+                $fatherName,
+                $gender,
+                $intermediate_total,
+                $intermediate_obtained,
+                $matric_total,
+                $matric_obtained,
+                $phoneNumber,
+                $fatherContact,
+                $email,
+                $cnic,
+                $city,
+                $address,
+                // Add more data fields as needed
+            ];
+        }
     }
-    
     
 
     // Set the data rows
@@ -904,6 +1018,7 @@ public function appVerifiedMeritList(Request $request, $program_id)
         'Date of Birth',
         'Address',
         'Contact Number',
+        'Father/Guardian Contact',
         'Email',
         'SSC/IBCC Equivalence Board name',
         'SSC/IBCC Equivalence Total Marks',
@@ -976,10 +1091,21 @@ public function appVerifiedMeritList(Request $request, $program_id)
         $aggregateFormatted = number_format($aggregate, 3, '.', '');
 
         // Handle null values in other fields
-        $fullName = $applicant['student_information']['first_name'] . " " .
-                    $applicant['student_information']['last_name'];
+   // Handle null values in other fields
+    $firstName = isset($applicant['student_information']['first_name']) ? $applicant['student_information']['first_name'] : '';
+    $middleName = isset($applicant['student_information']['middle_name']) ? $applicant['student_information']['middle_name'] : '';
+    $lastName = isset($applicant['student_information']['last_name']) ? $applicant['student_information']['last_name'] : '';
+
+        // Check if middle name is not null or empty before including it
+        if (!empty($middleName) && strtolower($middleName) !== 'null') {
+            $fullName = $firstName . " " . $middleName . " " . $lastName;
+        } else {
+            $fullName = $firstName . " " . $lastName;
+        }
+
         $fatherName = $applicant['student_information']['father_name'] ?? '';
         $phoneNumber = $applicant['student_information']['phone_number'] ?? '';
+        $fatherContact = $applicant['student_information']['father_contact'] ?? '';
         $studentId = $applicant['student_information']['student_id'] ?? '';
         $cnic = $applicant['cnic']['cnic'] ?? '';
         $email = $applicant['cnic']['email'] ?? '';
@@ -1006,6 +1132,7 @@ public function appVerifiedMeritList(Request $request, $program_id)
             $dob,
             $address,
             $phoneNumber,
+            $fatherContact,
             $email,
             $matricBoardName,
             $matricTotal,
@@ -1027,7 +1154,7 @@ public function appVerifiedMeritList(Request $request, $program_id)
 
     // Sort the data by the aggregate (descending order)
     usort($data, function ($a, $b) {
-        return $b[23] <=> $a[23];
+        return $b[24] <=> $a[24];
     });
     foreach ($data as &$applicant) {
         $applicant[] = $meritPosition; // Assign merit position counter
@@ -1419,16 +1546,6 @@ public function getPdfStudentDegree($filename)
 
     return response()->json(['error' => 'File not found'], 404);
 }
-public function getPdfStudentTest($filename)
-{
-    $filePath = public_path("attachment_directory/{$filename}");
-
-    if (file_exists($filePath)) {
-        return response()->file($filePath);
-    }
-
-    return response()->json(['error' => 'File not found'], 404);
-}
 
 
 public function updateEducationData(Request $request)
@@ -1543,5 +1660,47 @@ public function updateEducationData(Request $request)
     }
     
 
+    public function admitLetters(Request $request, $program_id)
+    {
+        $html = '';
+        // Retrieve verified applicants' data for the program
+        $response = $this->ApplicantsApplicationVerified($request, $program_id);
+        $responseData = json_decode($response->getContent(), true);
+    
+        // Check if applicants data is available
+        if(isset($responseData['applicantsData']) && !empty($responseData['applicantsData'])) {
+            // Create a new Dompdf instance
+            $dompdf = new Dompdf();
+    
+            // Iterate over each applicant and add their admit card to the PDF
+            foreach ($responseData['applicantsData'] as $applicant) {
+                $admitCard = $this->generateAdmitCard($applicant);
+    
+                $html .= "<div class='admit-card-container'>" . $admitCard . "</div><div class='page-break'></div>"; // Add admit card and page break
+            }
+    
+            // Load HTML content into Dompdf instance
+            $dompdf->loadHtml($html); // Correct usage
+    
+            // Render the PDF
+            $dompdf->render();
+    
+            // Download the PDF with all admit cards
+            return $dompdf->stream('admit_cards.pdf');
+        } else {
+            // Handle case when no applicants data is found
+            return response()->json(['message' => 'No verified applicants found for the program.']);
+        }
+    }
+    
+    private function generateAdmitCard($applicant)
+    {
+        // Generate the admit card for the applicant
+        $admitCardView = view('admit_card', ['applicant' => $applicant]);
+    
+        // Return the view instance
+        return $admitCardView;
+    }
+    
 
 }

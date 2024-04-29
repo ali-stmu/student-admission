@@ -11,6 +11,8 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AdminApplicationController;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,12 +95,6 @@ Route::get('/getapplicationverifiedmeritlist/{program_id}', [AdminApplicationCon
 
 Route::get('/getapplicationrejected/{program_id}', [AdminApplicationController::class, 'appRejectedExcel']);
 
-
-
-
-
-
-
 Route::get('/getfeependingapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationPending']);
 Route::get('/getfeeverifiedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsfeeApplicationVerified']);
 Route::get('/getverifiedapplicants/{program_id}', [AdminApplicationController::class, 'ApplicantsApplicationVerified']);
@@ -136,7 +132,7 @@ Route::get('/download-studentImageCnic/{filename}', [AdminApplicationController:
 Route::get('/download-studentDegree/{filename}', [AdminApplicationController::class, 'getPdfStudentDegree']);
 Route::get('/download-studentTest/{filename}', [AdminApplicationController::class, 'getPdfStudentTest']);
 
-
+Route::get('/generate-pdf', [AdminApplicationController::class, 'generatePdf']);
 
 
 

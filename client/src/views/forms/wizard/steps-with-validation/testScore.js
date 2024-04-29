@@ -61,6 +61,7 @@ const TestScore = ({ stepper, type }) => {
     { value: "mcat", label: "MCAT" },
     { value: "ucat", label: "UCAT" },
     { value: "ilets", label: "ILETS" },
+    { value: "lat", label: "LAT" },
 
     // Add more options as needed
   ];
@@ -231,7 +232,11 @@ const TestScore = ({ stepper, type }) => {
         );
 
         // Check the test name and set total score and subject scores accordingly
-        if (selectedTestNames[index] === "mdcat") {
+        if (
+          selectedTestNames[index] === "mdcat" ||
+          selectedTestNames[index] === "ilets" ||
+          selectedTestNames[index] === "lat"
+        ) {
           formData.append(
             `records[${index}][test_score_total]`,
             data[`totalMarks-${index}`]
@@ -402,7 +407,7 @@ const TestScore = ({ stepper, type }) => {
                   Test Name
                 </Label>
 
-                {studentInfo === "pakistani" ? (
+                {studentInfo === "" ? (
                   <Select
                     theme={selectThemeColors}
                     className="react-select"
@@ -456,6 +461,7 @@ const TestScore = ({ stepper, type }) => {
           {/* Show a message based on the selected test name */}
           {selectedTestNames[index] === "mdcat" ||
           selectedTestNames[index] === "ilets" ||
+          selectedTestNames[index] === "lat" ||
           selectedTestNames[index] === null ? (
             <></>
           ) : (

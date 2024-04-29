@@ -276,7 +276,7 @@ public function modifyEducationStatus(Request $request)
 }
 
 
-public function getScoresByUserId($user_id)
+    public function getScoresByUserId($user_id)
     {
         log::debug("44".$user_id);
         // Fetch test scores for the specified user_id

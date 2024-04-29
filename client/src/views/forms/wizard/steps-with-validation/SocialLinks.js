@@ -48,19 +48,19 @@ function AcademicRecords({ stepper, type }) {
       schoolCity: "",
       degree: null,
     },
-    {
-      resultStatus: "",
-      qualification: "2",
-      boardUniversity: "",
-      passingYear: "",
-      totalMarksCGPA: "",
-      obtainedMarksCGPA: "",
-      percentage: "",
-      schoolName: "",
-      schoolCountry: "",
-      schoolCity: "",
-      degree: null,
-    },
+    // {
+    //   resultStatus: "",
+    //   qualification: "2",
+    //   boardUniversity: "",
+    //   passingYear: "",
+    //   totalMarksCGPA: "",
+    //   obtainedMarksCGPA: "",
+    //   percentage: "",
+    //   schoolName: "",
+    //   schoolCountry: "",
+    //   schoolCity: "",
+    //   degree: null,
+    // },
   ]);
   const [selectedCountries, setSelectedCountries] = useState(
     new Array(records.length).fill(null)
@@ -447,7 +447,7 @@ function AcademicRecords({ stepper, type }) {
                   }
                   onChange={(e) => handleRecordChange(e, index)}
                   onClick={fetchDegreeOptions}
-                  disabled={index < 2} // Disable for the first two records
+                  //disabled={index < 2} // Disable for the first two records
                 >
                   {degreeOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -718,14 +718,16 @@ function AcademicRecords({ stepper, type }) {
       <div className="d-flex justify-content-between">
         <Button.Ripple color="info" onClick={addRecord}>
           <Plus size={14} />
-          <span className="align-middle ml-25">Add More Records</span>
+          <span className="align-middle ml-25">
+            Add Intermediate/Bachelors and MS Qualification
+          </span>
         </Button.Ripple>
         <Button.Ripple
           color="danger"
           className="text-nowrap px-1"
           onClick={deleteRecord} // Call deleteRecord function to delete from the bottom
           outline
-          disabled={records.length <= 2} // Disable the delete button if only two records remain
+          //disabled={records.length <= 2} // Disable the delete button if only two records remain
         >
           <X size={14} className="mr-50" />
           <span>Delete</span>

@@ -33,6 +33,8 @@ const ApplicationVerified = () => {
   const [applicants, setApplicants] = useState([]);
   const [originalApplicants, setOriginalApplicants] = useState([]);
   const [filteredApplicants, setFilteredApplicants] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
     const userId = studentInfo ? studentInfo.user_id : null;
@@ -60,6 +62,7 @@ const ApplicationVerified = () => {
         console.error(error);
       });
   };
+
   console.log(filteredApplicants);
   const getApplicationVerifiedExcel = () => {
     fetch(`${BASE_URL}getapplicationverified/${selectedProgram}`)
@@ -101,6 +104,30 @@ const ApplicationVerified = () => {
         window.URL.revokeObjectURL(url);
       });
   };
+  const handleDownloadAdmitLetters = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${BASE_URL}admit-letters/${selectedProgram}`,
+        {
+          responseType: "blob",
+        }
+      );
+
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Voucher.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleProgramChange = (event) => {
     const programId = event.target.value;
@@ -109,6 +136,7 @@ const ApplicationVerified = () => {
       getFeeVerifiedApplicants(programId);
     }
   };
+
   const handleNameClick = (row) => {
     console.log(row);
     const studentId = row.studentId;
@@ -146,11 +174,20 @@ const ApplicationVerified = () => {
             Merit List<br></br>
             <Download></Download>
           </Button>
-
-          {/* <Button outline color="secondary" onClick={getFeePaidApplicantPdf}>
-            PDF<br></br>
-            <Download></Download>
-          </Button> */}
+          {selectedProgram === "8" && (
+            <Button
+              title="Download Admit Letters"
+              outline
+              color="primary"
+              style={{ marginTop: "10px" }}
+              onClick={handleDownloadAdmitLetters}
+              disabled={loading}
+            >
+              {loading ? "Downloading..." : "Admit Letters"}
+              <br />
+              <Download />
+            </Button>
+          )}
         </Row>
       </div>
       <FormGroup>

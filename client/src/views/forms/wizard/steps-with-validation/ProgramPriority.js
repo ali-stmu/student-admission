@@ -112,7 +112,10 @@ const ProgramPriority = ({ stepper, type }) => {
 
     const dataToSend = {
       user_id: user_id,
-      priorities: priorities.map((priority) => priority.value),
+      priorities:
+        priorities && priorities.length > 0
+          ? priorities.map((priority) => priority.value)
+          : [],
     };
 
     console.log(dataToSend);
