@@ -26,6 +26,7 @@ import {
   // ... other imports
 } from "reactstrap";
 import axios from "axios";
+import ComponentSpinner from "../../@core/components/spinner/Loading-spinner";
 
 const ApplicationVerified = () => {
   const [responseData, setResponseData] = useState(null);
@@ -104,30 +105,30 @@ const ApplicationVerified = () => {
         window.URL.revokeObjectURL(url);
       });
   };
-  const handleDownloadAdmitLetters = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${BASE_URL}admit-letters/${selectedProgram}`,
-        {
-          responseType: "blob",
-        }
-      );
+  // const handleDownloadAdmitLetters = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get(
+  //       `${BASE_URL}admit-letters/${selectedProgram}`,
+  //       {
+  //         responseType: "blob",
+  //       }
+  //     );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Voucher.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     const blob = new Blob([response.data], { type: "application/pdf" });
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `Voucher.pdf`;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     console.error("Error generating PDF:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleProgramChange = (event) => {
     const programId = event.target.value;
@@ -136,7 +137,30 @@ const ApplicationVerified = () => {
       getFeeVerifiedApplicants(programId);
     }
   };
+  const handleSendAdmitLetters = (row) => {
+    setLoading(true); // Set loading state to true while the request is in progress
+    const { studentId } = row.studentId; // Extract studentId from the row object
+    console.log(row.studentId);
+    console.log();
 
+    // Make the API call
+    axios
+      .post(`${BASE_URL}sendadmitletter`, {
+        studentId: row.studentId,
+        programId: selectedProgram,
+      })
+      .then((response) => {
+        console.log("Admit letter sent successfully:", response);
+        // Handle success, you can update UI or show a success message
+      })
+      .catch((error) => {
+        console.error("Error sending admit letter:", error);
+        // Handle error, you can update UI or show an error message
+      })
+      .finally(() => {
+        setLoading(false); // Set loading state back to false when the request is completed
+      });
+  };
   const handleNameClick = (row) => {
     console.log(row);
     const studentId = row.studentId;
@@ -174,7 +198,7 @@ const ApplicationVerified = () => {
             Merit List<br></br>
             <Download></Download>
           </Button>
-          {selectedProgram === "8" && (
+          {/* {selectedProgram === "8" && (
             <Button
               title="Download Admit Letters"
               outline
@@ -187,7 +211,7 @@ const ApplicationVerified = () => {
               <br />
               <Download />
             </Button>
-          )}
+          )} */}
         </Row>
       </div>
       <FormGroup>
@@ -270,6 +294,19 @@ const ApplicationVerified = () => {
             name: "Voucher ID",
             selector: "voucherId",
             sortable: true,
+          },
+          {
+            name: "Action",
+            cell: (row) => (
+              <Button
+                outline
+                color="primary"
+                onClick={() => handleSendAdmitLetters(row)}
+                disabled={loading}
+              >
+                {loading ? "Sending..." : "Send Admit Letter"}
+              </Button>
+            ),
           },
         ]}
         data={filteredApplicants.map((applicant, index) => {

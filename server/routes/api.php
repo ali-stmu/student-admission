@@ -11,8 +11,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AdminApplicationController;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use App\Http\Controllers\AdmitLetterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -131,8 +130,4 @@ Route::get('/download-studentImage/{filename}', [AdminApplicationController::cla
 Route::get('/download-studentImageCnic/{filename}', [AdminApplicationController::class, 'getPdfStudentCnic']);
 Route::get('/download-studentDegree/{filename}', [AdminApplicationController::class, 'getPdfStudentDegree']);
 Route::get('/download-studentTest/{filename}', [AdminApplicationController::class, 'getPdfStudentTest']);
-
-Route::get('/generate-pdf', [AdminApplicationController::class, 'generatePdf']);
-
-
-
+Route::post('/sendadmitletter', [AdmitLetterController::class, 'sendAdmitLetter']);

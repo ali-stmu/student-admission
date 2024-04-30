@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
 class student extends Model
@@ -41,4 +42,8 @@ class student extends Model
         'cnic_image',
         'religion'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

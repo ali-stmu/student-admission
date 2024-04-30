@@ -1660,47 +1660,6 @@ public function updateEducationData(Request $request)
     }
     
 
-    public function admitLetters(Request $request, $program_id)
-    {
-        $html = '';
-        // Retrieve verified applicants' data for the program
-        $response = $this->ApplicantsApplicationVerified($request, $program_id);
-        $responseData = json_decode($response->getContent(), true);
-    
-        // Check if applicants data is available
-        if(isset($responseData['applicantsData']) && !empty($responseData['applicantsData'])) {
-            // Create a new Dompdf instance
-            $dompdf = new Dompdf();
-    
-            // Iterate over each applicant and add their admit card to the PDF
-            foreach ($responseData['applicantsData'] as $applicant) {
-                $admitCard = $this->generateAdmitCard($applicant);
-    
-                $html .= "<div class='admit-card-container'>" . $admitCard . "</div><div class='page-break'></div>"; // Add admit card and page break
-            }
-    
-            // Load HTML content into Dompdf instance
-            $dompdf->loadHtml($html); // Correct usage
-    
-            // Render the PDF
-            $dompdf->render();
-    
-            // Download the PDF with all admit cards
-            return $dompdf->stream('admit_cards.pdf');
-        } else {
-            // Handle case when no applicants data is found
-            return response()->json(['message' => 'No verified applicants found for the program.']);
-        }
-    }
-    
-    private function generateAdmitCard($applicant)
-    {
-        // Generate the admit card for the applicant
-        $admitCardView = view('admit_card', ['applicant' => $applicant]);
-    
-        // Return the view instance
-        return $admitCardView;
-    }
     
 
 }
