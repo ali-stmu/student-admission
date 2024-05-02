@@ -131,3 +131,4 @@ Route::get('/download-studentImageCnic/{filename}', [AdminApplicationController:
 Route::get('/download-studentDegree/{filename}', [AdminApplicationController::class, 'getPdfStudentDegree']);
 Route::get('/download-studentTest/{filename}', [AdminApplicationController::class, 'getPdfStudentTest']);
 Route::post('/sendadmitletter', [AdmitLetterController::class, 'sendAdmitLetter']);
+Route::get('/admit-letter/status', [AdmitLetterController::class, 'index']);

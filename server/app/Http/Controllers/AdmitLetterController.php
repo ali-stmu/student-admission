@@ -73,6 +73,25 @@ class AdmitLetterController extends Controller
     
         return response()->json(['message' => 'Admit letter sent successfully']);
     }
+    public function index(Request $request)
+    {
+        // Retrieve student ID from the request
+        $studentId = $request->input('studentId');
+
+        // Fetch student details from the database
+        $student = Student::find($studentId);
+
+        // Check if the student exists
+        if (!$student) {
+            return response()->json(['error' => 'Student not found'], 404);
+        }
+
+        // Retrieve admit_card_status
+        $admitCardStatus = $student->admit_card_status;
+
+        // Return the admit_card_status
+        return response()->json(['admit_card_status' => $admitCardStatus]);
+    }
     
 
 }
