@@ -406,20 +406,19 @@ foreach ($vouchers as $voucher) {
     // Concatenate the voucher file name with the voucher path
 
     $applicantsData[] = [
-        'student_information' => $studentInformation,
-        'intermediate_percentage' => $intermediatePercentage,
-        'intermediate_total' => $intermediate->total_marks,
-        'intermediate_obtained' => $intermediate->obtained_marks,
-        'matric_total' => $matric->total_marks,
-        'matric_obtained' => $matric->obtained_marks,
-        'matric_percentage' => $intermediatePercentage,
-        
-        'test_score_percentage' => $testScorePercentage,
-        'date' => date('d/m/Y', strtotime($voucher->updated_at)),
-        'voucherId' => $voucherID,
-        'cnic' => $cnic,
-
+        'student_information' => $studentInformation ?? 'N/A',
+        'intermediate_percentage' => $intermediatePercentage ?? 0,
+        'intermediate_total' => $intermediate->total_marks ?? 0,
+        'intermediate_obtained' => $intermediate->obtained_marks ?? 0,
+        'matric_total' => $matric->total_marks ?? 0,
+        'matric_obtained' => $matric->obtained_marks ?? 0,
+        'matric_percentage' => $matricPercentage ?? 0,
+        'test_score_percentage' => $testScorePercentage ?? 0,
+        'date' => date('d/m/Y', strtotime($voucher->updated_at ?? 'now')),
+        'voucherId' => $voucherID ?? 'N/A',
+        'cnic' => $cnic ?? 'N/A',
     ];
+    
     //log::debug($applicantsData);
 }
 
@@ -431,74 +430,78 @@ return response()->json(['applicantsData' => $applicantsData]);
 public function ApplicantsApplicationVerified(Request $request, $program_id)
 {
     $vouchers = Voucher::where('program_id', $program_id)
-    ->where('application_status', "Verified")
-    ->orderBy('updated_at', 'asc')
-    ->get();
-    //log::debug($vouchers);
+        ->where('application_status', "Verified")
+        ->orderBy('updated_at', 'asc')
+        ->get();
 
     $applicantsData = [];
 
     foreach ($vouchers as $voucher) {
-    $studentId = $voucher->student_id;
-    $programId = $voucher->program_id;
-    $voucherID = $this->getVoucherId($studentId,$program_id);
-    $userId = Student::select('user_id')
-    ->where('student_id', $studentId)
-    ->first();
+        $studentId = $voucher->student_id;
+        $programId = $voucher->program_id;
+        $voucherID = $this->getVoucherId($studentId,$program_id);
+        $userId = Student::select('user_id')
+            ->where('student_id', $studentId)
+            ->first();
 
-    $userId = json_decode($userId, true);
+        $userId = json_decode($userId, true);
 
-    // Now you can access the 'user_id' key
-    $user_id = $userId['user_id'];
-    $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
+        // Now you can access the 'user_id' key
+        $user_id = $userId['user_id'];
+        $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
-    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id','gender','date_of_birth','address','father_contact','admit_card_status')
-        ->where('student_id', $studentId)
-        ->first();
+        $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id','gender','date_of_birth','address','father_contact','admit_card_status')
+            ->where('student_id', $studentId)
+            ->first();
 
-    $intermediatePercentage = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
-        ->where('student_id', $studentId)
-        ->where('degree_id', 2)
-        ->first();
-    $matricPercentage = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
-        ->where('student_id', $studentId)
-        ->where('degree_id', 1)
-        ->first();
 
-    $testScorePercentage = TestScore::select('percentage','test_score','test_score_total','test_date','test_reg_no')
-        ->where('student_id', $studentId)
-        ->first();
+        $intermediatePercentage = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
+            ->where('student_id', $studentId)
+            ->where('degree_id', 2)
+            ->first();
+        $matricPercentage = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
+            ->where('student_id', $studentId)
+            ->where('degree_id', 1)
+            ->first();
 
-    // Concatenate the voucher file name with the voucher path
+        $testScorePercentage = TestScore::select('percentage','test_score','test_score_total','test_date','test_reg_no')
+            ->where('student_id', $studentId)
+            ->first();
 
-    $applicantsData[] = [
-        'student_information' => $studentInformation,
-        'intermediate_percentage' => $intermediatePercentage->percentage_criteria ?? null,
-        'intermediate_total' => $intermediatePercentage->total_marks ?? null,
-        'intermediate_obtained' => $intermediatePercentage->obtained_marks ?? null,
-        'intermediate_board' => $intermediatePercentage->institution_name ?? null,
-    
-        'matric_percentage' => $matricPercentage->percentage_criteria ?? null,
-        'matric_total' => $matricPercentage->total_marks ?? null,
-        'matric_obtained' => $matricPercentage->obtained_marks ?? null,
-        'matric_board' => $matricPercentage->institution_name ?? null,
-    
-        'test_score_percentage' => $testScorePercentage->percentage ?? null,
-        'test_score_total' => $testScorePercentage->test_score_total ?? null,
-        'test_score_obtained' => $testScorePercentage->test_score ?? null,
-        'test_score_year' => $testScorePercentage->test_date ?? null,
-        'test_score_roll_no' => $testScorePercentage->test_reg_no ?? null,
-    
-        'date' => date('d/m/Y', strtotime($voucher->updated_at)) ?? null,
-        'voucherId' => $voucherID ?? null,
-        'cnic' => $cnic ?? null,
-    ];
-    
-    //log::debug($applicantsData);
+        // Concatenate the voucher file name with the voucher path
+
+        $applicantsData[] = [
+            'student_information' => $studentInformation,
+            'intermediate_percentage' => $intermediatePercentage->percentage_criteria ?? null,
+            'intermediate_total' => $intermediatePercentage->total_marks ?? null,
+            'intermediate_obtained' => $intermediatePercentage->obtained_marks ?? null,
+            'intermediate_board' => $intermediatePercentage->institution_name ?? null,
+
+            'matric_percentage' => $matricPercentage->percentage_criteria ?? null,
+            'matric_total' => $matricPercentage->total_marks ?? null,
+            'matric_obtained' => $matricPercentage->obtained_marks ?? null,
+            'matric_board' => $matricPercentage->institution_name ?? null,
+
+            'test_score_percentage' => $testScorePercentage->percentage ?? null,
+            'test_score_total' => $testScorePercentage->test_score_total ?? null,
+            'test_score_obtained' => $testScorePercentage->test_score ?? null,
+            'test_score_year' => $testScorePercentage->test_date ?? null,
+            'test_score_roll_no' => $testScorePercentage->test_reg_no ?? null,
+
+            'date' => date('d/m/Y', strtotime($voucher->updated_at)) ?? null,
+            'voucherId' => $voucherID ?? null,
+            'cnic' => $cnic ?? null,
+        ];
     }
+
+    // Order applicantsData by admit_card_status
+    usort($applicantsData, function ($a, $b) {
+        return strcmp($a['student_information']->admit_card_status, $b['student_information']->admit_card_status);
+    });
 
     return response()->json(['applicantsData' => $applicantsData]);
 }
+
 
 
 public function ApplicantsfeeApplicationRejected(Request $request, $program_id)
@@ -914,7 +917,26 @@ public function appVerifiedExcel(Request $request, $program_id)
     // Extract and format the data from $applicantsData
     $data = [];
     foreach ($applicantsData['applicantsData'] as $applicant) {
-        $fullName = isset($applicant['student_information']['first_name']) ? $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'] : '';
+        $fullName = '';
+
+        if (isset($applicant['student_information']['first_name'])) {
+            $fullName = $applicant['student_information']['first_name'];
+
+            if (isset($applicant['student_information']['middle_name'])) {
+                $middleName = $applicant['student_information']['middle_name'] === "null" 
+                    ? "" 
+                    : $applicant['student_information']['middle_name'];
+
+                if ($middleName !== "") {
+                    $fullName .= ' ' . $middleName;
+                }
+            }
+
+            if (isset($applicant['student_information']['last_name'])) {
+                $fullName .= ' ' . $applicant['student_information']['last_name'];
+            }
+        }
+
         $fatherName = $applicant['student_information']['father_name'] ?? '';
         $address = $applicant['student_information']['address'] ?? '';
         $fatherContact = $applicant['student_information']['father_contact'] ?? '';
