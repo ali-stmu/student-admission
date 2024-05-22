@@ -40,7 +40,9 @@ class student extends Model
         'image',
         'cnic',
         'cnic_image',
-        'religion'
+        'religion',
+        'admit_card_status'
+
     ];
     public function user()
     {

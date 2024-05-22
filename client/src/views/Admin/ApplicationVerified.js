@@ -151,7 +151,8 @@ const ApplicationVerified = () => {
       })
       .then((response) => {
         console.log("Admit letter sent successfully:", response);
-        // Handle success, you can update UI or show a success message
+        // Refresh the page after admit letter is sent successfully
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error sending admit letter:", error);
@@ -161,6 +162,7 @@ const ApplicationVerified = () => {
         setLoading(false); // Set loading state back to false when the request is completed
       });
   };
+
   const handleNameClick = (row) => {
     console.log(row);
     const studentId = row.studentId;
@@ -295,18 +297,30 @@ const ApplicationVerified = () => {
             selector: "voucherId",
             sortable: true,
           },
+
           {
             name: "Action",
-            cell: (row) => (
-              <Button
-                outline
-                color="primary"
-                onClick={() => handleSendAdmitLetters(row)}
-                disabled={loading}
-              >
-                {loading ? "Sending..." : "Send Admit Letter"}
-              </Button>
-            ),
+            cell: (row) => {
+              // Check if admit card status is 1
+              if (row.admit_card_status === "1") {
+                return (
+                  <Button outline color="danger" disabled>
+                    Already Sent
+                  </Button>
+                );
+              } else {
+                return (
+                  <Button
+                    outline
+                    color="primary"
+                    onClick={() => handleSendAdmitLetters(row)}
+                    disabled={loading}
+                  >
+                    {loading ? "Sending..." : "Send Admit Letter"}
+                  </Button>
+                );
+              }
+            },
           },
         ]}
         data={filteredApplicants.map((applicant, index) => {
@@ -335,6 +349,7 @@ const ApplicationVerified = () => {
             test_percentage: testPercentage,
             date: `${applicant.date || ""}`,
             voucherId: `${applicant.voucherId || ""}`,
+            admit_card_status: `${applicant.student_information.admit_card_status}`,
             cnic: `${applicant.cnic.cnic || ""}`,
             studentId: `${applicant.student_information.student_id || ""}`,
             programId: `${applicant.student_information.student_id || ""}`,

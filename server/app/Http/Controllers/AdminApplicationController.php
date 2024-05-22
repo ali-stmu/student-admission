@@ -452,7 +452,7 @@ public function ApplicantsApplicationVerified(Request $request, $program_id)
     $user_id = $userId['user_id'];
     $cnic = User::select('cnic','email')->where('user_id', $user_id)->first();
 
-    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id','gender','date_of_birth','address','father_contact')
+    $studentInformation = Student::select('first_name', 'middle_name', 'last_name', 'father_name', 'phone_number', 'student_id','gender','date_of_birth','address','father_contact','admit_card_status')
         ->where('student_id', $studentId)
         ->first();
 
