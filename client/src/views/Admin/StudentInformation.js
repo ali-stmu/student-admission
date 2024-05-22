@@ -173,8 +173,11 @@ const StudentInformation = (props) => {
         // Create a URL for the Blob
         const blobUrl = window.URL.createObjectURL(blob);
 
-        // Open the Blob URL in a new tab
-        window.open(blobUrl);
+        // Create an anchor element
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = filenameWithExtension; // Set the filename for download
+        a.click(); // Trigger a click event to initiate download
 
         // Release the Blob URL when it's no longer needed
         window.URL.revokeObjectURL(blobUrl);
