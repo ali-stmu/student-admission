@@ -43,6 +43,7 @@ class AdmitLetterController extends Controller
             'student_first_name' => $student->first_name,
             'student_last_name' => $student->last_name,
             'program_name' => $program->program_name,
+            'program_id' => $program->program_id,
             'student_id' => $studentId,
             'father_name' => $student->father_name,
             'cnic' => $user->cnic,
@@ -52,6 +53,7 @@ class AdmitLetterController extends Controller
         log::debug($data['student_first_name']);
         log::debug($data['student_last_name']);
         log::debug($data['program_name']);
+        log::debug($data['program_id']);
         
         // Load the view with the necessary data
         $pdf = PDF::loadView('admit_card', compact('data'));

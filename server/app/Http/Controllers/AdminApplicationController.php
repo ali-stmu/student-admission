@@ -906,7 +906,7 @@ public function appVerifiedExcel(Request $request, $program_id)
     ];
 
     // If program_id is not 8, include additional headers
-    if ($program_id == 8) {
+    if ($program_id == 8 || $program_id == 35 || $program_id == 34) { //BSN OR MSN OR PRN
         array_splice($headers, 1, 0, ['Slip/Reg. No','Entry Test Roll No']);
         $headers[] = 'Test Centre';
     }
@@ -960,12 +960,58 @@ public function appVerifiedExcel(Request $request, $program_id)
         ($matricPercentage * 0.1);
         
         // If program_id is not 8, include additional data
-        if ($program_id == 8) {
+        if ($program_id == 8) { // BSN
             $testCenter = $applicant['test_center'] ?? '';
             $data[] = [
                 1,
                 $voucherId,
                 'BSN-2024-'.$studentId,
+                $fullName,
+                $fatherName,
+                $gender,
+                $intermediate_total,
+                $intermediate_obtained,
+                $matric_total,
+                $matric_obtained,
+                $phoneNumber,
+                $fatherContact,
+                $email,
+                $cnic,
+                $city,
+                $address,
+                $testCenter
+                // Add more data fields as needed
+            ];
+        }
+        else if ($program_id == 35) { // MSN
+            $testCenter = $applicant['test_center'] ?? '';
+            $data[] = [
+                1,
+                $voucherId,
+                'MSN-2024-'.$studentId,
+                $fullName,
+                $fatherName,
+                $gender,
+                $intermediate_total,
+                $intermediate_obtained,
+                $matric_total,
+                $matric_obtained,
+                $phoneNumber,
+                $fatherContact,
+                $email,
+                $cnic,
+                $city,
+                $address,
+                $testCenter
+                // Add more data fields as needed
+            ];
+        } 
+        else if ($program_id == 34) { // PRN
+            $testCenter = $applicant['test_center'] ?? '';
+            $data[] = [
+                1,
+                $voucherId,
+                'PRN-2024-'.$studentId,
                 $fullName,
                 $fatherName,
                 $gender,

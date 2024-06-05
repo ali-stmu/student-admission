@@ -58,10 +58,11 @@ class ApplicationController extends Controller
     $student_id_json = $this->findStudentId($user_id);
     $studentId = $student_id_json->getData()->student_id;
 
-    // Create an empty array to store program IDs
+    // Create arrays to store program IDs and session IDs
     $programIds = [];
+    $sessionIds = [];
 
-    // Loop through the priorities array and find program IDs
+    // Loop through the priorities array and find program and session IDs
     foreach ($priorities as $priority) {
         // Perform a database query to find the program ID based on the program name
         $program = DB::table('program')->where('program_name', $priority)->first();
@@ -69,6 +70,21 @@ class ApplicationController extends Controller
         if ($program) {
             // If a program with the given name is found, store its program_id
             $programIds[] = $program->program_id;
+
+            // Find the session with matching program_id and status = 1
+            $session = DB::table('sessions')
+                        ->where('program_id', $program->program_id)
+                        ->where('status', 1)
+                        ->first();
+                        
+            if ($session) {
+                // If a session with the given conditions is found, store its session_id
+                $sessionIds[] = $session->session_id;
+            } else {
+                $sessionIds[] = null;
+            }
+        } else {
+            $sessionIds[] = null;
         }
     }
 
@@ -80,9 +96,13 @@ class ApplicationController extends Controller
             'program_id_2' => $programIds[1] ?? null,
             'program_id_3' => $programIds[2] ?? null,
             'program_id_4' => $programIds[3] ?? null,
+            'session_id_1' => $sessionIds[0] ?? null,
+            'session_id_2' => $sessionIds[1] ?? null,
+            'session_id_3' => $sessionIds[2] ?? null,
+            'session_id_4' => $sessionIds[3] ?? null,
             'application_status' => 'Pending',
             'application_date' => now(),
-            'form_state' => 'Some Form State',
+            'form_state' => '..',
             'status' => 'Active',
         ]
     );
@@ -90,6 +110,7 @@ class ApplicationController extends Controller
     // Return a response to the client
     return response()->json(['message' => 'Priorities saved successfully'], 200);
 }
+
 public function autofilPriority(Request $request)
 {
     // Validate the incoming request data
@@ -397,7 +418,7 @@ public function store(Request $request)
 {
     Log::debug('Request data:', $request->all());
     $user_id = $request->input('userID');
-    log::debug($user_id);
+    Log::debug($user_id);
     $student_id_json = $this->findStudentId($user_id);
     $studentId = $student_id_json->getData()->student_id;
     $program = $request->input('priority');
@@ -405,6 +426,17 @@ public function store(Request $request)
 
     if ($program) {
         $program_model = Program::where('program_name', $program)->first();
+    }
+
+    // Retrieve the session_id based on the program_id and status = 1
+    $session_id = null;
+    if ($program_model) {
+        $session = Session::where('program_id', $program_model->program_id)
+                          ->where('status', 1)
+                          ->first();
+        if ($session) {
+            $session_id = $session->session_id;
+        }
     }
 
     // Handle file upload and generate a unique file name
@@ -426,12 +458,14 @@ public function store(Request $request)
             'branch_code' => $request->input('branchCode'),
             'transaction_id' => $request->input('transactionID'),
             'mode_of_payment' => $request->input('modeOfPayment'),
+            'session_id' => $session_id, // Add the session_id to the Voucher
         ]
     );
 
     // Return a success response or any necessary data
     return response()->json(['message' => 'Voucher saved successfully']);
 }
+
 
 
 }

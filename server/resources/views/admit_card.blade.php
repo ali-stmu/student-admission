@@ -71,12 +71,39 @@
         <p class="p-center">For Intake Year: Fall-2024</p>
         <div class="detail-box">
             <p><strong>Program Name:</strong> {{ $data['program_name'] ?? '' }}</p>
-            <p><strong>Test Date:</strong> Saturday, May 25<sup>th</sup> , 2024</p>
+            <p><strong>Test Date:</strong>
+                @if ($data['program_id'] == 34 || $data['program_id'] == 35)
+                    Thursday, June 13<sup>th</sup>, 2024
+                @elseif ($data['program_id'] == 8)
+                    Saturday, May 25<sup>th</sup>, 2024
+                @else
+                    ------<sup>th</sup>------
+                @endif
+            </p>
             <p><strong>Reporting Time:</strong> 08:00 AM</p>
             <p><strong>Test Time:</strong> 09:00 AM</p>
-            <p><strong>Venue:</strong> National Testing Service (NTS) Plot # 96, Street 4, Sector H-8/1
-                Islamabad. Ph. No: 051-844444-1</p>
-            <p><strong>Entrance Test Roll No:</strong> BSN-2024-{{ $data['student_id'] ?? ('' ?? '') }}</p>
+            <p><strong>Venue:</strong>
+                @if ($data['program_id'] == 34 || $data['program_id'] == 35)
+                    Shifa College of Nursing Block H-5, Shifa International Hospital Pitras Bukhari Road, Sector H-8/4,
+                    Islamabad (Tel: 051-8463619)
+                @elseif ($data['program_id'] == 8)
+                    National Testing Service (NTS) Plot # 96, Street 4, Sector H-8/1 Islamabad. Ph. No: 051-844444-1
+                @else
+                    -------------------------------------------------
+                @endif
+
+            </p>
+            <p><strong>Entrance Test Roll No:</strong>
+                @if ($data['program_id'] == 34)
+                    PRN-2024-{{ $data['student_id'] ?? '' }}
+                @elseif ($data['program_id'] == 8)
+                    BSN-2024-{{ $data['student_id'] ?? '' }}
+                @elseif ($data['program_id'] == 35)
+                    MSN-2024-{{ $data['student_id'] ?? '' }}
+                @else
+                    -2024-{{ $data['student_id'] ?? '' }}
+                @endif
+            </p>
             <p><strong>Candidate Name:</strong> {{ $data['student_first_name'] ?? '' }}
                 {{ $data['student_last_name'] ?? '' }}</p>
             <p><strong>Father's Name:</strong> {{ $data['father_name'] ?? ('' ?? '') }}</p>
@@ -99,12 +126,17 @@
                 appear in the test.</li>
             <li>Please bring stationary (Clipboard, Pencil, and black ball pen to fill the OMR Sheet).</li>
         </ol>
-        <p><strong>Test Pattern:</strong></p>
-        <ol>
-            <li>The test comprises of 70 MCQ’s that are to be completed within 01 hour & 30 minutes.</li>
-            <li>The test comprises of 04 sections - English, Science, Math, and Analytical Reasoning.</li>
-            <li>All questions carry equal marks (1 mark each). There is NO negative marking in the paper.</li>
-        </ol>
+        @if ($data['program_id'] != 35)
+            <p><strong>Test Pattern:</strong></p>
+            <ol>
+                <li>The test comprises of 70 MCQ’s that are to be completed within 01 hour & 30 minutes.</li>
+                @if ($data['program_id'] == 8)
+                    <li>The test comprises of 04 sections - English, Science, Math, and Analytical Reasoning.</li>
+                @endif
+                <li>All questions carry equal marks (1 mark each). There is <b>NO negative marking</b> in the paper.
+                </li>
+            </ol>
+        @endif
         <p><strong>Note:</strong></p>
         <ul>
             <li>Entry without Admit card & CNIC is not allowed.</li>

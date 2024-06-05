@@ -24,5 +24,10 @@ class Application extends Model
         'status',
         'created_by',
         'updated_by',
+        'session_id_1',
+        'session_id_2',
+        'session_id_3',
+        'session_id_4',
+
     ];
 }

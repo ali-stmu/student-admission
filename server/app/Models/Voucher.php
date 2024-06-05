@@ -21,6 +21,7 @@ class Voucher extends Model
         'program_id',
         'application_status',
         'status',
+        'session_id',
 
     ];
 
