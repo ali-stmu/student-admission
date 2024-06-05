@@ -73,7 +73,14 @@ class AdminApplicationController extends Controller
     }
 public function ApplicantsfeeApplicationReceived(Request $request, $program_id)
 {
-    $vouchers = Voucher::where('program_id', $program_id)->where('status', "Pending")->get();
+    $sessions = Session::where('status', 1)->pluck('session_id');
+
+// Retrieve vouchers related to sessions with status = 1
+$vouchers = Voucher::where('program_id', $program_id)
+    ->where('status', 'Pending')
+    ->whereIn('session_id', $sessions)
+    ->get();
+
 
     $applicantsData = [];
     $voucherPath = storage_path('app/voucher_files/');
@@ -349,11 +356,16 @@ public function fetchAllStudentData($studentId, $programId)
 
 public function ApplicantsfeeApplicationVerified(Request $request, $program_id)
 {
-    $vouchers = Voucher::where('program_id', $program_id)
-    ->where('status', "Verified")
-    ->where('application_status', "Pending")
+    // Retrieve sessions with status = 1
+$sessions = Session::where('status', 1)->pluck('session_id');
+
+// Retrieve vouchers based on multiple conditions
+$vouchers = Voucher::where('program_id', $program_id)
+    ->where('status', 'Verified')
+    ->where('application_status', 'Pending')
+    ->whereIn('session_id', $sessions)
     ->get();
-    log::debug($vouchers);
+
 
 $applicantsData = [];
 
@@ -429,8 +441,12 @@ return response()->json(['applicantsData' => $applicantsData]);
 
 public function ApplicantsApplicationVerified(Request $request, $program_id)
 {
+    $sessions = Session::where('status', 1)->pluck('session_id');
+
+    // Retrieve vouchers based on multiple conditions
     $vouchers = Voucher::where('program_id', $program_id)
-        ->where('application_status', "Verified")
+        ->where('application_status', 'Verified')
+        ->whereIn('session_id', $sessions)
         ->orderBy('updated_at', 'asc')
         ->get();
 
@@ -506,11 +522,14 @@ public function ApplicantsApplicationVerified(Request $request, $program_id)
 
 public function ApplicantsfeeApplicationRejected(Request $request, $program_id)
 {
-    $vouchers = Voucher::where('program_id', $program_id)
-    ->where('status', "Rejected")
-    ->where('application_status', "Pending")
+    $sessions = Session::where('status', 1)->pluck('session_id');
+
+// Retrieve vouchers based on multiple conditions
+$vouchers = Voucher::where('program_id', $program_id)
+    ->where('status', 'Rejected')
+    ->where('application_status', 'Pending')
+    ->whereIn('session_id', $sessions)
     ->get();
-    log::debug($vouchers);
 
 $applicantsData = [];
 
@@ -570,7 +589,13 @@ return response()->json(['applicantsData' => $applicantsData]);
 
 public function ApplicantsApplicationRejected(Request $request, $program_id)
 {
-    $vouchers = Voucher::where('program_id', $program_id)->where('application_status', "Rejected")->get();
+    $sessions = Session::where('status', 1)->pluck('session_id');
+
+// Retrieve vouchers based on multiple conditions
+$vouchers = Voucher::where('program_id', $program_id)
+    ->where('application_status', 'Rejected')
+    ->whereIn('session_id', $sessions)
+    ->get();
     log::debug($vouchers);
 
 $applicantsData = [];
