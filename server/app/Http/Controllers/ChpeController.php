@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ChpeForm;
+use Illuminate\Support\Facades\Log;
+use Dompdf\Dompdf;
+
+use PDF;
 
 class ChpeController extends Controller
 {
@@ -46,6 +50,7 @@ class ChpeController extends Controller
         $chpeForm->phone_number = $validatedData['phoneNumber'];
         $chpeForm->email = $validatedData['email'];
         $chpeForm->mailing_address = $validatedData['mailingAddress'];
+        $chpeForm->status = 'Pending';
         $chpeForm->professional_reg_number = $validatedData['professionalRegNumber'];
         $chpeForm->cnic_passport_picture = $cnicPicturePath;
         $chpeForm->candidate_picture = $candidatePicturePath;
@@ -55,12 +60,73 @@ class ChpeController extends Controller
         return response()->json(['message' => 'Form submitted successfully'], 200);
     }
 
-    /**
+    public function generatePdf(Request $request, $user_id)
+    {
+        try {
+            $userId = $user_id;
+            
+            // Fetch student data based on user_id
+            $chpeForm = ChpeForm::where('user_id', $userId)->first();
+    
+            if (!$chpeForm) {
+                return response()->json(['message' => 'CHPE form data not found for the user_id.'], 404);
+            }
+    
+            $fullName = $chpeForm->candidate_name;
+            $issueDate = now()->format('Y-m-d');
+            $voucherID = $userId . '-' . now()->format('Ymd');
+    
+            $fullpath = storage_path('app/bank_logo/ShifaLogo.png'); 
+            $bankLogoFullPath = storage_path('app/bank_logo/HBL-logo.jpg');
+    
+            $data = [
+                'collegeName' => 'Department of Health Professional Education',
+                'voucherID' => $voucherID,
+                'date' => $issueDate,
+                'dueDate' => '2024-06-24',
+                'AccountTitle' => 'SHIFA TAMEER-MILLAT UNIVERSITY',
+                'bankAccountNumber' => '50007902906303',
+                'programName' => 42,  // Hardcoded as given in your original code
+                'studentName' => $fullName,
+                'pyear' => 'Fall 2024',
+                'session' => 'Fall 2024',
+                'totalAmount' => 8000,
+                'uniLogo' => $fullpath,
+                'bankLogo' => $bankLogoFullPath,
+                'amountInWords' => 'Eight Thousand only',
+            ];
+    
+            $pdf = PDF::loadView('challan', compact('data'));
+    
+            return $pdf->download('challan.pdf');
+        } catch (\Exception $e) {
+            // Handle any exceptions here
+            Log::error('An error occurred: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
+    }
+        /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
         //
+    }
+    public function showByUserId(Request $request,$user_id)
+    {
+        log::debug("Form wala function");
+        // Validate request
+
+        // Fetch CHPE form data
+        $chpeFormData = ChpeForm::where('user_id', $user_id)->first();
+        log::debug($chpeFormData);
+
+        if (!$chpeFormData) {
+            return response()->json(['message' => 'CHPE form data not found for the user_id.'], 404);
+        }
+        
+        return response()->json($chpeFormData, 200);
+        
     }
 
     /**
@@ -70,6 +136,37 @@ class ChpeController extends Controller
     {
         //
     }
+    public function uploadVoucher(Request $request)
+    {
+    log::debug("Voucher upload function");
+    $validatedData = $request->validate([
+        'user_id' => 'required|string|max:255',
+        'challan' => 'required|max:10240', // max 10MB
+    ]);
+    log::debug($validatedData['user_id']);
+    
+    try {
+        // Handle file upload
+        $voucherPath = $request->file('challan')->store('public/images/vouchers');
+
+        // Find the corresponding CHPE form record
+        $chpeForm = ChpeForm::where('user_id', $validatedData['user_id'])->first();
+        if (!$chpeForm) {
+            return response()->json(['message' => 'CHPE form data not found for the user_id.'], 404);
+        }
+
+        // Update the voucher image path and status
+        $chpeForm->voucher_image_path = $voucherPath;
+        $chpeForm->status = 'uploaded';
+        $chpeForm->save();
+
+        return response()->json(['message' => 'Voucher uploaded successfully'], 200);
+    } catch (\Exception $e) {
+        Log::error('An error occurred: ' . $e->getMessage());
+        return response()->json(['error' => 'An error occurred while uploading the voucher'], 500);
+    }
+    }
+
 
     /**
      * Remove the specified resource from storage.

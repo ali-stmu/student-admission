@@ -138,3 +138,6 @@ Route::get('/admit-letter/status', [AdmitLetterController::class, 'index']);
 // CHPE APIs
 
 Route::post('/savechpeform', [ChpeController::class, 'store']);
+Route::get('chpe-form/{user_id}', [ChpeController::class,'showByUserId']);
+Route::get('/download-challan/{user_id}', [ChpeController::class, 'generatePdf']);
+Route::post('/upload-challan', [ChpeController::class, 'uploadVoucher']);

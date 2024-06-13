@@ -4,10 +4,11 @@ import {
   CardBody,
   CardTitle,
   CardText,
-  CardLink,
+  Button,
 } from "reactstrap";
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
+
 const Home = () => {
   const history = useHistory();
   useEffect(() => {
@@ -16,7 +17,7 @@ const Home = () => {
     if (!rolesFromStorage) {
       history.push("/login");
     }
-  }, []);
+  }, [history]);
 
   return (
     <div>
@@ -26,30 +27,20 @@ const Home = () => {
         </CardHeader>
         <CardBody>
           <CardText>Join Shifa and Enjoy</CardText>
+          <div>
+            <Link to="/forms/wizard">
+              <Button color="primary" style={{ margin: "10px" }}>
+                Admssions All Programs
+              </Button>
+            </Link>
+            <Link to="/second-page">
+              <Button color="secondary" style={{ margin: "10px" }}>
+                Admission Certificate of Health Profession Education (CHPE)
+              </Button>
+            </Link>
+          </div>
         </CardBody>
       </Card>
-
-      {/* <Card>
-        <CardHeader>
-          <CardTitle>Want to integrate JWT? 🔒</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardText>
-            We carefully crafted JWT flow so you can implement JWT with ease and
-            with minimum efforts.
-          </CardText>
-          <CardText>
-            Please read our{" "}
-            <CardLink
-              href="https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/development/auth"
-              target="_blank"
-            >
-              JWT Documentation
-            </CardLink>{" "}
-            to get more out of JWT authentication.
-          </CardText>
-        </CardBody>
-      </Card> */}
     </div>
   );
 };

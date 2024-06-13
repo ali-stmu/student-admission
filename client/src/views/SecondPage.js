@@ -12,10 +12,12 @@ import {
   Input,
   Form,
   Button,
+  Table,
   CustomInput,
 } from "reactstrap";
 
 const SecondPage = () => {
+  const [formDataTable, setFormDataTable] = useState({});
   const [formData, setFormData] = useState({
     candidateName: "",
     fatherName: "",
@@ -27,6 +29,31 @@ const SecondPage = () => {
     candidatePicture: null,
     highestDegreePicture: null,
   });
+  const [challanFile, setChallanFile] = useState(null);
+
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        const studentInfoFromStorage = localStorage.getItem("StudentInfo");
+        if (studentInfoFromStorage) {
+          const studentInfo = JSON.parse(studentInfoFromStorage);
+          const response = await fetch(
+            `${BASE_URL}chpe-form/${studentInfo.user_id}`
+          );
+          if (response.ok) {
+            const formDataResponse = await response.json();
+            setFormDataTable(formDataResponse); // Assuming formDataResponse is an object with the structure matching state
+          } else {
+            console.error("Failed to fetch CHPE form data.");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching CHPE form data:", error);
+      }
+    };
+
+    fetchFormData();
+  }, []);
 
   useEffect(() => {
     const studentInfoFromStorage = localStorage.getItem("StudentInfo");
@@ -39,6 +66,8 @@ const SecondPage = () => {
       }));
     }
   }, []);
+
+  console.log(formDataTable);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -55,6 +84,61 @@ const SecondPage = () => {
 
   const handleImageChangeDegree = (event) => {
     setFormData({ ...formData, highestDegreePicture: event.target.files[0] });
+  };
+
+  const handleChallanUpload = (event) => {
+    setChallanFile(event.target.files[0]);
+  };
+
+  const handleChallanDownload = async () => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}download-challan/${formData.user_id}`
+      );
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "challan.pdf"; // Adjust the filename as needed
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        alert("Failed to download challan.");
+      }
+    } catch (error) {
+      console.error("Error downloading challan:", error);
+      alert("Error downloading challan. Please try again.");
+    }
+  };
+
+  const handleSaveChallan = async () => {
+    if (!challanFile) {
+      alert("Please upload a challan file first.");
+      return;
+    }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("challan", challanFile);
+    formDataToSend.append("user_id", formData.user_id);
+    console.log(formDataToSend);
+    try {
+      const response = await fetch(`${BASE_URL}upload-challan`, {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        alert("Challan uploaded successfully!");
+        setChallanFile(null); // Reset the input field
+      } else {
+        alert("Failed to upload challan.");
+      }
+    } catch (error) {
+      console.error("Error uploading challan:", error);
+      alert("Error uploading challan. Please try again.");
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -246,6 +330,53 @@ const SecondPage = () => {
           </Row>
           <Button type="submit">Submit</Button>
         </Form>
+        <Table bordered>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Candidate Name</th>
+              <th>Father Name</th>
+              <th>Phone Number</th>
+              <th>Email</th>
+              <th>Professional Reg. Number</th>
+              <th>Attach Paid Challan</th>
+              <th>Download Challan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>{formDataTable.candidate_name}</td>
+              <td>{formDataTable.father_name}</td>
+              <td>{formDataTable.phone_number}</td>
+              <td>{formDataTable.email}</td>
+              <td>{formDataTable.professional_reg_number}</td>
+              <td>
+                {formDataTable.status === "uploaded" ? (
+                  "Already uploaded"
+                ) : (
+                  <Row>
+                    <Col>
+                      <CustomInput
+                        type="file"
+                        onChange={handleChallanUpload}
+                        id="challanUpload"
+                      />
+                    </Col>
+                    <Col>
+                      <Button onClick={handleSaveChallan}>Save Challan</Button>
+                    </Col>
+                  </Row>
+                )}
+              </td>
+              <td>
+                <Button onClick={handleChallanDownload}>
+                  Download Challan
+                </Button>
+              </td>
+            </tr>
+          </tbody>
+        </Table>
       </CardBody>
     </Card>
   );
