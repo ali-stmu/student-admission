@@ -12,6 +12,8 @@ use App\Http\Controllers\BoardController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AdminApplicationController;
 use App\Http\Controllers\AdmitLetterController;
+use App\Http\Controllers\ChpeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -132,3 +134,7 @@ Route::get('/download-studentDegree/{filename}', [AdminApplicationController::cl
 Route::get('/download-studentTest/{filename}', [AdminApplicationController::class, 'getPdfStudentTest']);
 Route::post('/sendadmitletter', [AdmitLetterController::class, 'sendAdmitLetter']);
 Route::get('/admit-letter/status', [AdmitLetterController::class, 'index']);
+
+// CHPE APIs
+
+Route::post('/savechpeform', [ChpeController::class, 'store']);

@@ -7,12 +7,7 @@ export default [
   //   icon: <Home size={20} />,
   //   navLink: "/home",
   // },
-  // {
-  //   id: "secondPage",
-  //   title: "Second Page",
-  //   icon: <Mail size={20} />,
-  //   navLink: "/second-page",
-  // },
+
   {
     id: "wizard",
     title: "Admission Form",
@@ -26,5 +21,11 @@ export default [
     icon: <Mail size={20} />,
 
     navLink: "/myapplications",
+  },
+  {
+    id: "secondPage",
+    title: "CHPE Certifications",
+    icon: <Mail size={20} />,
+    navLink: "/second-page",
   },
 ];
