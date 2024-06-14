@@ -16,8 +16,22 @@ class ChpeController extends Controller
      */
     public function index()
     {
-        
+        $applicants = ChpeForm::all();
+    
+        // Append the full URL for each attachment
+        foreach ($applicants as $applicant) {
+            $applicant->cnic_passport_picture_url = url('storage/images/cnicPicture/' . basename($applicant->cnic_passport_picture));
+            $applicant->candidate_picture_url = url('storage/images/candidatePicture/' . basename($applicant->candidate_picture));
+            $applicant->highest_degree_picture_url = url('storage/images/highestDegreePicture/' . basename($applicant->highest_degree_picture));
+            $applicant->voucher = url('storage/images/vouchers/' . basename($applicant->voucher_image_path));
+
+        }
+    
+        return response()->json($applicants, 200);
     }
+    
+
+    
 
     /**
      * Store a newly created resource in storage.

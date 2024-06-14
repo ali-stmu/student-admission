@@ -48,4 +48,11 @@ export default [
 
     navLink: "/apprejected",
   },
+  {
+    id: "chpeapplicants",
+    title: "CHPE Applicants",
+    icon: <XSquare size={20} />,
+
+    navLink: "/chpeapplicants",
+  },
 ];

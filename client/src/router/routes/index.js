@@ -95,6 +95,14 @@ if (userRole === "Student") {
         authRoute: true,
       },
     },
+    {
+      path: "/chpeapplicants",
+      component: lazy(() => import("../../views/Admin/ChpeApplicants")),
+      layout: "HorizontalLayout",
+      meta: {
+        authRoute: true,
+      },
+    },
   ];
 }
 
