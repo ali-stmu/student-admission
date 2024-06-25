@@ -75,8 +75,8 @@ public function ApplicantsfeeApplicationReceived(Request $request, $program_id)
 {
     $sessions = Session::where('status', 1)->pluck('session_id');
 
-// Retrieve vouchers related to sessions with status = 1
-$vouchers = Voucher::where('program_id', $program_id)
+    // Retrieve vouchers related to sessions with status = 1
+    $vouchers = Voucher::where('program_id', $program_id)
     ->where('status', 'Pending')
     ->whereIn('session_id', $sessions)
     ->get();
@@ -104,10 +104,20 @@ $vouchers = Voucher::where('program_id', $program_id)
         ->where('student_id', $studentId)
         ->first();
 
-    $intermediatePercentage = Education::select('percentage_criteria')
-        ->where('student_id', $studentId)
-        ->where('degree_id', 2)
-        ->first();
+
+        $intermediatePercentage = Education::select('percentage_criteria','total_marks','obtained_marks','institution_name')
+            ->where('student_id', $studentId)
+            ->where('degree_id', 2)
+            ->first();
+
+        $bachelorsPercentage = null;
+        if ($program_id == 41) { // for BSMT
+            $bachelorsPercentage = Education::select('percentage_criteria', 'total_marks', 'obtained_marks', 'institution_name', 'school_name')
+                ->where('student_id', $studentId)
+                ->where('degree_id', 3)
+                ->first();
+        }
+    
 
     $testScorePercentage = TestScore::select('percentage')
         ->where('student_id', $studentId)
@@ -119,6 +129,7 @@ $vouchers = Voucher::where('program_id', $program_id)
     $applicantsData[] = [
         'student_information' => $studentInformation,
         'intermediate_percentage' => $intermediatePercentage,
+        'bachelors_percentage' => $bachelorsPercentage, // Include this in the response
         'test_score_percentage' => $testScorePercentage,
         'voucher_full_path' => $voucherFullPath, // Include the full voucher path
         'file_name' => $voucher->voucher_file_name, // Include the full voucher path
@@ -139,8 +150,6 @@ public function feeReceivedExcel(Request $request, $program_id)
     $response = $this->ApplicantsfeeApplicationReceived($request, $program_id);
     $applicantsData = json_decode($response->getContent(), true);
 
-    //log::debug($applicantsData);
-
     // Create a new spreadsheet
     $spreadsheet = new Spreadsheet();
 
@@ -159,8 +168,18 @@ public function feeReceivedExcel(Request $request, $program_id)
         'Email',
         'Voucher Id',
         'Date',
-        // Add more headers as needed
     ];
+
+    // Conditionally add bachelor's headers if program_id is 41
+    if ($program_id == 41) {
+        $headers[] = 'Bachelors Percentage';
+        $headers[] = 'Bachelors Total Marks';
+        $headers[] = 'Bachelors Obtained Marks';
+        $headers[] = 'Bachelors Institution Name';
+        $headers[] = 'Bachelors School Name';
+        $headers[] = 'Intermediate Total Marks';
+        $headers[] = 'Intermediate Obtained Marks';
+    }
 
     // Set the column headers
     $worksheet->fromArray([$headers], null, 'A1');
@@ -168,7 +187,7 @@ public function feeReceivedExcel(Request $request, $program_id)
     // Extract and format the data from $applicantsData
     $data = [];
     foreach ($applicantsData['applicantsData'] as $applicant) {
-        $data[] = [
+        $row = [
             $applicant['student_information']['first_name']." ".$applicant['student_information']['last_name'],
             $applicant['student_information']['father_name'],
             $applicant['student_information']['phone_number'],
@@ -179,8 +198,20 @@ public function feeReceivedExcel(Request $request, $program_id)
             $applicant['cnic']['email'],
             $applicant['voucherId'],
             $applicant['date'],
-            // Add more data fields as needed
         ];
+
+        // Conditionally add bachelor's data if program_id is 41
+        if ($program_id == 41 && !is_null($applicant['bachelors_percentage'])) {
+            $row[] = $applicant['bachelors_percentage']['percentage_criteria'];
+            $row[] = $applicant['bachelors_percentage']['total_marks'];
+            $row[] = $applicant['bachelors_percentage']['obtained_marks'];
+            $row[] = $applicant['bachelors_percentage']['institution_name'];
+            $row[] = $applicant['bachelors_percentage']['school_name'];
+            $row[] = $applicant['intermediate_percentage']['total_marks'];
+            $row[] = $applicant['intermediate_percentage']['obtained_marks'];
+        }
+
+        $data[] = $row;
     }
 
     // Set the data rows
@@ -194,6 +225,7 @@ public function feeReceivedExcel(Request $request, $program_id)
     // Return the Excel file as a response
     return response()->download($tempFilePath, 'applicants_Fee_Recieved.xlsx')->deleteFileAfterSend(true);
 }
+
 
 
 // public function feeReceivedPdf(Request $request, $program_id)
