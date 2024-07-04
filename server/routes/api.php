@@ -13,6 +13,7 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AdminApplicationController;
 use App\Http\Controllers\AdmitLetterController;
 use App\Http\Controllers\ChpeController;
+use App\Http\Controllers\BioEthicsController;
 
 
 /*
@@ -141,4 +142,12 @@ Route::post('/savechpeform', [ChpeController::class, 'store']);
 Route::get('chpe-form/{user_id}', [ChpeController::class,'showByUserId']);
 Route::get('/download-challan/{user_id}', [ChpeController::class, 'generatePdf']);
 Route::post('/upload-challan', [ChpeController::class, 'uploadVoucher']);
+// CHPE APIs Admin
 Route::get('/chpe-applicants', [ChpeController::class, 'index']);
+
+
+// Bio Ethics APIs
+Route::post('/savebioethicsform', [BioEthicsController::class, 'store']);
+Route::get('bioethics-form/{user_id}', [BioEthicsController::class,'showByUserId']);
+Route::get('/download-challan-bioethics/{user_id}', [BioEthicsController::class, 'generatePdf']);
+Route::post('/upload-challan-bioethics', [BioEthicsController::class, 'uploadVoucher']);

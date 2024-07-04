@@ -74,19 +74,37 @@ const Challan = ({ stepper, type }) => {
 
   const loadChallan = () => {
     const storedPriorities = getStoredPriorities();
-    const buttons = storedPriorities.map((priority, index) => (
-      <div
-        onClick={() => generatePdf(priority.label)}
-        key={index}
-        style={{ marginBottom: "10px" }}
-      >
-        <Button.Ripple color="info">
-          Download Challan {priority.label}
-        </Button.Ripple>
-      </div>
-    ));
+    const buttons = storedPriorities.map((priority, index) => {
+      const isSubmitApplication =
+        priority.label.toLowerCase() ===
+          "bachelors of science in computer science" ||
+        priority.label.toLowerCase() === "master in computer science" ||
+        priority.label.toLowerCase() ===
+          "bachelors of science in software engineering " ||
+        priority.label.toLowerCase() ===
+          "bachelors of science in cyber security" ||
+        priority.label.toLowerCase() ===
+          "bachelor of science in  artificial intelligence";
+
+      const buttonLabel = isSubmitApplication
+        ? `Submit Application ${priority.label}`
+        : `Download Challan ${priority.label}`;
+
+      return (
+        <div
+          onClick={() => generatePdf(priority.label)}
+          key={index}
+          style={{ marginBottom: "10px" }}
+        >
+          <Button.Ripple color={isSubmitApplication ? "success" : "info"}>
+            {buttonLabel}
+          </Button.Ripple>
+        </div>
+      );
+    });
     setPrioritiesButtons(buttons);
   };
+
   const toggleChallanButtons = () => {
     loadChallan();
     setShowChallanButtons(!showChallanButtons);

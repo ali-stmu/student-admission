@@ -21,6 +21,10 @@ if (userRole === "Student") {
       component: lazy(() => import("../../views/SecondPage")),
     },
     {
+      path: "/bioethics",
+      component: lazy(() => import("../../views/BioEthics")),
+    },
+    {
       path: "/forms/wizard",
       component: lazy(() => import("../../views/forms/wizard")),
     },
