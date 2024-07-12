@@ -301,14 +301,8 @@ const ApplicationVerified = () => {
           {
             name: "Action",
             cell: (row) => {
-              // Check if admit card status is 1
-              if (row.admit_card_status === "1") {
-                return (
-                  <Button outline color="danger" disabled>
-                    Already Sent
-                  </Button>
-                );
-              } else {
+              // Check if programId is 8 and admit_card_status is not 1
+              if (selectedProgram === "8" && row.admit_card_status !== "1") {
                 return (
                   <Button
                     outline
@@ -319,6 +313,14 @@ const ApplicationVerified = () => {
                     {loading ? "Sending..." : "Send Admit Letter"}
                   </Button>
                 );
+              } else if (row.admit_card_status === "1") {
+                return (
+                  <Button outline color="danger" disabled>
+                    Already Sent
+                  </Button>
+                );
+              } else {
+                return null; // Or any other desired content when programId is not 8
               }
             },
           },
