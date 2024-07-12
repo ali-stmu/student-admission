@@ -55,4 +55,11 @@ export default [
 
     navLink: "/chpeapplicants",
   },
+  {
+    id: "bioethicsapplicants",
+    title: "Bio Ethics Applicants",
+    icon: <XSquare size={20} />,
+
+    navLink: "/bioethicsapplicants",
+  },
 ];

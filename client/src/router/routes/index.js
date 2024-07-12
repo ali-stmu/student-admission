@@ -107,6 +107,14 @@ if (userRole === "Student") {
         authRoute: true,
       },
     },
+    {
+      path: "/bioethicsapplicants",
+      component: lazy(() => import("../../views/Admin/BioEthicsApplicants")),
+      layout: "HorizontalLayout",
+      meta: {
+        authRoute: true,
+      },
+    },
   ];
 }
 

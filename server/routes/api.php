@@ -151,3 +151,6 @@ Route::post('/savebioethicsform', [BioEthicsController::class, 'store']);
 Route::get('bioethics-form/{user_id}', [BioEthicsController::class,'showByUserId']);
 Route::get('/download-challan-bioethics/{user_id}', [BioEthicsController::class, 'generatePdf']);
 Route::post('/upload-challan-bioethics', [BioEthicsController::class, 'uploadVoucher']);
+
+// Bio Ethics APIs Admin
+Route::get('/bioethics-applicants', [BioEthicsController::class, 'index']);

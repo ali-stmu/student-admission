@@ -11,9 +11,9 @@ const ChpeApplicants = () => {
     const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
     const userId = studentInfo ? studentInfo.user_id : null;
 
-    if (userId === 9665 || userId === 355) {
+    if (userId === 8496 || userId === 355) {
       axios
-        .get(`${BASE_URL}chpe-applicants`)
+        .get(`${BASE_URL}bioethics-applicants`)
         .then((response) => {
           setApplicants(response.data);
           setLoading(false);
