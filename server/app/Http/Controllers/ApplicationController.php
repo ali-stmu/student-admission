@@ -315,7 +315,7 @@ public function generatePdf(Request $request)
                             if ($amount == 0) {
                                 // Call the store function here
                                 $this->storeFunction($studentId, $program_ID, $session_id, $term_id);
-                                return response()->json(['message' => 'Amount is 0. Stored successfully.'], 200);
+                                return response()->json(['message' => 'Amount is 0. Stored successfully.'], 201);
                             }
                             $dueDate = $session->due_date;
                              if ($issueDate > $dueDate) {
@@ -382,7 +382,6 @@ public function generatePdf(Request $request)
 private function storeFunction($studentId, $program_ID, $session_id, $term_id)
 {
     try {
-
         // Update or create a Voucher instance with status "Verified" and application_status "Pending"
         Voucher::updateOrCreate(
             [
@@ -404,23 +403,49 @@ private function storeFunction($studentId, $program_ID, $session_id, $term_id)
 
         Log::info('Voucher stored successfully with status Verified and application_status Pending.');
 
+        // Find applications by student_id
+        $applications = Application::where('student_id', $studentId)->get();
+
+        // Iterate through the applications and nullify matching program IDs
+        foreach ($applications as $application) {
+            if ($application->program_id_1 == $program_ID) {
+                $application->program_id_1 = null;
+            }
+            if ($application->program_id_2 == $program_ID) {
+                $application->program_id_2 = null;
+            }
+            if ($application->program_id_3 == $program_ID) {
+                $application->program_id_3 = null;
+            }
+            if ($application->program_id_4 == $program_ID) {
+                $application->program_id_4 = null;
+            }
+            // Save the updated application
+            $application->save();
+        }
+
+        Log::info('Application table updated successfully for student ID ' . $studentId);
+
         // Return a success response or any necessary data
-        return response()->json(['message' => 'Voucher stored successfully with status Verified and application_status Pending.']);
+        return response()->json(['message' => 'Voucher stored and application table updated successfully.']);
     } catch (\Exception $e) {
         // Handle any exceptions here
-        Log::error('An error occurred while storing the voucher: ' . $e->getMessage());
-        return response()->json(['error' => 'An error occurred while storing the voucher.'], 500);
+        Log::error('An error occurred while storing the voucher or updating the application: ' . $e->getMessage());
+        return response()->json(['error' => 'An error occurred while storing the voucher or updating the application.'], 500);
     }
 }
-
 
 public function store(Request $request)
 {
     Log::debug('Request data:', $request->all());
+
+    // Retrieve user ID and student ID
     $user_id = $request->input('userID');
     Log::debug($user_id);
     $student_id_json = $this->findStudentId($user_id);
     $studentId = $student_id_json->getData()->student_id;
+
+    // Retrieve program information
     $program = $request->input('priority');
     $program_model = null;
 
@@ -428,7 +453,7 @@ public function store(Request $request)
         $program_model = Program::where('program_name', $program)->first();
     }
 
-    // Retrieve the session_id based on the program_id and status = 1
+    // Retrieve session_id based on program_id and status = 1
     $session_id = null;
     if ($program_model) {
         $session = Session::where('program_id', $program_model->program_id)
@@ -462,8 +487,29 @@ public function store(Request $request)
         ]
     );
 
+    // Update Application table to nullify matching program IDs
+    if ($program_model) {
+        $applications = Application::where('student_id', $studentId)->get();
+
+        foreach ($applications as $application) {
+            if ($application->program_id_1 == $program_model->program_id) {
+                $application->program_id_1 = null;
+            }
+            if ($application->program_id_2 == $program_model->program_id) {
+                $application->program_id_2 = null;
+            }
+            if ($application->program_id_3 == $program_model->program_id) {
+                $application->program_id_3 = null;
+            }
+            if ($application->program_id_4 == $program_model->program_id) {
+                $application->program_id_4 = null;
+            }
+            $application->save(); // Save changes to the application
+        }
+    }
+
     // Return a success response or any necessary data
-    return response()->json(['message' => 'Voucher saved successfully']);
+    return response()->json(['message' => 'Voucher saved successfully and application updated']);
 }
 
 

@@ -14,22 +14,21 @@
         .admit-card {
             width: 100%;
             border: 1px solid #000;
-            padding: 10px;
             margin: 10px auto;
-
             /* Center aligning the content of the admit card */
-
         }
 
         .admit-card h2,
         .admit-card h3 {
             text-align: center;
             /* Center aligning the specified headings */
-            margin-bottom: 10px;
+            margin-bottom: 1px;
+            /* Reduced space below headings */
         }
 
         .admit-card p {
-            margin-bottom: 5px;
+            margin-bottom: 1px;
+            /* Reduced space below paragraphs */
         }
 
         .p-center {
@@ -67,6 +66,7 @@
         </div>
         <h2>Shifa Tameer-e-Millat University</h2>
         <h3>Admit Card</h3>
+        <h3>{{ $data['college_name'] ?? '' }}</h3>
         <h3>{{ $data['program_name'] ?? '' }}</h3>
         <p class="p-center">For Intake Year: Fall-2024</p>
         <div class="detail-box">
@@ -76,20 +76,28 @@
                     Thursday, June 13<sup>th</sup>, 2024
                 @elseif ($data['program_id'] == 8)
                     Saturday, May 25<sup>th</sup>, 2024
-                @else
-                    ------<sup>th</sup>------
+                @elseif ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
+                    Thursday, July 25<sup>th</sup>, 2024
                 @endif
             </p>
-            <p><strong>Reporting Time:</strong> 08:00 AM</p>
-            <p><strong>Test Time:</strong> 09:00 AM</p>
+            @if ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
+                <p><strong>Reporting Time:</strong> 08:30 AM</p>
+                <p><strong>Test Time:</strong> 09:00 AM</p>
+                <p><strong>Interview Date and Time:</strong> Thursday, July 25<sup>th</sup>, 2024 09:00 AM</p>
+            @else
+                <p><strong>Reporting Time:</strong> 08:00 AM</p>
+                <p><strong>Test Time:</strong> 09:00 AM</p>
+            @endif
+
             <p><strong>Venue:</strong>
                 @if ($data['program_id'] == 34 || $data['program_id'] == 35)
                     Shifa College of Nursing Block H-5, Shifa International Hospital Pitras Bukhari Road, Sector H-8/4,
                     Islamabad (Tel: 051-8463619)
                 @elseif ($data['program_id'] == 8)
                     National Testing Service (NTS) Plot # 96, Street 4, Sector H-8/1 Islamabad. Ph. No: 051-844444-1
-                @else
-                    -------------------------------------------------
+                @elseif ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
+                    Department of Rehabilitation Sciences, Shifa Tameer-e-Millat University, (Park Road Campus), Park
+                    Road, Chak Shehzad , Islamabad.
                 @endif
 
             </p>
@@ -100,8 +108,14 @@
                     BSN-2024-{{ $data['student_id'] ?? '' }}
                 @elseif ($data['program_id'] == 35)
                     MSN-2024-{{ $data['student_id'] ?? '' }}
-                @else
-                    -2024-{{ $data['student_id'] ?? '' }}
+                @elseif ($data['program_id'] == 20)
+                    DPT-2024-{{ $data['student_id'] ?? '' }}
+                @elseif ($data['program_id'] == 21)
+                    BSAUD-2024-{{ $data['student_id'] ?? '' }}
+                @elseif ($data['program_id'] == 22)
+                    BSSLP-2024-{{ $data['student_id'] ?? '' }}
+                @elseif ($data['program_id'] == 23)
+                    MSPT-2024-{{ $data['student_id'] ?? '' }}
                 @endif
             </p>
             <p><strong>Candidate Name:</strong> {{ $data['student_first_name'] ?? '' }}
@@ -109,24 +123,62 @@
             <p><strong>Father's Name:</strong> {{ $data['father_name'] ?? ('' ?? '') }}</p>
             <p><strong>CNIC No:</strong> {{ $data['cnic'] ?? ('' ?? '') }}</p>
         </div>
-        <p><strong>General Instructions:</strong></p>
-        <ol>
-            <li>Bring your original CNIC/B-Form, admit card & paid fee voucher for the test.</li>
-            <li>Make sure you reach test venue at sharp.</li>
-            <li>Once inside the test venue mark your attendance on the registration desk and follow the instructions to
-                find the seat marked with your test roll no.</li>
-            <li>Once the test is complete, remain seated until otherwise guided by invigilation staff.</li>
-            <li>You would be provided an Optical Mark Reader (OMR) sheet at the start of the test. Mark your test roll
-                no on it. You may use any blue or black ball pen/lead pencil to mark your roll number and the answers on
-                the sheet.</li>
-            <li>Mark your attendance and write down your roll no and OMR sheet no on the attendance sheet provided to
-                you in the examination hall.</li>
-            <li>Do not overwrite or mark multiple answers. Ensure that circles on the OMR are filled completely.</li>
-            <li>Do not signal or talk to any other candidate. Any non-compliance would result in disqualification to
-                appear in the test.</li>
-            <li>Please bring stationary (Clipboard, Pencil, and black ball pen to fill the OMR Sheet).</li>
-        </ol>
-        @if ($data['program_id'] != 35)
+        @if ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
+            <p><strong>Test Pattern</strong></p>
+            <ol>
+                <li>Entry test for DPT, BS-AUD, BS-SLP, BS-PO and MS-PT comprises of 100 MCQs that are to be
+                    completed within 02 Hours.</li>
+                <li>All questions carry equal marks (1 mark each). There is NO negative marking in the paper.</li>
+            </ol>
+            <p><strong>General Instructions:</strong></p>
+            <ol>
+                <li>Bring your original CNIC/B-Form, admit card & paid fee voucher for the test.</li>
+                <li>Make sure you reach the test venue on time.</li>
+                <li>Once inside the test venue, mark your attendance on the registration desk and follow the
+                    instructions to find the seat marked with your test roll no.</li>
+                <li>Once the test is complete, remain seated until otherwise guided by invigilation staff.</li>
+                <li>You would be provided an Optical Mark Reader (OMR) sheet at the start of the test. Mark your test
+                    roll
+                    no on it. You may use any blue or black ball pen/lead pencil to mark your roll number and the
+                    answers on the sheet.</li>
+                <li>Mark your attendance and write down your roll no and OMR sheet no on the attendance sheet provided
+                    to you in the examination hall.</li>
+                <li>Do not overwrite or mark multiple answers. Ensure that circles on the OMR are filled completely.
+                </li>
+                <li>Do not signal or talk to any other candidate. Any non-compliance would result in disqualification to
+                    appear in the test.</li>
+                <li>Please bring stationery (clipboard, pencil, and black ball pen to fill the OMR sheet).</li>
+            </ol>
+        @else
+            <p><strong>General Instructions:</strong></p>
+            <ol>
+                <li>Bring your original CNIC/B-Form, admit card & paid fee voucher for the test.</li>
+                <li>Make sure you reach test venue at sharp.</li>
+                <li>Once inside the test venue mark your attendance on the registration desk and follow the instructions
+                    to
+                    find the seat marked with your test roll no.</li>
+                <li>Once the test is complete, remain seated until otherwise guided by invigilation staff.</li>
+                <li>You would be provided an Optical Mark Reader (OMR) sheet at the start of the test. Mark your test
+                    roll
+                    no on it. You may use any blue or black ball pen/lead pencil to mark your roll number and the
+                    answers on
+                    the sheet.</li>
+                <li>Mark your attendance and write down your roll no and OMR sheet no on the attendance sheet provided
+                    to
+                    you in the examination hall.</li>
+                <li>Do not overwrite or mark multiple answers. Ensure that circles on the OMR are filled completely.
+                </li>
+                <li>Do not signal or talk to any other candidate. Any non-compliance would result in disqualification to
+                    appear in the test.</li>
+                <li>Please bring stationary (Clipboard, Pencil, and black ball pen to fill the OMR Sheet).</li>
+            </ol>
+        @endif
+        @if (
+            $data['program_id'] != 35 &&
+                $data['program_id'] != 20 &&
+                $data['program_id'] != 21 &&
+                $data['program_id'] != 22 &&
+                $data['program_id'] != 23)
             <p><strong>Test Pattern:</strong></p>
             <ol>
                 <li>The test comprises of 70 MCQ’s that are to be completed within 01 hour & 30 minutes.</li>
@@ -137,12 +189,19 @@
                 </li>
             </ol>
         @endif
-        <p><strong>Note:</strong></p>
-        <ul>
-            <li>Entry without Admit card & CNIC is not allowed.</li>
-            <li>Electronic gadgets / mobiles/calculator are not allowed.</li>
-            <li>Relatives OR Family members are NOT allowed inside the test campus.</li>
-        </ul>
+        @if ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
+            <p><strong>Note:</strong></p>
+            <ul>
+                <li>Electronic gadgets / mobiles/calculator are not allowed.</li>
+            </ul>
+        @else
+            <p><strong>Note:</strong></p>
+            <ul>
+                <li>Entry without Admit card & CNIC is not allowed.</li>
+                <li>Electronic gadgets / mobiles/calculator are not allowed.</li>
+                <li>Relatives OR Family members are NOT allowed inside the test campus.</li>
+            </ul>
+        @endif
     </div>
 </body>
 
