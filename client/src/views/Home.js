@@ -30,12 +30,12 @@ const Home = () => {
           <div>
             <Link to="/forms/wizard">
               <Button color="primary" style={{ margin: "10px" }}>
-                Admssions All Programs
+                Admission All Programs
               </Button>
             </Link>
             <Link to="/second-page">
               <Button color="secondary" style={{ margin: "10px" }}>
-                Admission Certificate of Health Profession Education (CHPE)
+                Certificate of Health Profession Education (CHPE)
               </Button>
             </Link>
           </div>

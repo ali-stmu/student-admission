@@ -22,12 +22,12 @@ export default [
 
     navLink: "/myapplications",
   },
-  // {
-  //   id: "secondPage",
-  //   title: "CHPE Certifications",
-  //   icon: <Mail size={20} />,
-  //   navLink: "/second-page",
-  // },
+  {
+    id: "secondPage",
+    title: "CHPE Certifications",
+    icon: <Mail size={20} />,
+    navLink: "/second-page",
+  },
   {
     id: "bioethics",
     title: "Bio Ethics",

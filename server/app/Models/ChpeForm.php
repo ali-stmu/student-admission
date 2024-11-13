@@ -21,6 +21,7 @@ class ChpeForm extends Model
         'professional_reg_number',
         'status',
         'voucher_image_path',
+        'term_id',
     ];
 
     // Add relationships or additional methods here if needed

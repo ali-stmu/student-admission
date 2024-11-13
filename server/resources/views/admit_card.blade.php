@@ -68,14 +68,14 @@
         <h3>Admit Card</h3>
         <h3>{{ $data['college_name'] ?? '' }}</h3>
         <h3>{{ $data['program_name'] ?? '' }}</h3>
-        <p class="p-center">For Intake Year: Fall-2024</p>
+        <p class="p-center">For Intake Year: Spring-2025</p>
         <div class="detail-box">
             <p><strong>Program Name:</strong> {{ $data['program_name'] ?? '' }}</p>
             <p><strong>Test Date:</strong>
                 @if ($data['program_id'] == 34 || $data['program_id'] == 35)
                     Thursday, June 13<sup>th</sup>, 2024
                 @elseif ($data['program_id'] == 8)
-                    Saturday, May 25<sup>th</sup>, 2024
+                    Saturday, October 12<sup>th</sup>, 2024
                 @elseif ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
                     Thursday, July 25<sup>th</sup>, 2024
                 @endif
@@ -85,8 +85,8 @@
                 <p><strong>Test Time:</strong> 09:00 AM</p>
                 <p><strong>Interview Date and Time:</strong> Thursday, July 25<sup>th</sup>, 2024 09:00 AM</p>
             @else
-                <p><strong>Reporting Time:</strong> 08:00 AM</p>
-                <p><strong>Test Time:</strong> 09:00 AM</p>
+                <p><strong>Reporting Time:</strong> 09:00 AM</p>
+                <p><strong>Test Time:</strong> 10:00 AM</p>
             @endif
 
             <p><strong>Venue:</strong>
@@ -94,7 +94,8 @@
                     Shifa College of Nursing Block H-5, Shifa International Hospital Pitras Bukhari Road, Sector H-8/4,
                     Islamabad (Tel: 051-8463619)
                 @elseif ($data['program_id'] == 8)
-                    National Testing Service (NTS) Plot # 96, Street 4, Sector H-8/1 Islamabad. Ph. No: 051-844444-1
+                    Shifa Tameer-e-Millat University Park Road Campus, Chak Shahzad, Islamabad. (Refer to Page 2 for
+                    Map)
                 @elseif ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
                     Department of Rehabilitation Sciences, Shifa Tameer-e-Millat University, (Park Road Campus), Park
                     Road, Chak Shehzad , Islamabad.
@@ -202,7 +203,45 @@
                 <li>Relatives OR Family members are NOT allowed inside the test campus.</li>
             </ul>
         @endif
+        @if ($data['program_id'] == 8)
+            <hr> <!-- Horizontal line -->
+            <!-- Add routes for Program ID 8 -->
+            <h3>Routes to STMU Park Road Campus (Near Comsats)</h3>
+            <ul>
+                <li>
+                    <strong>Route 1:</strong> Faizabad -> Rawal Dam Chowk -> Park Road (Chak Shahzad) -> STMU (Near
+                    Comsats)
+                    <br>
+                    <a href="https://maps.app.goo.gl/AtoE7tSE5udhhnrE7" target="_blank">View on Google Maps</a>
+                    <br>
+                    <br>
+
+                </li>
+                <li>
+                    <strong>Route 2:</strong> Serena Chowk -> Rawal Dam Chowk -> NIH -> NARC -> Park Road (Chak Shahzad)
+                    -> STMU (Near Comsats)
+                    <br>
+                    <a href="https://maps.app.goo.gl/h65Am71vxgydQKAMA" target="_blank">View on Google Maps</a>
+                    <br>
+                    <br>
+
+                </li>
+                <li>
+                    <strong>Route 3:</strong> Khanapul -> Burma Town -> Tarlai -> Taramari Chowk -> Park Road (Chak
+                    Shahzad) -> STMU (Near Comsats)
+                    <br>
+                    <a href="https://maps.app.goo.gl/tDhvs3m38p4kUg1L6" target="_blank">View on Google Maps</a>
+                    <br>
+                    <br>
+
+                </li>
+            </ul>
+        @endif
+
+
+
     </div>
+
 </body>
 
 </html>

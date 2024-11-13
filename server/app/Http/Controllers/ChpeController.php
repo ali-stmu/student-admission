@@ -16,7 +16,10 @@ class ChpeController extends Controller
      */
     public function index()
     {
-        $applicants = ChpeForm::all();
+        $applicants = ChpeForm::where('term_id', 2)
+        ->where('status', 'uploaded')
+        ->get();
+
     
         // Append the full URL for each attachment
         foreach ($applicants as $applicant) {
@@ -50,29 +53,33 @@ class ChpeController extends Controller
             'candidatePicture' => 'required|image|max:10240', // max 10MB
             'highestDegreePicture' => 'required|image|max:10240', // max 10MB
         ]);
-
+    
         // Handle file uploads
         $cnicPicturePath = $request->file('cnicPicture')->store('public/images/cnicPicture');
         $candidatePicturePath = $request->file('candidatePicture')->store('public/images/candidatePicture');
         $highestDegreePicturePath = $request->file('highestDegreePicture')->store('public/images/highestDegreePicture');
-
-        // Save form data to database
-        $chpeForm = new ChpeForm();
-        $chpeForm->candidate_name = $validatedData['candidateName'];
-        $chpeForm->user_id = $validatedData['user_id'];
-        $chpeForm->father_name = $validatedData['fatherName'];
-        $chpeForm->phone_number = $validatedData['phoneNumber'];
-        $chpeForm->email = $validatedData['email'];
-        $chpeForm->mailing_address = $validatedData['mailingAddress'];
-        $chpeForm->status = 'Pending';
-        $chpeForm->professional_reg_number = $validatedData['professionalRegNumber'];
-        $chpeForm->cnic_passport_picture = $cnicPicturePath;
-        $chpeForm->candidate_picture = $candidatePicturePath;
-        $chpeForm->highest_degree_picture = $highestDegreePicturePath;
-        $chpeForm->save();
-
+    
+        // Update or create a new record in the database
+        $chpeForm = ChpeForm::updateOrCreate(
+            ['user_id' => $validatedData['user_id']],
+            [
+                'candidate_name' => $validatedData['candidateName'],
+                'father_name' => $validatedData['fatherName'],
+                'phone_number' => $validatedData['phoneNumber'],
+                'email' => $validatedData['email'],
+                'mailing_address' => $validatedData['mailingAddress'],
+                'status' => 'Pending',
+                'term_id' => 2,
+                'professional_reg_number' => $validatedData['professionalRegNumber'],
+                'cnic_passport_picture' => $cnicPicturePath,
+                'candidate_picture' => $candidatePicturePath,
+                'highest_degree_picture' => $highestDegreePicturePath,
+            ]
+        );
+    
         return response()->json(['message' => 'Form submitted successfully'], 200);
     }
+    
 
     public function generatePdf(Request $request, $user_id)
     {
@@ -97,7 +104,7 @@ class ChpeController extends Controller
                 'collegeName' => 'Department of Health Professional Education',
                 'voucherID' => $voucherID,
                 'date' => $issueDate,
-                'dueDate' => '2024-06-24',
+                'dueDate' => '2024-10-31',
                 'AccountTitle' => 'SHIFA TAMEER-MILLAT UNIVERSITY',
                 'bankAccountNumber' => '50007902906303',
                 'programName' => 42,  // Hardcoded as given in your original code

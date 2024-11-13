@@ -37,42 +37,45 @@ class BioEthicsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'candidateName' => 'required|string|max:255',
-            'user_id' => 'required|string|max:255',
-            'fatherName' => 'required|string|max:255',
-            'phoneNumber' => 'required|string|max:20',
-            'email' => 'required|string|email|max:255',
-            'mailingAddress' => 'required|string',
-            'professionalRegNumber' => 'nullable|string|max:100',
-            'cnicPicture' => 'required|image|max:10240', // max 10MB
-            'candidatePicture' => 'required|image|max:10240', // max 10MB
-            'highestDegreePicture' => 'required|image|max:10240', // max 10MB
-        ]);
+{
+    $validatedData = $request->validate([
+        'candidateName' => 'required|string|max:255',
+        'user_id' => 'required|string|max:255',
+        'fatherName' => 'required|string|max:255',
+        'phoneNumber' => 'required|string|max:20',
+        'email' => 'required|string|email|max:255',
+        'mailingAddress' => 'required|string',
+        'professionalRegNumber' => 'nullable|string|max:100',
+        'cnicPicture' => 'required|image|max:10240', // max 10MB
+        'candidatePicture' => 'required|image|max:10240', // max 10MB
+        'highestDegreePicture' => 'required|image|max:10240', // max 10MB
+    ]);
 
-        // Handle file uploads
-        $cnicPicturePath = $request->file('cnicPicture')->store('public/images/cnicPicture');
-        $candidatePicturePath = $request->file('candidatePicture')->store('public/images/candidatePicture');
-        $highestDegreePicturePath = $request->file('highestDegreePicture')->store('public/images/highestDegreePicture');
+    // Handle file uploads
+    $cnicPicturePath = $request->file('cnicPicture')->store('public/images/cnicPicture');
+    $candidatePicturePath = $request->file('candidatePicture')->store('public/images/candidatePicture');
+    $highestDegreePicturePath = $request->file('highestDegreePicture')->store('public/images/highestDegreePicture');
 
-        // Save form data to database
-        $BioEthicsForm = new BioEthicsForm();
-        $BioEthicsForm->candidate_name = $validatedData['candidateName'];
-        $BioEthicsForm->user_id = $validatedData['user_id'];
-        $BioEthicsForm->father_name = $validatedData['fatherName'];
-        $BioEthicsForm->phone_number = $validatedData['phoneNumber'];
-        $BioEthicsForm->email = $validatedData['email'];
-        $BioEthicsForm->mailing_address = $validatedData['mailingAddress'];
-        $BioEthicsForm->status = 'Pending';
-        $BioEthicsForm->professional_reg_number = $validatedData['professionalRegNumber'];
-        $BioEthicsForm->cnic_passport_picture = $cnicPicturePath;
-        $BioEthicsForm->candidate_picture = $candidatePicturePath;
-        $BioEthicsForm->highest_degree_picture = $highestDegreePicturePath;
-        $BioEthicsForm->save();
+    // Check if the record already exists
+    $BioEthicsForm = BioEthicsForm::updateOrCreate(
+        ['user_id' => $validatedData['user_id']],
+        [
+            'candidate_name' => $validatedData['candidateName'],
+            'father_name' => $validatedData['fatherName'],
+            'phone_number' => $validatedData['phoneNumber'],
+            'email' => $validatedData['email'],
+            'mailing_address' => $validatedData['mailingAddress'],
+            'status' => 'Pending',
+            'professional_reg_number' => $validatedData['professionalRegNumber'],
+            'cnic_passport_picture' => $cnicPicturePath,
+            'candidate_picture' => $candidatePicturePath,
+            'highest_degree_picture' => $highestDegreePicturePath,
+        ]
+    );
 
-        return response()->json(['message' => 'Form submitted successfully'], 200);
-    }
+    return response()->json(['message' => 'Form submitted successfully'], 200);
+}
+
 
     public function generatePdf(Request $request, $user_id)
     {
@@ -97,7 +100,7 @@ class BioEthicsController extends Controller
                 'collegeName' => 'Shifa College of Pharmaceutical Sciences',
                 'voucherID' => $voucherID,
                 'date' => $issueDate,
-                'dueDate' => '2024-06-13',
+                'dueDate' => '2024-10-15',
                 'AccountTitle' => 'SHIFA TAMEER-MILLAT UNIVERSITY',
                 'bankAccountNumber' => '50007902906303',
                 'programName' => 'Bioethics & Professionalism',  // Hardcoded as given in your original code
