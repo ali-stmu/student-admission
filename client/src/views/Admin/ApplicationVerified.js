@@ -303,7 +303,9 @@ const ApplicationVerified = () => {
             cell: (row) => {
               // Check if programId is 8 and admit_card_status is not 1
               if (
-                (selectedProgram === "8" || selectedProgram === "20") &&
+                (selectedProgram === "8" ||
+                  selectedProgram === "20" ||
+                  selectedProgram === "49") &&
                 row.admit_card_status !== "1"
               ) {
                 return (

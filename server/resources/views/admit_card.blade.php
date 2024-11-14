@@ -78,12 +78,18 @@
                     Saturday, October 12<sup>th</sup>, 2024
                 @elseif ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
                     Thursday, July 25<sup>th</sup>, 2024
+                @elseif($data['program_id'] == 49)
+                    Sunday, December 8<sup>th</sup>, 2024
                 @endif
             </p>
             @if ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
                 <p><strong>Reporting Time:</strong> 08:30 AM</p>
                 <p><strong>Test Time:</strong> 09:00 AM</p>
                 <p><strong>Interview Date and Time:</strong> Thursday, July 25<sup>th</sup>, 2024 09:00 AM</p>
+            @elseif ($data['program_id'] == 49)
+                <p><strong>Reporting Time:</strong> 09:00 AM</p>
+                <p><strong>Test Time:</strong> 10:00 AM</p>
+                <p><strong>Interview Time:</strong> 12:30 PM</p>
             @else
                 <p><strong>Reporting Time:</strong> 09:00 AM</p>
                 <p><strong>Test Time:</strong> 10:00 AM</p>
@@ -99,6 +105,9 @@
                 @elseif ($data['program_id'] == 20 || $data['program_id'] == 21 || $data['program_id'] == 22 || $data['program_id'] == 23)
                     Department of Rehabilitation Sciences, Shifa Tameer-e-Millat University, (Park Road Campus), Park
                     Road, Chak Shehzad , Islamabad.
+                @elseif($data['program_id'] == 49)
+                    Shifa College of Nursing, Block: E-4,
+                    Shifa International Hospital H-8/4, Islamabad,
                 @endif
 
             </p>
@@ -117,6 +126,8 @@
                     BSSLP-2024-{{ $data['student_id'] ?? '' }}
                 @elseif ($data['program_id'] == 23)
                     MSPT-2024-{{ $data['student_id'] ?? '' }}
+                @elseif ($data['program_id'] == 49)
+                    ASMT-2025-{{ $data['student_id'] ?? '' }}
                 @endif
             </p>
             <p><strong>Candidate Name:</strong> {{ $data['student_first_name'] ?? '' }}
@@ -150,6 +161,33 @@
                     appear in the test.</li>
                 <li>Please bring stationery (clipboard, pencil, and black ball pen to fill the OMR sheet).</li>
             </ol>
+        @elseif($data['program_id'] == 49)
+            <p><strong>General Instructions:</strong></p>
+            <ol>
+                <li>Bring your CNIC, admit card, and paid fee voucher for the test.</li>
+                <li>Make sure you reach the test venue at <strong>09:00 AM sharp</strong>.</li>
+                <li>Once inside the test venue, mark your attendance at the registration desk and follow the
+                    instructions.</li>
+                <li>Once the test is complete, remain seated until guided otherwise by the invigilation staff. Your
+                    interview will be conducted on the same day and venue.</li>
+                <li>You will be provided with an Optical Mark Reader (OMR) sheet at the start of the test. Mark your
+                    test roll number on it. You may use a blue or black ball pen or lead pencil to mark your roll number
+                    and answers on the sheet.</li>
+                <li>Do not overwrite or mark multiple answers. Ensure that the circles on the OMR are filled completely.
+                </li>
+                <li>Do not signal or talk to any other candidate. Any non-compliance will result in disqualification
+                    from appearing in the test.</li>
+                <li>Please bring stationery (clipboard, pencil, or ball pen to fill the OMR sheet).</li>
+                <li>Make sure to bring your CNIC, Matric, and FSc result cards and/or equivalence certificate for the
+                    interview.</li>
+            </ol>
+
+            <p><strong>Test Pattern:</strong></p>
+            <ol>
+                <li>The test comprises 100 MCQs to be completed within 2 hours.</li>
+                <li>All questions carry equal marks (1 mark each). There is <strong>NO negative marking</strong> in the
+                    paper.</li>
+            </ol>
         @else
             <p><strong>General Instructions:</strong></p>
             <ol>
@@ -179,7 +217,8 @@
                 $data['program_id'] != 20 &&
                 $data['program_id'] != 21 &&
                 $data['program_id'] != 22 &&
-                $data['program_id'] != 23)
+                $data['program_id'] != 23 &&
+                $data['program_id'] != 49)
             <p><strong>Test Pattern:</strong></p>
             <ol>
                 <li>The test comprises of 70 MCQ’s that are to be completed within 01 hour & 30 minutes.</li>
@@ -194,6 +233,13 @@
             <p><strong>Note:</strong></p>
             <ul>
                 <li>Electronic gadgets / mobiles/calculator are not allowed.</li>
+            </ul>
+        @elseif($data['program_id'] == 49)
+            <p><strong>Note:</strong></p>
+            <ul>
+                <li>Entry without an admit card and CNIC is not allowed.</li>
+                <li>Electronic gadgets, mobiles, and calculators are not allowed.</li>
+                <li>Relatives or family members are <strong>NOT</strong> allowed inside the test campus.</li>
             </ul>
         @else
             <p><strong>Note:</strong></p>
