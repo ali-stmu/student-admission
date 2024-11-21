@@ -131,7 +131,9 @@ const SecondPage = () => {
 
       if (response.ok) {
         alert("Challan uploaded successfully!");
+
         setChallanFile(null); // Reset the input field
+        window.location.reload();
       } else {
         alert("Failed to upload challan.");
       }
@@ -181,6 +183,7 @@ const SecondPage = () => {
           candidatePicture: null,
           highestDegreePicture: null,
         });
+        window.location.reload();
       } else {
         alert("Failed to submit form.");
       }

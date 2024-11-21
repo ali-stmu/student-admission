@@ -193,7 +193,9 @@ const BioEthics = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bio Ethics Admission Form</CardTitle>
+        <CardTitle>
+          Admission Form Bioethics and Professional 1-year Diploma Program
+        </CardTitle>
       </CardHeader>
       <CardBody>
         <Form onSubmit={handleSubmit}>
