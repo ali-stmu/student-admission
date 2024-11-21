@@ -16,8 +16,7 @@ class BioEthicsController extends Controller
      */
     public function index()
     {
-        $applicants = BioEthicsForm::all();
-    
+        $applicants = BioEthicsForm::where('status', 'uploaded')->get();
         // Append the full URL for each attachment
         foreach ($applicants as $applicant) {
             $applicant->cnic_passport_picture_url = url('storage/images/cnicPicture/' . basename($applicant->cnic_passport_picture));
