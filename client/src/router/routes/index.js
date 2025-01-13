@@ -25,6 +25,10 @@ if (userRole === "Student") {
       component: lazy(() => import("../../views/BioEthics")),
     },
     {
+      path: "/ccn",
+      component: lazy(() => import("../../views/CCN")),
+    },
+    {
       path: "/forms/wizard",
       component: lazy(() => import("../../views/forms/wizard")),
     },
@@ -110,6 +114,14 @@ if (userRole === "Student") {
     {
       path: "/bioethicsapplicants",
       component: lazy(() => import("../../views/Admin/BioEthicsApplicants")),
+      layout: "HorizontalLayout",
+      meta: {
+        authRoute: true,
+      },
+    },
+    {
+      path: "/ccnapplicants",
+      component: lazy(() => import("../../views/Admin/CCNApplicants")),
       layout: "HorizontalLayout",
       meta: {
         authRoute: true,

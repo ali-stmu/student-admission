@@ -34,4 +34,10 @@ export default [
     icon: <Mail size={20} />,
     navLink: "/bioethics",
   },
+  {
+    id: "ccn",
+    title: "CCN",
+    icon: <Mail size={20} />,
+    navLink: "/ccn",
+  },
 ];

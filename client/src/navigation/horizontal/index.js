@@ -62,4 +62,11 @@ export default [
 
     navLink: "/bioethicsapplicants",
   },
+  {
+    id: "ccnapplicants",
+    title: "CCN Applicants",
+    icon: <XSquare size={20} />,
+
+    navLink: "/ccnapplicants",
+  },
 ];

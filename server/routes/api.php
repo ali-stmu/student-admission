@@ -13,6 +13,7 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AdminApplicationController;
 use App\Http\Controllers\AdmitLetterController;
 use App\Http\Controllers\ChpeController;
+use App\Http\Controllers\CCNController;
 use App\Http\Controllers\BioEthicsController;
 
 
@@ -154,3 +155,10 @@ Route::post('/upload-challan-bioethics', [BioEthicsController::class, 'uploadVou
 
 // Bio Ethics APIs Admin
 Route::get('/bioethics-applicants', [BioEthicsController::class, 'index']);
+
+//CCN
+Route::post('/saveccnform', [CCNController::class, 'store']);
+Route::get('ccn-form/{user_id}', [CCNController::class,'showByUserId']);
+Route::get('/download-challan-ccn/{user_id}', [CCNController::class, 'generatePdf']);
+Route::post('/upload-challan-ccn', [CCNController::class, 'uploadVoucher']);
+Route::get('/ccn-applicants', [CCNController::class, 'index']);
