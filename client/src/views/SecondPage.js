@@ -25,9 +25,10 @@ const SecondPage = () => {
     email: "",
     mailingAddress: "",
     professionalRegNumber: "",
-    cnicPicture: null,
-    candidatePicture: null,
-    highestDegreePicture: null,
+    highestDegreeTitle: "",
+    // cnicPicture: null,
+    // candidatePicture: null,
+    // highestDegreePicture: null,
   });
   const [challanFile, setChallanFile] = useState(null);
 
@@ -74,17 +75,17 @@ const SecondPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleImageChangeCnic = (event) => {
-    setFormData({ ...formData, cnicPicture: event.target.files[0] });
-  };
+  // const handleImageChangeCnic = (event) => {
+  //   setFormData({ ...formData, cnicPicture: event.target.files[0] });
+  // };
 
-  const handleImageChangeCandidate = (event) => {
-    setFormData({ ...formData, candidatePicture: event.target.files[0] });
-  };
+  // const handleImageChangeCandidate = (event) => {
+  //   setFormData({ ...formData, candidatePicture: event.target.files[0] });
+  // };
 
-  const handleImageChangeDegree = (event) => {
-    setFormData({ ...formData, highestDegreePicture: event.target.files[0] });
-  };
+  // const handleImageChangeDegree = (event) => {
+  //   setFormData({ ...formData, highestDegreePicture: event.target.files[0] });
+  // };
 
   const handleChallanUpload = (event) => {
     setChallanFile(event.target.files[0]);
@@ -154,16 +155,17 @@ const SecondPage = () => {
       formDataToSend.append("email", formData.email);
       formDataToSend.append("user_id", formData.user_id);
       formDataToSend.append("mailingAddress", formData.mailingAddress);
+      formDataToSend.append("highestDegreeTitle", formData.highestDegreeTitle);
       formDataToSend.append(
         "professionalRegNumber",
         formData.professionalRegNumber
       );
-      formDataToSend.append("cnicPicture", formData.cnicPicture);
-      formDataToSend.append("candidatePicture", formData.candidatePicture);
-      formDataToSend.append(
-        "highestDegreePicture",
-        formData.highestDegreePicture
-      );
+      // formDataToSend.append("cnicPicture", formData.cnicPicture);
+      // formDataToSend.append("candidatePicture", formData.candidatePicture);
+      // formDataToSend.append(
+      //   "highestDegreePicture",
+      //   formData.highestDegreePicture
+      // );
 
       const response = await fetch(`${BASE_URL}savechpeform`, {
         method: "POST",
@@ -179,9 +181,9 @@ const SecondPage = () => {
           email: formData.email,
           mailingAddress: "",
           professionalRegNumber: "",
-          cnicPicture: null,
-          candidatePicture: null,
-          highestDegreePicture: null,
+          //cnicPicture: null,
+          //candidatePicture: null,
+          // highestDegreePicture: null,
         });
         window.location.reload();
       } else {
@@ -255,7 +257,7 @@ const SecondPage = () => {
               </FormGroup>
             </Col>
           </Row>
-          <Row form>
+          {/* <Row form>
             <Col md={6}>
               <FormGroup>
                 <Label className="form-label" for="cnic">
@@ -284,7 +286,7 @@ const SecondPage = () => {
                 />
               </FormGroup>
             </Col>
-          </Row>
+          </Row> */}
           <Row form>
             <Col md={6}>
               <FormGroup>
@@ -301,22 +303,6 @@ const SecondPage = () => {
             </Col>
             <Col md={6}>
               <FormGroup>
-                <Label className="form-label" for="highestDegree">
-                  Highest Degree (Qualification)<sup>*</sup>
-                </Label>
-                <CustomInput
-                  type="file"
-                  onChange={handleImageChangeDegree}
-                  accept="image/*"
-                  id="highestDegree"
-                  name="highestDegree"
-                />
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row form>
-            <Col md={6}>
-              <FormGroup>
                 <Label for="professionalRegNumber">
                   Professional Registration Number (optional)
                 </Label>
@@ -330,30 +316,64 @@ const SecondPage = () => {
                 />
               </FormGroup>
             </Col>
+            {/* <Col md={6}>
+              <FormGroup>
+                <Label className="form-label" for="highestDegree">
+                  Highest Degree (Qualification)<sup>*</sup>
+                </Label>
+                <CustomInput
+                  type="file"
+                  onChange={handleImageChangeDegree}
+                  accept="image/*"
+                  id="highestDegree"
+                  name="highestDegree"
+                />
+              </FormGroup>
+            </Col> */}
+          </Row>
+          <Row form>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="highestDegreeTitle">Highest Degree Title</Label>
+                <Input
+                  type="text"
+                  name="highestDegreeTitle"
+                  id="highestDegreeTitle"
+                  value={formData.highestDegreeTitle}
+                  onChange={handleInputChange}
+                  placeholder="Enter Highest Degree Title"
+                />
+              </FormGroup>
+            </Col>
           </Row>
           <Button type="submit">Submit</Button>
         </Form>
         <Table bordered>
           <thead>
             <tr>
-              <th>#</th>
+              {/* <th>#</th>
               <th>Candidate Name</th>
               <th>Father Name</th>
               <th>Phone Number</th>
               <th>Email</th>
-              <th>Professional Reg. Number</th>
-              <th>Attach Paid Challan</th>
+              <th>Professional Reg. Number</th> */}
               <th>Download Challan</th>
+              <th>Attach Paid Challan</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th scope="row">1</th>
-              <td>{formDataTable.candidate_name}</td>
+              {/* <th scope="row">1</th> */}
+              {/* <td>{formDataTable.candidate_name}</td>
               <td>{formDataTable.father_name}</td>
               <td>{formDataTable.phone_number}</td>
               <td>{formDataTable.email}</td>
-              <td>{formDataTable.professional_reg_number}</td>
+              <td>{formDataTable.professional_reg_number}</td> */}
+              <td>
+                <Button onClick={handleChallanDownload}>
+                  Download Challan
+                </Button>
+              </td>
               <td>
                 {formDataTable.status === "uploaded" ? (
                   "Already uploaded"
@@ -371,11 +391,6 @@ const SecondPage = () => {
                     </Col>
                   </Row>
                 )}
-              </td>
-              <td>
-                <Button onClick={handleChallanDownload}>
-                  Download Challan
-                </Button>
               </td>
             </tr>
           </tbody>

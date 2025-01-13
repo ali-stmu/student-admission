@@ -45,9 +45,9 @@ const ChpeApplicants = () => {
             <th>Mailing Address</th>
             <th>Status</th>
             <th>Professional Reg Number</th>
-            <th>CNIC Picture</th>
+            {/* <th>CNIC Picture</th>
             <th>Candidate Picture</th>
-            <th>Highest Degree Picture</th>
+            <th>Highest Degree Picture</th> */}
             <th>Uploaded Challan</th>
           </tr>
         </thead>
@@ -66,7 +66,7 @@ const ChpeApplicants = () => {
                   : "Paid Challan not uploaded"}
               </td>
               <td>{applicant.professional_reg_number || "N/A"}</td>
-              <td>
+              {/* <td>
                 {applicant.cnic_passport_picture_url ? (
                   <a
                     href={applicant.cnic_passport_picture_url}
@@ -104,7 +104,7 @@ const ChpeApplicants = () => {
                 ) : (
                   "N/A"
                 )}
-              </td>
+              </td> */}
               <td>
                 {applicant.voucher ? (
                   <a

@@ -49,15 +49,16 @@ class ChpeController extends Controller
             'email' => 'required|string|email|max:255',
             'mailingAddress' => 'required|string',
             'professionalRegNumber' => 'nullable|string|max:100',
-            'cnicPicture' => 'required|image|max:10240', // max 10MB
-            'candidatePicture' => 'required|image|max:10240', // max 10MB
-            'highestDegreePicture' => 'required|image|max:10240', // max 10MB
+            'highestDegreeTitle' => 'nullable|string|max:100',
+            // 'cnicPicture' => 'required|image|max:10240', // max 10MB
+            // 'candidatePicture' => 'required|image|max:10240', // max 10MB
+            //'highestDegreePicture' => 'required|image|max:10240', // max 10MB
         ]);
     
         // Handle file uploads
-        $cnicPicturePath = $request->file('cnicPicture')->store('public/images/cnicPicture');
-        $candidatePicturePath = $request->file('candidatePicture')->store('public/images/candidatePicture');
-        $highestDegreePicturePath = $request->file('highestDegreePicture')->store('public/images/highestDegreePicture');
+        // $cnicPicturePath = $request->file('cnicPicture')->store('public/images/cnicPicture');
+        // $candidatePicturePath = $request->file('candidatePicture')->store('public/images/candidatePicture');
+        //$highestDegreePicturePath = $request->file('highestDegreePicture')->store('public/images/highestDegreePicture');
     
         // Update or create a new record in the database
         $chpeForm = ChpeForm::updateOrCreate(
@@ -68,12 +69,13 @@ class ChpeController extends Controller
                 'phone_number' => $validatedData['phoneNumber'],
                 'email' => $validatedData['email'],
                 'mailing_address' => $validatedData['mailingAddress'],
+                'highest_degree_title' => $validatedData['highestDegreeTitle'],
                 'status' => 'Pending',
                 'term_id' => 2,
                 'professional_reg_number' => $validatedData['professionalRegNumber'],
-                'cnic_passport_picture' => $cnicPicturePath,
-                'candidate_picture' => $candidatePicturePath,
-                'highest_degree_picture' => $highestDegreePicturePath,
+                // 'cnic_passport_picture' => $cnicPicturePath,
+                // 'candidate_picture' => $candidatePicturePath,
+                // 'highest_degree_picture' => $highestDegreePicturePath,
             ]
         );
     

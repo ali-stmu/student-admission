@@ -18,6 +18,7 @@ class ChpeForm extends Model
         'candidate_picture',
         'mailing_address',
         'highest_degree_picture',
+        'highest_degree_title',
         'professional_reg_number',
         'status',
         'voucher_image_path',
