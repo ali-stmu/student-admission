@@ -34,8 +34,13 @@ const Home = () => {
               </Button>
             </Link>
             <Link to="/second-page">
-              <Button color="secondary" style={{ margin: "10px" }}>
+              <Button color="danger" style={{ margin: "10px" }}>
                 Certificate of Health Profession Education (CHPE)
+              </Button>
+            </Link>
+            <Link to="/ccn">
+              <Button color="danger" style={{ margin: "10px" }}>
+                Certificate in Clinical Nutrition (CCN)
               </Button>
             </Link>
           </div>

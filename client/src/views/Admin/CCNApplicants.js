@@ -11,7 +11,17 @@ const CCNApplicants = () => {
     const studentInfo = JSON.parse(localStorage.getItem("StudentInfo"));
     const userId = studentInfo ? studentInfo.user_id : null;
 
-    if (userId === 9665 || userId === 355) {
+    if (
+      userId === 9665 ||
+      userId === 333 ||
+      userId === 356 ||
+      userId === 362 ||
+      userId === 363 ||
+      userId === 364 ||
+      userId === 365 ||
+      userId === 6332 ||
+      userId === 10023
+    ) {
       axios
         .get(`${BASE_URL}ccn-applicants`)
         .then((response) => {
