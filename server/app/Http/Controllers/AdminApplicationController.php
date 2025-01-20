@@ -1672,7 +1672,16 @@ public function getPdfStudentDegree($filename)
     return response()->json(['error' => 'File not found'], 404);
 }
 
+public function getPdfStudentTest($filename)
+{
+    $filePath = public_path("attachment_directory/{$filename}");
 
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+
+    return response()->json(['error' => 'File not found'], 404);
+}
 public function updateEducationData(Request $request)
 {
     // Validate the request data
