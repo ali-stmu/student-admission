@@ -303,6 +303,72 @@ public function getVoucherId($studentId,$programId)
         return response()->json(['error' => 'An error occurred'], 500);
     }
 }
+public function deleteEducation($id)
+{
+    try {
+        // Find the education record by ID
+        $education = Education::find($id);
+
+        if (!$education) {
+            return response()->json(['message' => 'Education record not found.'], 404);
+        }
+
+        // Get degree_id and student_id from the education record
+        $degreeId = $education->degree_id;
+        $studentId = $education->student_id;
+
+        // Fetch student data
+        $student = Student::where('student_id', $studentId)->first();
+
+        // Delete related documents where degree_id and student_id match
+        // Document::where('degree_id', $degreeId)
+        //     ->where('student_id', $studentId)
+        //     ->delete();
+
+        // Prepare the message content for the email
+        $messageContent = "Student ID: $studentId\nFirst Name: {$student->first_name}\nLast Name: {$student->last_name}\n";
+        $messageContent .= "Degree ID: {$degreeId}\n";
+        $messageContent .= "Deleted Education Record and Related Documents.\n";
+        
+        // Send the email using Mail::raw
+        Mail::raw($messageContent, function ($message) use ($studentId, $student, $education) {
+            $message->to('no_reply@stmu.edu.pk'); // Change to appropriate email
+            $message->subject('Education Record and Related Documents Deleted');
+        });
+
+        // Delete the education record
+        $education->delete();
+
+        return response()->json(['message' => 'Education record and related documents deleted successfully.'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Failed to delete education record.', 'error' => $e->getMessage()], 500);
+    }
+}
+
+public function deleteTest($id)
+    {
+        try {
+            // Find the test record by ID
+            $test = Test::find($id);
+
+            if (!$test) {
+                return response()->json(['message' => 'Test record not found.'], 404);
+            }
+
+            // Get the test_score_id from the Test record
+            $testScoreId = $test->test_score_id;
+
+            // Delete related test scores where test_score_id matches
+            TestScore::where('test_score_id', $testScoreId)->delete();
+
+            // Delete the test record
+            $test->delete();
+
+            return response()->json(['message' => 'Test record and related test scores deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete test record.', 'error' => $e->getMessage()], 500);
+        }
+    }
 
 
 public function fetchAllStudentData($studentId, $programId)
@@ -344,7 +410,7 @@ public function fetchAllStudentData($studentId, $programId)
             if ($document) {
                 $eduRecord->document_path = $document->document_file_path;
             } else {
-                $eduRecord->degree_name = 'Unknown'; // Or another default value
+                $eduRecord->document_path = 'Unknown'; // Or another default value
             }
 
             $educationData[] = $eduRecord;
@@ -905,10 +971,10 @@ public function feeVerifiedExcel(Request $request, $program_id)
                 $fullName,
                 $fatherName,
                 $gender,
-                $intermediate_total,
-                $intermediate_obtained,
                 $matric_total,
                 $matric_obtained,
+                $intermediate_total,
+                $intermediate_obtained,
                 $phoneNumber,
                 $fatherContact,
                 $email,
@@ -946,6 +1012,7 @@ public function appVerifiedExcel(Request $request, $program_id)
      // Define the column headers
      $headers = [
         'Sr. No',
+        'Student ID',
         'Applicant Name',
         'Father Name',
         'Gender',
@@ -1088,14 +1155,14 @@ public function appVerifiedExcel(Request $request, $program_id)
         } else {
             $data[] = [
                 1,
-               
+                $studentId,
                 $fullName,
                 $fatherName,
                 $gender,
-                $intermediate_total,
-                $intermediate_obtained,
                 $matric_total,
                 $matric_obtained,
+                $intermediate_total,
+                $intermediate_obtained,
                 $phoneNumber,
                 $fatherContact,
                 $email,
@@ -1119,6 +1186,7 @@ public function appVerifiedExcel(Request $request, $program_id)
     // Return the Excel file as a response
     return response()->download($tempFilePath, 'applicants_Fee_Received.xlsx')->deleteFileAfterSend(true);
 }
+
 
 
 
@@ -1727,7 +1795,7 @@ public function updateEducationData(Request $request)
     $messageContent .= "By Admin {$request->userEmail}";
     // Send the email using Mail::raw
     Mail::raw($messageContent, function ($message) use ($studentId, $student, $education, $totalMarks, $obtainedMarks, $percentage) {
-        $message->to('khubaib.mis@stmu.edu.pk');
+        $message->to('no_reply@stmu.edu.pk');
         $message->subject('Education Data Updated');
     });
 
@@ -1786,7 +1854,7 @@ public function updateEducationData(Request $request)
     
         // Send the email using Mail::raw
         Mail::raw($messageContent, function ($message) use ($studentId, $student, $existingTotalMarks, $existingObtainedMarks, $existingPercentage, $totalMarks, $obtainedMarks, $percentage) {
-            $message->to('khubaib.mis@stmu.edu.pk');
+            $message->to('no_reply@stmu.edu.pk');
             $message->subject('Test Scores Updated');
         });
     

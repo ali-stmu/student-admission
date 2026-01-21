@@ -12,7 +12,7 @@ import {
   Table,
 } from "reactstrap";
 import axios from "axios";
-import { XCircle, CheckCircle, Edit3, Save } from "react-feather";
+import { XCircle, CheckCircle, Edit3, Save, Trash2 } from "react-feather";
 import { ClipLoader } from "react-spinners";
 import "../Style/feereceived.css";
 import "../Style/StudentInformation.css";
@@ -139,7 +139,21 @@ const StudentInformation = (props) => {
       });
     }
   };
-
+  const handleDeleteEducation = async (id) => {
+    try {
+      const response = await fetch(`${BASE_URL}education/${id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        alert("Education record deleted successfully.");
+        window.location.reload(); // Refresh the page
+      } else {
+        alert("Failed to delete education record.");
+      }
+    } catch (error) {
+      console.error("Error deleting education record:", error);
+    }
+  };
   useEffect(() => {
     const apiUrl = `${BASE_URL}getStudentDetail/${studentId}/${programId}`;
 
@@ -582,25 +596,37 @@ const StudentInformation = (props) => {
                       </Button>
                     </td>
                     <td>
-                      {isEditing === index ? (
+                      <div className="d-flex align-items-center gap-2">
+                        {isEditing === index ? (
+                          <Button
+                            title="Save"
+                            outline
+                            color="success"
+                            onClick={() => toggleEdit(index)}
+                          >
+                            <Save></Save>
+                          </Button>
+                        ) : (
+                          <Button
+                            title="Edit"
+                            outline
+                            color="primary"
+                            onClick={() => toggleEdit(index)}
+                          >
+                            <Edit3></Edit3>
+                          </Button>
+                        )}
                         <Button
-                          title="Save"
+                          title="Delete"
                           outline
-                          color="success"
-                          onClick={() => toggleEdit(index)}
+                          color="danger"
+                          onClick={() =>
+                            handleDeleteEducation(educationRecord.education_id)
+                          }
                         >
-                          <Save></Save>
+                          <Trash2 />
                         </Button>
-                      ) : (
-                        <Button
-                          title="Edit"
-                          outline
-                          color="primary"
-                          onClick={() => toggleEdit(index)}
-                        >
-                          <Edit3></Edit3>
-                        </Button>
-                      )}
+                      </div>
                     </td>
                   </tr>
                 ))}

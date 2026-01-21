@@ -116,8 +116,12 @@ Route::post('/reject-application', [AdminApplicationController::class, 'rejectAp
 Route::post('/rejectt-application', [AdminApplicationController::class, 'rejecttApplication']);
 
 Route::post('/updateEducationData', [AdminApplicationController::class, 'updateEducationData']);
+Route::delete('education/{id}', [AdminApplicationController::class, 'deleteEducation']);
+
 
 Route::post('/updateTestData', [AdminApplicationController::class, 'updateTestData']);
+Route::delete('test/{id}', [AdminApplicationController::class, 'deleteTest']);
+
 
 
 

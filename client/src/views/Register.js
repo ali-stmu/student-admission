@@ -325,15 +325,19 @@ const Register = () => {
                   />
                 </FormGroup>
               )}
-              {/*
+
               <FormGroup>
-                <Label className='form-label' for='register-password'>
+                <Label className="form-label" for="register-password">
                   Password
                 </Label>
-                <InputPasswordToggle className='input-group-merge'   value={password}
-          onChange={(event) => setPassword(event.target.value)}id='register-password' />
+                <InputPasswordToggle
+                  className="input-group-merge"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  id="register-password"
+                />
               </FormGroup>
-  */}
+
               {/* <FormGroup>
                 <CustomInput
                   type='checkbox'
